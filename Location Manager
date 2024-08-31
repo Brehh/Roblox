@@ -1,0 +1,333 @@
+-- Create ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Parent = game:GetService("CoreGui") -- Parent to CoreGui so it persists after death
+
+-- Create the Main Frame
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 300, 0, 400)
+mainFrame.Position = UDim2.new(0.5, -150, 0.5, -200)
+mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+mainFrame.BorderSizePixel = 0
+mainFrame.Parent = screenGui
+
+-- Create the Title Bar
+local titleBar = Instance.new("Frame")
+titleBar.Size = UDim2.new(1, 0, 0, 30)
+titleBar.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+titleBar.BorderSizePixel = 0
+titleBar.Parent = mainFrame
+
+-- Create the Title Text
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Size = UDim2.new(1, -30, 1, 0)
+titleLabel.Position = UDim2.new(0, 5, 0, 0)
+titleLabel.Text = "Location Manager"
+titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+titleLabel.BackgroundTransparency = 1
+titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+titleLabel.Font = Enum.Font.SourceSansBold
+titleLabel.TextSize = 18
+titleLabel.Parent = titleBar
+
+-- Create the Minimize Button
+local minimizeButton = Instance.new("TextButton")
+minimizeButton.Size = UDim2.new(0, 30, 1, 0)
+minimizeButton.Position = UDim2.new(1, -30, 0, 0)
+minimizeButton.Text = "_"
+minimizeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+minimizeButton.BackgroundTransparency = 1
+minimizeButton.Font = Enum.Font.SourceSansBold
+minimizeButton.TextSize = 18
+minimizeButton.Parent = titleBar
+
+-- Create a Content Frame to hold the GUI elements
+local contentFrame = Instance.new("Frame")
+contentFrame.Size = UDim2.new(1, 0, 1, -30)
+contentFrame.Position = UDim2.new(0, 0, 0, 30)
+contentFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+contentFrame.BorderSizePixel = 0
+contentFrame.Parent = mainFrame
+
+-- Create TextBox for Location Name
+local locationNameBox = Instance.new("TextBox")
+locationNameBox.Size = UDim2.new(0, 260, 0, 40)
+locationNameBox.Position = UDim2.new(0.5, -130, 0, 10)
+locationNameBox.PlaceholderText = "Enter Location Name"
+locationNameBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+locationNameBox.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+locationNameBox.Font = Enum.Font.SourceSans
+locationNameBox.TextSize = 18
+locationNameBox.Parent = contentFrame
+
+-- Create Save Button
+local saveButton = Instance.new("TextButton")
+saveButton.Size = UDim2.new(0, 260, 0, 40)
+saveButton.Position = UDim2.new(0.5, -130, 0, 60)
+saveButton.Text = "Save Position"
+saveButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+saveButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+saveButton.Font = Enum.Font.SourceSansBold
+saveButton.TextSize = 18
+saveButton.Parent = contentFrame
+
+-- Create a ScrollingFrame to list saved locations
+local locationList = Instance.new("ScrollingFrame")
+locationList.Size = UDim2.new(0, 260, 0, 150)
+locationList.Position = UDim2.new(0.5, -130, 0, 110)
+locationList.CanvasSize = UDim2.new(0, 0, 0, 0)
+locationList.ScrollBarThickness = 10
+locationList.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+locationList.BorderSizePixel = 0
+locationList.Parent = contentFrame
+
+-- Create Export Button
+local exportButton = Instance.new("TextButton")
+exportButton.Size = UDim2.new(0, 260, 0, 40)
+exportButton.Position = UDim2.new(0.5, -130, 0, 270)
+exportButton.Text = "Export Locations"
+exportButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+exportButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+exportButton.Font = Enum.Font.SourceSansBold
+exportButton.TextSize = 18
+exportButton.Parent = contentFrame
+
+-- Create Import TextBox
+local importBox = Instance.new("TextBox")
+importBox.Size = UDim2.new(0, 260, 0, 40)
+importBox.Position = UDim2.new(0.5, -130, 0, 320)
+importBox.PlaceholderText = "Paste Location Code Here"
+importBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+importBox.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+importBox.Font = Enum.Font.SourceSans
+importBox.TextSize = 18
+importBox.Parent = contentFrame
+
+-- Create Import Button
+local importButton = Instance.new("TextButton")
+importButton.Size = UDim2.new(0, 260, 0, 40)
+importButton.Position = UDim2.new(0.5, -130, 0, 370)
+importButton.Text = "Import Locations"
+importButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+importButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+importButton.Font = Enum.Font.SourceSansBold
+importButton.TextSize = 18
+importButton.Parent = contentFrame
+
+-- Store saved locations
+local savedLocations = {}
+
+-- Function to refresh the list UI
+local function refreshLocationList()
+    -- Clear existing buttons
+    locationList:ClearAllChildren()
+    
+    -- Recreate buttons
+    for i, location in ipairs(savedLocations) do
+        -- Create a button frame for each saved location
+        local locationFrame = Instance.new("Frame")
+        locationFrame.Size = UDim2.new(0, 240, 0, 40)
+        locationFrame.Position = UDim2.new(0, 10, 0, (i - 1) * 40)
+        locationFrame.BackgroundTransparency = 1
+        locationFrame.Parent = locationList
+
+        -- Create a button for the saved location
+        local locationButton = Instance.new("TextButton")
+        locationButton.Size = UDim2.new(0, 180, 1, 0)
+        locationButton.Position = UDim2.new(0, 0, 0, 0)
+        locationButton.Text = location.name
+        locationButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+        locationButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+        locationButton.Font = Enum.Font.SourceSans
+        locationButton.TextSize = 18
+        locationButton.Parent = locationFrame
+
+        -- Create delete button
+        local deleteButton = Instance.new("TextButton")
+        deleteButton.Size = UDim2.new(0, 60, 1, 0)
+        deleteButton.Position = UDim2.new(1, -60, 0, 0)
+        deleteButton.Text = "Delete"
+        deleteButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+        deleteButton.BackgroundColor3 = Color3.fromRGB(170, 0, 0)
+        deleteButton.Font = Enum.Font.SourceSansBold
+        deleteButton.TextSize = 18
+        deleteButton.Parent = locationFrame
+
+        -- Connect the button to load the corresponding location
+        locationButton.MouseButton1Click:Connect(function()
+            local player = game.Players.LocalPlayer
+            local character = player.Character or player.CharacterAdded:Wait()
+            local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+            humanoidRootPart.CFrame = location.cframe
+            print("Position loaded: ", location.cframe)
+        end)
+
+        -- Connect the delete button to a confirmation prompt
+        deleteButton.MouseButton1Click:Connect(function()
+            -- Create confirmation dialog
+            local confirmationFrame = Instance.new("Frame")
+            confirmationFrame.Size = UDim2.new(0, 200, 0, 100)
+            confirmationFrame.Position = UDim2.new(0.5, -100, 0.5, -50)
+            confirmationFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+            confirmationFrame.Parent = screenGui
+
+            local confirmationText = Instance.new("TextLabel")
+            confirmationText.Size = UDim2.new(1, 0, 0.6, 0)
+            confirmationText.Position = UDim2.new(0, 0, 0, 0)
+            confirmationText.Text = "Are you sure you want to delete this location?"
+            confirmationText.TextColor3 = Color3.fromRGB(255, 255, 255)
+            confirmationText.BackgroundTransparency = 1
+            confirmationText.Font = Enum.Font.SourceSansBold
+            confirmationText.TextSize = 14
+            confirmationText.Parent = confirmationFrame
+
+            local confirmButton = Instance.new("TextButton")
+            confirmButton.Size = UDim2.new(0.5, -10, 0.4, 0)
+            confirmButton.Position = UDim2.new(0, 5, 0.6, 0)
+            confirmButton.Text = "Yes"
+            confirmButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+            confirmButton.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
+            confirmButton.Font = Enum.Font.SourceSansBold
+            confirmButton.TextSize = 18
+            confirmButton.Parent = confirmationFrame
+
+            local cancelButton = Instance.new("TextButton")
+            cancelButton.Size = UDim2.new(0.5, -10, 0.4, 0)
+            cancelButton.Position = UDim2.new(0.5, 5, 0.6, 0)
+            cancelButton.Text = "No"
+            cancelButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+            cancelButton.BackgroundColor3 = Color3.fromRGB(170, 0, 0)
+            cancelButton.Font = Enum.Font.SourceSansBold
+            cancelButton.TextSize = 18
+            cancelButton.Parent = confirmationFrame
+
+            -- Confirm deletion
+            confirmButton.MouseButton1Click:Connect(function()
+                -- Remove location from saved locations
+                table.remove(savedLocations, i)
+
+                -- Remove GUI elements and refresh the list
+                confirmationFrame:Destroy()
+                refreshLocationList()
+
+                -- Update Canvas Size
+                locationList.CanvasSize = UDim2.new(0, 0, 0, #savedLocations * 40)
+            end)
+
+            -- Cancel deletion
+            cancelButton.MouseButton1Click:Connect(function()
+                confirmationFrame:Destroy()
+            end)
+        end)
+    end
+
+    -- Adjust Canvas Size
+    locationList.CanvasSize = UDim2.new(0, 0, 0, #savedLocations * 40)
+end
+
+-- Function to save the player's position with a name
+saveButton.MouseButton1Click:Connect(function()
+    local locationName = locationNameBox.Text
+    if locationName == "" then
+        print("Please enter a name for the location.")
+        return
+    end
+
+    -- Check if the name already exists
+    for _, location in ipairs(savedLocations) do
+        if location.name == locationName then
+            print("A location with this name already exists. Please choose a different name.")
+            return
+        end
+    end
+
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+    table.insert(savedLocations, {name = locationName, cframe = humanoidRootPart.CFrame})
+
+    refreshLocationList()
+
+    print("Position saved: ", locationName, humanoidRootPart.CFrame)
+    locationNameBox.Text = "" -- Clear the text box
+end)
+
+-- Function to export the saved locations to a string
+exportButton.MouseButton1Click:Connect(function()
+    local exportData = ""
+    for _, location in ipairs(savedLocations) do
+        local cframeString = string.format(
+            "%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f",
+            location.cframe:components()
+        )
+        exportData = exportData .. location.name .. ":" .. cframeString .. ";"
+    end
+    print("Exported Locations: ", exportData)
+    setclipboard(exportData) -- Copies the exportData to the user's clipboard
+end)
+
+-- Function to import locations from a string
+importButton.MouseButton1Click:Connect(function()
+    local importData = importBox.Text
+    local locations = string.split(importData, ";")
+    for _, location in ipairs(locations) do
+        if location ~= "" then
+            local name, cframeString = unpack(string.split(location, ":"))
+            local components = {unpack(string.split(cframeString, ","))}
+            for i = 1, #components do
+                components[i] = tonumber(components[i])
+            end
+            local cframe = CFrame.new(unpack(components))
+            table.insert(savedLocations, {name = name, cframe = cframe})
+        end
+    end
+    refreshLocationList()
+    importBox.Text = "" -- Clear the import box
+end)
+
+-- Make the entire frame draggable on both PC and mobile
+local dragging = false
+local dragInput
+local dragStart
+local startPos
+
+local function update(input)
+    local delta = input.Position - dragStart
+    mainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+end
+
+mainFrame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        dragStart = input.Position
+        startPos = mainFrame.Position
+
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+mainFrame.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        dragInput = input
+    end
+end)
+
+game:GetService("UserInputService").InputChanged:Connect(function(input)
+    if dragging and input == dragInput then
+        update(input)
+    end
+end)
+
+-- Minimize or maximize the content frame
+local isMinimized = false
+
+minimizeButton.MouseButton1Click:Connect(function()
+    isMinimized = not isMinimized
+    contentFrame.Visible = not isMinimized
+    minimizeButton.Text = isMinimized and "+" or "_"
+    mainFrame.Size = UDim2.new(0, 300, 0, isMinimized and 30 or 400)
+end)
