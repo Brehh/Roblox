@@ -2,17 +2,18 @@
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "LeaderboardGui"
 screenGui.Parent = game.CoreGui -- Parent the GUI to CoreGui so it shows on the screen
+screenGui.IgnoreGuiInset = true -- Ensure it works well across all screen sizes
 
 -- Create a Frame to hold the leaderboard
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0.25, 0, 0.35, 0) -- Adjust size for a more compact design
-frame.Position = UDim2.new(0.375, 0, 0.325, 0) -- Centered on the screen
+frame.Size = UDim2.new(0.8, 0, 0.5, 0) -- Adjust size to be more responsive on mobile
+frame.Position = UDim2.new(0.1, 0, 0.25, 0) -- Centered on the screen
 frame.BackgroundTransparency = 0.1
 frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30) -- Darker background for contrast
 frame.BorderSizePixel = 0
 frame.Parent = screenGui
 frame.Active = true
-frame.Draggable = false -- We will handle dragging manually to keep everything together
+frame.Draggable = false -- Draggable handled manually for better mobile support
 
 -- Create a Title Bar for the leaderboard
 local titleBar = Instance.new("Frame")
@@ -129,7 +130,7 @@ end
 -- Connect the minimize button to the toggle function
 minimizeButton.MouseButton1Click:Connect(toggleMinimize)
 
--- Handle dragging manually to keep the title bar and frame together
+-- Handle dragging manually to keep the title bar and frame together, supporting mobile
 local dragging = false
 local dragStart = nil
 local startPos = nil
@@ -140,7 +141,7 @@ local function updateDrag(input)
 end
 
 titleBar.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
         dragging = true
         dragStart = input.Position
         startPos = frame.Position
@@ -154,8 +155,10 @@ titleBar.InputBegan:Connect(function(input)
 end)
 
 titleBar.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement and dragging then
-        updateDrag(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        if dragging then
+            updateDrag(input)
+        end
     end
 end)
 
@@ -166,4 +169,3 @@ while true do
     end
     wait()
 end
-
