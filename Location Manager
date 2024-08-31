@@ -9,6 +9,8 @@ mainFrame.Position = UDim2.new(0.5, -175, 0.5, -225)
 mainFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 mainFrame.BorderSizePixel = 0
 mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+mainFrame.Active = true
+mainFrame.Draggable = true
 mainFrame.Parent = screenGui
 
 -- Add UICorner for rounded edges
@@ -111,9 +113,9 @@ local locationListCorner = Instance.new("UICorner")
 locationListCorner.CornerRadius = UDim.new(0, 5)
 locationListCorner.Parent = locationList
 
--- Create the Import/Export Frame (Initially Minimized)
+-- Create the Import/Export Frame
 local importExportFrame = Instance.new("Frame")
-importExportFrame.Size = UDim2.new(0, 300, 0, 50)
+importExportFrame.Size = UDim2.new(0, 300, 0, 150)
 importExportFrame.Position = UDim2.new(0.5, -150, 0, 270)
 importExportFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 importExportFrame.BorderSizePixel = 0
@@ -124,42 +126,16 @@ local importExportFrameCorner = Instance.new("UICorner")
 importExportFrameCorner.CornerRadius = UDim.new(0, 5)
 importExportFrameCorner.Parent = importExportFrame
 
--- Create Import/Export Title
-local importExportTitle = Instance.new("TextLabel")
-importExportTitle.Size = UDim2.new(1, 0, 1, 0)
-importExportTitle.Position = UDim2.new(0, 0, 0, 0)
-importExportTitle.Text = "Import/Export"
-importExportTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
-importExportTitle.BackgroundTransparency = 1
-importExportTitle.TextXAlignment = Enum.TextXAlignment.Left
-importExportTitle.Font = Enum.Font.SourceSansBold
-importExportTitle.TextSize = 18
-importExportTitle.Parent = importExportFrame
-
 -- Create Minimize/Expand Button for Import/Export
 local toggleImportExportButton = Instance.new("TextButton")
 toggleImportExportButton.Size = UDim2.new(0, 30, 0, 30)
-toggleImportExportButton.Position = UDim2.new(1, -40, 0.5, -15)
-toggleImportExportButton.Text = "+"
+toggleImportExportButton.Position = UDim2.new(1, -40, 0, 0)
+toggleImportExportButton.Text = "-"
 toggleImportExportButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 toggleImportExportButton.BackgroundTransparency = 1
 toggleImportExportButton.Font = Enum.Font.SourceSansBold
 toggleImportExportButton.TextSize = 20
 toggleImportExportButton.Parent = importExportFrame
-
--- Create Import/Export Content Frame (Initially Hidden)
-local importExportContent = Instance.new("Frame")
-importExportContent.Size = UDim2.new(1, 0, 0, 100)
-importExportContent.Position = UDim2.new(0, 0, 1, 0)
-importExportContent.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-importExportContent.BorderSizePixel = 0
-importExportContent.Visible = false
-importExportContent.Parent = importExportFrame
-
--- Add UICorner for rounded edges on Import/Export Content Frame
-local importExportContentCorner = Instance.new("UICorner")
-importExportContentCorner.CornerRadius = UDim.new(0, 5)
-importExportContentCorner.Parent = importExportContent
 
 -- Create Import TextBox
 local importBox = Instance.new("TextBox")
@@ -170,23 +146,39 @@ importBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 importBox.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 importBox.Font = Enum.Font.SourceSans
 importBox.TextSize = 18
-importBox.Parent = importExportContent
+importBox.Parent = importExportFrame
 
 -- Add UICorner for rounded edges on Import TextBox
 local importBoxCorner = Instance.new("UICorner")
 importBoxCorner.CornerRadius = UDim.new(0, 5)
 importBoxCorner.Parent = importBox
 
+-- Create Import Button
+local importButton = Instance.new("TextButton")
+importButton.Size = UDim2.new(0, 120, 0, 40)
+importButton.Position = UDim2.new(0, 10, 0, 60)
+importButton.Text = "Import"
+importButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+importButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+importButton.Font = Enum.Font.SourceSansBold
+importButton.TextSize = 18
+importButton.Parent = importExportFrame
+
+-- Add UICorner for rounded edges on Import Button
+local importButtonCorner = Instance.new("UICorner")
+importButtonCorner.CornerRadius = UDim.new(0, 5)
+importButtonCorner.Parent = importButton
+
 -- Create Export Button
 local exportButton = Instance.new("TextButton")
-exportButton.Size = UDim2.new(0, 260, 0, 40)
-exportButton.Position = UDim2.new(0.5, -130, 0, 60)
-exportButton.Text = "Export Locations"
+exportButton.Size = UDim2.new(0, 120, 0, 40)
+exportButton.Position = UDim2.new(1, -130, 0, 60)
+exportButton.Text = "Export"
 exportButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 exportButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 exportButton.Font = Enum.Font.SourceSansBold
 exportButton.TextSize = 18
-exportButton.Parent = importExportContent
+exportButton.Parent = importExportFrame
 
 -- Add UICorner for rounded edges on Export Button
 local exportButtonCorner = Instance.new("UICorner")
@@ -194,12 +186,11 @@ exportButtonCorner.CornerRadius = UDim.new(0, 5)
 exportButtonCorner.Parent = exportButton
 
 -- Toggle Function for Import/Export Frame
-local isImportExportExpanded = false
+local isImportExportExpanded = true
 toggleImportExportButton.MouseButton1Click:Connect(function()
     isImportExportExpanded = not isImportExportExpanded
     if isImportExportExpanded then
         toggleImportExportButton.Text = "-"
-        importExportContent.Visible = true
         importExportFrame:TweenSize(
             UDim2.new(0, 300, 0, 150),
             Enum.EasingDirection.Out,
@@ -210,15 +201,27 @@ toggleImportExportButton.MouseButton1Click:Connect(function()
     else
         toggleImportExportButton.Text = "+"
         importExportFrame:TweenSize(
-            UDim2.new(0, 300, 0, 50),
+            UDim2.new(0, 300, 0, 30),
             Enum.EasingDirection.Out,
             Enum.EasingStyle.Quad,
             0.3,
-            true,
-            function()
-                importExportContent.Visible = false
-            end
+            true
         )
+    end
+end)
+
+-- Toggle Function for Main Minimize Button
+local isMinimized = false
+minimizeButton.MouseButton1Click:Connect(function()
+    isMinimized = not isMinimized
+    if isMinimized then
+        contentFrame.Visible = false
+        minimizeButton.Text = "+"
+        mainFrame.Size = UDim2.new(0, 350, 0, 40)
+    else
+        contentFrame.Visible = true
+        minimizeButton.Text = "-"
+        mainFrame.Size = UDim2.new(0, 350, 0, 450)
     end
 end)
 
@@ -370,48 +373,4 @@ importButton.MouseButton1Click:Connect(function()
     end
     refreshLocationList()
     importBox.Text = "" -- Clear the import box
-end)
-
--- Make the entire frame draggable on both PC and mobile
-local dragging = false
-local dragInput
-local dragStart
-local startPos
-
-local function update(input)
-    local delta = input.Position - dragStart
-    mainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-end
-
-mainFrame.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        dragging = true
-        dragStart = input.Position
-        startPos = mainFrame.Position
-
-        input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then
-                dragging = false
-            end
-        end)
-    end
-end)
-
-mainFrame.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-        dragInput = input
-    end
-end)
-
-game:GetService("UserInputService").InputChanged:Connect(function(input)
-    if dragging and input == dragInput then
-        update(input)
-    end
-end)
-
-minimizeButton.MouseButton1Click:Connect(function()
-    isMinimized = not isMinimized
-    contentFrame.Visible = not isMinimized
-    minimizeButton.Text = isMinimized and "+" or "-"
-    mainFrame.Size = UDim2.new(0, 350, 0, isMinimized and 40 or 450)
 end)
