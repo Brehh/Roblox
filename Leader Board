@@ -1,1 +1,169 @@
+-- Create a ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "LeaderboardGui"
+screenGui.Parent = game.CoreGui -- Parent the GUI to CoreGui so it shows on the screen
+
+-- Create a Frame to hold the leaderboard
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0.25, 0, 0.35, 0) -- Adjust size for a more compact design
+frame.Position = UDim2.new(0.375, 0, 0.325, 0) -- Centered on the screen
+frame.BackgroundTransparency = 0.1
+frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30) -- Darker background for contrast
+frame.BorderSizePixel = 0
+frame.Parent = screenGui
+frame.Active = true
+frame.Draggable = false -- We will handle dragging manually to keep everything together
+
+-- Create a Title Bar for the leaderboard
+local titleBar = Instance.new("Frame")
+titleBar.Size = UDim2.new(1, 0, 0, 40)
+titleBar.Position = UDim2.new(0, 0, 0, 0)
+titleBar.BackgroundTransparency = 0.2
+titleBar.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+titleBar.Parent = frame
+titleBar.Active = true
+
+-- Title Label
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Size = UDim2.new(1, -50, 1, 0) -- Adjusted to make space for the button
+titleLabel.Position = UDim2.new(0, 10, 0, 0) -- Padding for a cleaner look
+titleLabel.BackgroundTransparency = 1
+titleLabel.Text = "Leaderboard"
+titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+titleLabel.TextScaled = true
+titleLabel.Font = Enum.Font.GothamBold -- Modern, clean font
+titleLabel.TextXAlignment = Enum.TextXAlignment.Left -- Align text to the left
+titleLabel.Parent = titleBar
+
+-- Create a Minimize Button
+local minimizeButton = Instance.new("TextButton")
+minimizeButton.Size = UDim2.new(0, 40, 0, 40)
+minimizeButton.Position = UDim2.new(1, -50, 0, 0)
+minimizeButton.BackgroundTransparency = 0.2
+minimizeButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+minimizeButton.Text = "-"
+minimizeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+minimizeButton.Font = Enum.Font.GothamBold
+minimizeButton.TextScaled = true
+minimizeButton.Parent = titleBar
+
+-- Create a Scrolling Frame for Player Stats
+local scrollingFrame = Instance.new("ScrollingFrame")
+scrollingFrame.Size = UDim2.new(1, 0, 1, -40)
+scrollingFrame.Position = UDim2.new(0, 0, 0, 40)
+scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+scrollingFrame.ScrollBarThickness = 8
+scrollingFrame.BackgroundTransparency = 1
+scrollingFrame.Parent = frame
+
+-- Create a UIListLayout for organizing player stats
+local listLayout = Instance.new("UIListLayout")
+listLayout.Parent = scrollingFrame
+listLayout.SortOrder = Enum.SortOrder.LayoutOrder
+listLayout.Padding = UDim.new(0, 5)
+
+-- Variable to track minimized state
+local isMinimized = false
+local originalSize = frame.Size
+
+-- Function to update the leaderboard
+local function updateLeaderboard()
+    -- Clear previous entries
+    for _, child in pairs(scrollingFrame:GetChildren()) do
+        if child:IsA("TextLabel") then
+            child:Destroy()
+        end
+    end
+
+    local players = game:GetService("Players"):GetPlayers()
+    
+    -- Create a table to store players and their stat values
+    local playerStats = {}
+
+    for _, player in pairs(players) do
+        local statsLvlString = player.Stats.lvl.Value
+        local statsLvlValue = tonumber(statsLvlString:match("[%d%.]+")) -- Convert Stats.lvl.Value to a number
+        local leaderstatsLvlValue = player.leaderstats.Lvl.Value -- Get leaderstats.Lvl.Value
+
+        -- Store player, their stat value, and leaderstats value in the table
+        table.insert(playerStats, {PlayerName = player.Name, StatsValue = statsLvlValue, LeaderStatsValue = leaderstatsLvlValue})
+    end
+
+    -- Sort the table by Stats.lvl.Value (descending order)
+    table.sort(playerStats, function(a, b)
+        return a.StatsValue > b.StatsValue
+    end)
+
+    -- Create a label for each player and add it to the scrolling frame
+    for _, stat in pairs(playerStats) do
+        local playerLabel = Instance.new("TextLabel")
+        playerLabel.Size = UDim2.new(1, -10, 0, 40) -- Adjust the height for better readability
+        playerLabel.BackgroundTransparency = 0.5
+        playerLabel.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+        playerLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+        playerLabel.TextScaled = true -- Ensure the text is large enough to read
+        playerLabel.Font = Enum.Font.Gotham
+        playerLabel.TextXAlignment = Enum.TextXAlignment.Left
+        playerLabel.Text = stat.PlayerName .. ": " .. stat.LeaderStatsValue
+        playerLabel.Parent = scrollingFrame
+    end
+
+    -- Adjust the CanvasSize of the scrolling frame based on the number of players
+    scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, listLayout.AbsoluteContentSize.Y)
+end
+
+-- Function to toggle minimize/maximize
+local function toggleMinimize()
+    if isMinimized then
+        scrollingFrame.Visible = true
+        frame.Size = originalSize -- Restore size
+        minimizeButton.Text = "-"
+    else
+        scrollingFrame.Visible = false
+        frame.Size = UDim2.new(originalSize.X.Scale, originalSize.X.Offset, 0, 40) -- Minimize to title bar only
+        minimizeButton.Text = "+"
+    end
+    isMinimized = not isMinimized
+end
+
+-- Connect the minimize button to the toggle function
+minimizeButton.MouseButton1Click:Connect(toggleMinimize)
+
+-- Handle dragging manually to keep the title bar and frame together
+local dragging = false
+local dragStart = nil
+local startPos = nil
+
+local function updateDrag(input)
+    local delta = input.Position - dragStart
+    frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+end
+
+titleBar.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragStart = input.Position
+        startPos = frame.Position
+
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+titleBar.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement and dragging then
+        updateDrag(input)
+    end
+end)
+
+-- Update the leaderboard every 5 seconds
+while true do
+    if not isMinimized then
+        updateLeaderboard()
+    end
+    wait()
+end
 
