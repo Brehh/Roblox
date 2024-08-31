@@ -21,7 +21,6 @@ titleBar.Size = UDim2.new(1, 0, 0, 40)
 titleBar.Position = UDim2.new(0, 0, 0, 0)
 titleBar.BackgroundTransparency = 0.2
 titleBar.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-titleBar.Visible = true
 titleBar.Parent = frame
 titleBar.Active = true
 
@@ -106,16 +105,14 @@ end
 local function toggleMinimize()
     if isMinimized then
         scrollingFrame.Visible = true
-        titleBar.Visible = true
+        titleBar.BackgroundTransparency = 0.2
         frame.Size = originalSize -- Restore size
         minimizeButton.Text = "-"
-        minimizeButton.Position = UDim2.new(1, -40, 0, 0) -- Reset position to the title bar
     else
         scrollingFrame.Visible = false
-        titleBar.Visible = false
-        frame.Size = UDim2.new(0, 40, 0, 40) -- Minimize to just the button
+        titleBar.BackgroundTransparency = 1 -- Hide the title bar but keep the button visible
+        frame.Size = UDim2.new(originalSize.X.Scale, originalSize.X.Offset, 0, 40) -- Minimize to just the button's height
         minimizeButton.Text = "+"
-        minimizeButton.Position = UDim2.new(0, 0, 0, 0) -- Center the button in the frame
     end
     isMinimized = not isMinimized
 end
