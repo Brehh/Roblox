@@ -24,10 +24,22 @@ titleBar.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 titleBar.Parent = frame
 titleBar.Active = true
 
+-- Title Label
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Size = UDim2.new(1, -50, 1, 0) -- Adjusted to make space for the button
+titleLabel.Position = UDim2.new(0, 10, 0, 0) -- Padding for a cleaner look
+titleLabel.BackgroundTransparency = 1
+titleLabel.Text = "Leaderboard"
+titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+titleLabel.TextScaled = true
+titleLabel.Font = Enum.Font.GothamBold -- Modern, clean font
+titleLabel.TextXAlignment = Enum.TextXAlignment.Left -- Align text to the left
+titleLabel.Parent = titleBar
+
 -- Create a Minimize Button
 local minimizeButton = Instance.new("TextButton")
 minimizeButton.Size = UDim2.new(0, 40, 0, 40)
-minimizeButton.Position = UDim2.new(1, -40, 0, 0)
+minimizeButton.Position = UDim2.new(1, -50, 0, 0)
 minimizeButton.BackgroundTransparency = 0.2
 minimizeButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 minimizeButton.Text = "-"
@@ -105,13 +117,11 @@ end
 local function toggleMinimize()
     if isMinimized then
         scrollingFrame.Visible = true
-        titleBar.BackgroundTransparency = 0.2
         frame.Size = originalSize -- Restore size
         minimizeButton.Text = "-"
     else
         scrollingFrame.Visible = false
-        titleBar.BackgroundTransparency = 1 -- Hide the title bar but keep the button visible
-        frame.Size = UDim2.new(originalSize.X.Scale, originalSize.X.Offset, 0, 40) -- Minimize to just the button's height
+        frame.Size = UDim2.new(originalSize.X.Scale, originalSize.X.Offset, 0, 40) -- Minimize to title bar only
         minimizeButton.Text = "+"
     end
     isMinimized = not isMinimized
