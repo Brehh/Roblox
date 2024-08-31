@@ -1,57 +1,73 @@
 -- Create ScreenGui
 local screenGui = Instance.new("ScreenGui")
-screenGui.Parent = game:GetService("CoreGui") -- Parent to CoreGui so it persists after death
+screenGui.Parent = game:GetService("CoreGui")
 
 -- Create the Main Frame
 local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0, 300, 0, 400)
-mainFrame.Position = UDim2.new(0.5, -150, 0.5, -200)
-mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+mainFrame.Size = UDim2.new(0, 350, 0, 450)
+mainFrame.Position = UDim2.new(0.5, -175, 0.5, -225)
+mainFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 mainFrame.BorderSizePixel = 0
+mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 mainFrame.Parent = screenGui
+
+-- Add UICorner for rounded edges
+local mainFrameCorner = Instance.new("UICorner")
+mainFrameCorner.CornerRadius = UDim.new(0, 10)
+mainFrameCorner.Parent = mainFrame
 
 -- Create the Title Bar
 local titleBar = Instance.new("Frame")
-titleBar.Size = UDim2.new(1, 0, 0, 30)
-titleBar.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+titleBar.Size = UDim2.new(1, 0, 0, 40)
+titleBar.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 titleBar.BorderSizePixel = 0
 titleBar.Parent = mainFrame
 
+-- Add UICorner for rounded edges on title bar
+local titleBarCorner = Instance.new("UICorner")
+titleBarCorner.CornerRadius = UDim.new(0, 10)
+titleBarCorner.Parent = titleBar
+
 -- Create the Title Text
 local titleLabel = Instance.new("TextLabel")
-titleLabel.Size = UDim2.new(1, -30, 1, 0)
-titleLabel.Position = UDim2.new(0, 5, 0, 0)
+titleLabel.Size = UDim2.new(1, -40, 1, 0)
+titleLabel.Position = UDim2.new(0, 10, 0, 0)
 titleLabel.Text = "Location Manager"
 titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 titleLabel.BackgroundTransparency = 1
 titleLabel.TextXAlignment = Enum.TextXAlignment.Left
 titleLabel.Font = Enum.Font.SourceSansBold
-titleLabel.TextSize = 18
+titleLabel.TextSize = 20
 titleLabel.Parent = titleBar
 
 -- Create the Minimize Button
 local minimizeButton = Instance.new("TextButton")
-minimizeButton.Size = UDim2.new(0, 30, 1, 0)
-minimizeButton.Position = UDim2.new(1, -30, 0, 0)
-minimizeButton.Text = "_"
+minimizeButton.Size = UDim2.new(0, 30, 0, 30)
+minimizeButton.Position = UDim2.new(1, -35, 0.5, -15)
+minimizeButton.Text = "-"
 minimizeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 minimizeButton.BackgroundTransparency = 1
 minimizeButton.Font = Enum.Font.SourceSansBold
-minimizeButton.TextSize = 18
+minimizeButton.TextSize = 20
 minimizeButton.Parent = titleBar
 
 -- Create a Content Frame to hold the GUI elements
 local contentFrame = Instance.new("Frame")
-contentFrame.Size = UDim2.new(1, 0, 1, -30)
-contentFrame.Position = UDim2.new(0, 0, 0, 30)
-contentFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+contentFrame.Size = UDim2.new(1, 0, 1, -40)
+contentFrame.Position = UDim2.new(0, 0, 0, 40)
+contentFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
 contentFrame.BorderSizePixel = 0
 contentFrame.Parent = mainFrame
 
+-- Add UICorner for rounded edges on content frame
+local contentFrameCorner = Instance.new("UICorner")
+contentFrameCorner.CornerRadius = UDim.new(0, 10)
+contentFrameCorner.Parent = contentFrame
+
 -- Create TextBox for Location Name
 local locationNameBox = Instance.new("TextBox")
-locationNameBox.Size = UDim2.new(0, 260, 0, 40)
-locationNameBox.Position = UDim2.new(0.5, -130, 0, 10)
+locationNameBox.Size = UDim2.new(0, 300, 0, 40)
+locationNameBox.Position = UDim2.new(0.5, -150, 0, 10)
 locationNameBox.PlaceholderText = "Enter Location Name"
 locationNameBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 locationNameBox.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
@@ -59,10 +75,15 @@ locationNameBox.Font = Enum.Font.SourceSans
 locationNameBox.TextSize = 18
 locationNameBox.Parent = contentFrame
 
+-- Add UICorner for rounded edges on TextBox
+local locationNameBoxCorner = Instance.new("UICorner")
+locationNameBoxCorner.CornerRadius = UDim.new(0, 5)
+locationNameBoxCorner.Parent = locationNameBox
+
 -- Create Save Button
 local saveButton = Instance.new("TextButton")
-saveButton.Size = UDim2.new(0, 260, 0, 40)
-saveButton.Position = UDim2.new(0.5, -130, 0, 60)
+saveButton.Size = UDim2.new(0, 300, 0, 40)
+saveButton.Position = UDim2.new(0.5, -150, 0, 60)
 saveButton.Text = "Save Position"
 saveButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 saveButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
@@ -70,69 +91,151 @@ saveButton.Font = Enum.Font.SourceSansBold
 saveButton.TextSize = 18
 saveButton.Parent = contentFrame
 
+-- Add UICorner for rounded edges on Save Button
+local saveButtonCorner = Instance.new("UICorner")
+saveButtonCorner.CornerRadius = UDim.new(0, 5)
+saveButtonCorner.Parent = saveButton
+
 -- Create a ScrollingFrame to list saved locations
 local locationList = Instance.new("ScrollingFrame")
-locationList.Size = UDim2.new(0, 260, 0, 150)
-locationList.Position = UDim2.new(0.5, -130, 0, 110)
+locationList.Size = UDim2.new(0, 300, 0, 150)
+locationList.Position = UDim2.new(0.5, -150, 0, 110)
 locationList.CanvasSize = UDim2.new(0, 0, 0, 0)
 locationList.ScrollBarThickness = 10
 locationList.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 locationList.BorderSizePixel = 0
 locationList.Parent = contentFrame
 
--- Create Export Button
-local exportButton = Instance.new("TextButton")
-exportButton.Size = UDim2.new(0, 260, 0, 40)
-exportButton.Position = UDim2.new(0.5, -130, 0, 270)
-exportButton.Text = "Export Locations"
-exportButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-exportButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-exportButton.Font = Enum.Font.SourceSansBold
-exportButton.TextSize = 18
-exportButton.Parent = contentFrame
+-- Add UICorner for rounded edges on ScrollingFrame
+local locationListCorner = Instance.new("UICorner")
+locationListCorner.CornerRadius = UDim.new(0, 5)
+locationListCorner.Parent = locationList
+
+-- Create the Import/Export Frame (Initially Minimized)
+local importExportFrame = Instance.new("Frame")
+importExportFrame.Size = UDim2.new(0, 300, 0, 50)
+importExportFrame.Position = UDim2.new(0.5, -150, 0, 270)
+importExportFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+importExportFrame.BorderSizePixel = 0
+importExportFrame.Parent = contentFrame
+
+-- Add UICorner for rounded edges on Import/Export Frame
+local importExportFrameCorner = Instance.new("UICorner")
+importExportFrameCorner.CornerRadius = UDim.new(0, 5)
+importExportFrameCorner.Parent = importExportFrame
+
+-- Create Import/Export Title
+local importExportTitle = Instance.new("TextLabel")
+importExportTitle.Size = UDim2.new(1, 0, 1, 0)
+importExportTitle.Position = UDim2.new(0, 0, 0, 0)
+importExportTitle.Text = "Import/Export"
+importExportTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+importExportTitle.BackgroundTransparency = 1
+importExportTitle.TextXAlignment = Enum.TextXAlignment.Left
+importExportTitle.Font = Enum.Font.SourceSansBold
+importExportTitle.TextSize = 18
+importExportTitle.Parent = importExportFrame
+
+-- Create Minimize/Expand Button for Import/Export
+local toggleImportExportButton = Instance.new("TextButton")
+toggleImportExportButton.Size = UDim2.new(0, 30, 0, 30)
+toggleImportExportButton.Position = UDim2.new(1, -40, 0.5, -15)
+toggleImportExportButton.Text = "+"
+toggleImportExportButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+toggleImportExportButton.BackgroundTransparency = 1
+toggleImportExportButton.Font = Enum.Font.SourceSansBold
+toggleImportExportButton.TextSize = 20
+toggleImportExportButton.Parent = importExportFrame
+
+-- Create Import/Export Content Frame (Initially Hidden)
+local importExportContent = Instance.new("Frame")
+importExportContent.Size = UDim2.new(1, 0, 0, 100)
+importExportContent.Position = UDim2.new(0, 0, 1, 0)
+importExportContent.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+importExportContent.BorderSizePixel = 0
+importExportContent.Visible = false
+importExportContent.Parent = importExportFrame
+
+-- Add UICorner for rounded edges on Import/Export Content Frame
+local importExportContentCorner = Instance.new("UICorner")
+importExportContentCorner.CornerRadius = UDim.new(0, 5)
+importExportContentCorner.Parent = importExportContent
 
 -- Create Import TextBox
 local importBox = Instance.new("TextBox")
 importBox.Size = UDim2.new(0, 260, 0, 40)
-importBox.Position = UDim2.new(0.5, -130, 0, 320)
+importBox.Position = UDim2.new(0.5, -130, 0, 10)
 importBox.PlaceholderText = "Paste Location Code Here"
 importBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 importBox.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 importBox.Font = Enum.Font.SourceSans
 importBox.TextSize = 18
-importBox.Parent = contentFrame
+importBox.Parent = importExportContent
 
--- Create Import Button
-local importButton = Instance.new("TextButton")
-importButton.Size = UDim2.new(0, 260, 0, 40)
-importButton.Position = UDim2.new(0.5, -130, 0, 370)
-importButton.Text = "Import Locations"
-importButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-importButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-importButton.Font = Enum.Font.SourceSansBold
-importButton.TextSize = 18
-importButton.Parent = contentFrame
+-- Add UICorner for rounded edges on Import TextBox
+local importBoxCorner = Instance.new("UICorner")
+importBoxCorner.CornerRadius = UDim.new(0, 5)
+importBoxCorner.Parent = importBox
 
--- Store saved locations
-local savedLocations = {}
+-- Create Export Button
+local exportButton = Instance.new("TextButton")
+exportButton.Size = UDim2.new(0, 260, 0, 40)
+exportButton.Position = UDim2.new(0.5, -130, 0, 60)
+exportButton.Text = "Export Locations"
+exportButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+exportButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+exportButton.Font = Enum.Font.SourceSansBold
+exportButton.TextSize = 18
+exportButton.Parent = importExportContent
+
+-- Add UICorner for rounded edges on Export Button
+local exportButtonCorner = Instance.new("UICorner")
+exportButtonCorner.CornerRadius = UDim.new(0, 5)
+exportButtonCorner.Parent = exportButton
+
+-- Toggle Function for Import/Export Frame
+local isImportExportExpanded = false
+toggleImportExportButton.MouseButton1Click:Connect(function()
+    isImportExportExpanded = not isImportExportExpanded
+    if isImportExportExpanded then
+        toggleImportExportButton.Text = "-"
+        importExportContent.Visible = true
+        importExportFrame:TweenSize(
+            UDim2.new(0, 300, 0, 150),
+            Enum.EasingDirection.Out,
+            Enum.EasingStyle.Quad,
+            0.3,
+            true
+        )
+    else
+        toggleImportExportButton.Text = "+"
+        importExportFrame:TweenSize(
+            UDim2.new(0, 300, 0, 50),
+            Enum.EasingDirection.Out,
+            Enum.EasingStyle.Quad,
+            0.3,
+            true,
+            function()
+                importExportContent.Visible = false
+            end
+        )
+    end
+end)
 
 -- Function to refresh the list UI
+local savedLocations = {}
 local function refreshLocationList()
-    -- Clear existing buttons
     locationList:ClearAllChildren()
-    
-    -- Recreate buttons
+
     for i, location in ipairs(savedLocations) do
-        -- Create a button frame for each saved location
         local locationFrame = Instance.new("Frame")
-        locationFrame.Size = UDim2.new(0, 240, 0, 40)
-        locationFrame.Position = UDim2.new(0, 10, 0, (i - 1) * 40)
+        locationFrame.Size = UDim2.new(0, 280, 0, 40)
+        locationFrame.Position = UDim2.new(0.5, -140, 0, (i - 1) * 40)
         locationFrame.BackgroundTransparency = 1
         locationFrame.Parent = locationList
 
-        -- Create a button for the saved location
         local locationButton = Instance.new("TextButton")
-        locationButton.Size = UDim2.new(0, 180, 1, 0)
+        locationButton.Size = UDim2.new(0, 200, 1, 0)
         locationButton.Position = UDim2.new(0, 0, 0, 0)
         locationButton.Text = location.name
         locationButton.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -141,7 +244,6 @@ local function refreshLocationList()
         locationButton.TextSize = 18
         locationButton.Parent = locationFrame
 
-        -- Create delete button
         local deleteButton = Instance.new("TextButton")
         deleteButton.Size = UDim2.new(0, 60, 1, 0)
         deleteButton.Position = UDim2.new(1, -60, 0, 0)
@@ -152,7 +254,6 @@ local function refreshLocationList()
         deleteButton.TextSize = 18
         deleteButton.Parent = locationFrame
 
-        -- Connect the button to load the corresponding location
         locationButton.MouseButton1Click:Connect(function()
             local player = game.Players.LocalPlayer
             local character = player.Character or player.CharacterAdded:Wait()
@@ -161,9 +262,7 @@ local function refreshLocationList()
             print("Position loaded: ", location.cframe)
         end)
 
-        -- Connect the delete button to a confirmation prompt
         deleteButton.MouseButton1Click:Connect(function()
-            -- Create confirmation dialog
             local confirmationFrame = Instance.new("Frame")
             confirmationFrame.Size = UDim2.new(0, 200, 0, 100)
             confirmationFrame.Position = UDim2.new(0.5, -100, 0.5, -50)
@@ -200,31 +299,22 @@ local function refreshLocationList()
             cancelButton.TextSize = 18
             cancelButton.Parent = confirmationFrame
 
-            -- Confirm deletion
             confirmButton.MouseButton1Click:Connect(function()
-                -- Remove location from saved locations
                 table.remove(savedLocations, i)
-
-                -- Remove GUI elements and refresh the list
                 confirmationFrame:Destroy()
                 refreshLocationList()
-
-                -- Update Canvas Size
                 locationList.CanvasSize = UDim2.new(0, 0, 0, #savedLocations * 40)
             end)
 
-            -- Cancel deletion
             cancelButton.MouseButton1Click:Connect(function()
                 confirmationFrame:Destroy()
             end)
         end)
     end
 
-    -- Adjust Canvas Size
     locationList.CanvasSize = UDim2.new(0, 0, 0, #savedLocations * 40)
 end
 
--- Function to save the player's position with a name
 saveButton.MouseButton1Click:Connect(function()
     local locationName = locationNameBox.Text
     if locationName == "" then
@@ -232,7 +322,6 @@ saveButton.MouseButton1Click:Connect(function()
         return
     end
 
-    -- Check if the name already exists
     for _, location in ipairs(savedLocations) do
         if location.name == locationName then
             print("A location with this name already exists. Please choose a different name.")
@@ -252,7 +341,6 @@ saveButton.MouseButton1Click:Connect(function()
     locationNameBox.Text = "" -- Clear the text box
 end)
 
--- Function to export the saved locations to a string
 exportButton.MouseButton1Click:Connect(function()
     local exportData = ""
     for _, location in ipairs(savedLocations) do
@@ -266,7 +354,6 @@ exportButton.MouseButton1Click:Connect(function()
     setclipboard(exportData) -- Copies the exportData to the user's clipboard
 end)
 
--- Function to import locations from a string
 importButton.MouseButton1Click:Connect(function()
     local importData = importBox.Text
     local locations = string.split(importData, ";")
@@ -322,12 +409,9 @@ game:GetService("UserInputService").InputChanged:Connect(function(input)
     end
 end)
 
--- Minimize or maximize the content frame
-local isMinimized = false
-
 minimizeButton.MouseButton1Click:Connect(function()
     isMinimized = not isMinimized
     contentFrame.Visible = not isMinimized
-    minimizeButton.Text = isMinimized and "+" or "_"
-    mainFrame.Size = UDim2.new(0, 300, 0, isMinimized and 30 or 400)
+    minimizeButton.Text = isMinimized and "+" or "-"
+    mainFrame.Size = UDim2.new(0, 350, 0, isMinimized and 40 or 450)
 end)
