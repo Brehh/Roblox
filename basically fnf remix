@@ -1,0 +1,78 @@
+_G.a = true
+local marked = {}
+local localplayer = game.Players.LocalPlayer
+local vim = game:GetService('VirtualInputManager')
+local RunService = game:GetService("RunService") -- Ensure this is defined
+
+-- Function to press keys with better handling
+local function pressKey(key, state)
+    if key and Enum.KeyCode[key] then
+        vim:SendKeyEvent(state, Enum.KeyCode[key], false, game)
+    else
+        warn("Invalid key provided: ", key)
+    end
+end
+
+local xddd
+
+function xd1(key, arrow)
+    -- Identify current player and assign the appropriate index
+    if tostring(localplayer.File.CurrentPlayer.Value) == 'Player1' then
+        xddd = 1
+    elseif tostring(localplayer.File.CurrentPlayer.Value) == 'Player2' then
+        xddd = 2
+    end
+    
+    local matchFrame = localplayer.PlayerGui.Main.MatchFrame['KeySync' .. xddd]['Arrow' .. arrow]
+    if not matchFrame then return end -- Exit if matchFrame doesn't exist
+
+    -- Iterate over the notes in the arrow key sync
+    for _, v in ipairs(matchFrame.Notes:GetChildren()) do
+        task.defer(function()
+            local start = v.Parent.Parent.AbsolutePosition.Y
+            local start2 = v.Parent.Parent.AbsolutePosition.Y + (v.Parent.Parent.AbsoluteSize.Y / 2)
+            if v.ClassName == 'ImageLabel' and start - v.AbsolutePosition.Y <= 0 and not table.find(marked, v) then
+                marked[#marked + 1] = v
+                pressKey(key, true)
+
+                -- Handle hold events
+                for _, b in ipairs(v.Parent:GetChildren()) do
+                    task.defer(function()
+                        if b.Name == v.Name and b.ClassName == 'Frame' then
+                            if b.Hold.End.AbsolutePosition.X == 0 then
+                                task.wait()
+                            else
+                                repeat
+                                    task.wait()
+                                    local holddiff = start2 - b.Hold.AbsolutePosition.Y
+                                until holddiff <= 0
+                            end
+                            pressKey(key, false)
+                        end
+                    end)
+                end
+            end
+        end)
+    end
+end
+
+print('Script is running')
+
+-- Use RunService to repeatedly check player inputs during the match
+RunService.Heartbeat:Connect(function()
+    if localplayer:FindFirstChild('CurrentMatch') and _G.a then
+        local inputData = game:GetService("ReplicatedStorage").Remotes.DataF:InvokeServer()
+        if inputData and inputData[1] then
+            for i = 1, 4 do
+                task.defer(function()
+                    xd1(inputData[1].Inputs[i], i)
+                end)
+            end
+        else
+            warn("Failed to get input data from server.")
+        end
+    else
+        task.wait()
+        table.clear(marked)
+    end
+end)
