@@ -1,0 +1,235 @@
+local settings = game:GetService("ReplicatedStorage").Remotes.Inv.GetSetting:InvokeServer()
+local diff = 5
+_G.Speaker = 1 -- Default to Speaker 1
+_G.ScriptEnabled = true -- Variable to turn script ON or OFF
+local Client = game:GetService("Players").LocalPlayer
+local PlayerGui = Client:WaitForChild("PlayerGui") -- Ensure PlayerGui is available
+local RunService = game:GetService("RunService")
+local VirtualInputManager = game:GetService("VirtualInputManager")
+local StarterGui = game:GetService("StarterGui") -- To persist GUI after reset
+
+-- Wait for MainGui and PlayUI to be available
+local MainGui = PlayerGui:WaitForChild("MainGui")
+local PlayUI = MainGui:WaitForChild("PlayUI")
+
+getgenv().Menu = PlayUI
+local Marked = {}
+local connection = nil -- This will store the connection to RunService.Heartbeat
+
+-- Variable to track if the GUI is open or closed
+_G.GuiOpen = true
+
+-- Function to create the GUI
+local function createGui()
+    -- Create a GUI for selecting _G.Speaker, showing the current speaker, and turning the script ON/OFF
+    local ScreenGui = Instance.new("ScreenGui")
+    ScreenGui.Name = "RhythmControllerGui"
+    ScreenGui.Parent = StarterGui
+
+    -- Main container to hold all the GUI elements that can be toggled
+    local MainContainer = Instance.new("Frame")
+    MainContainer.Size = UDim2.new(0.7, 0, 0.4, 0) -- Adjusted size
+    MainContainer.Position = UDim2.new(0.15, 0, 0.2, 0) -- Centered
+    MainContainer.BackgroundTransparency = 1 -- Makes the frame invisible, just for grouping
+    MainContainer.Parent = ScreenGui
+
+    -- Title label for the GUI
+    local TitleLabel = Instance.new("TextLabel")
+    TitleLabel.Size = UDim2.new(1, 0, 0.15, 0) -- Relative to MainContainer
+    TitleLabel.Position = UDim2.new(0, 0, 0, 0)
+    TitleLabel.Text = "Rhythm Script Controller"
+    TitleLabel.TextScaled = true
+    TitleLabel.Parent = MainContainer
+
+    -- Label to show the current speaker
+    local CurrentSpeakerLabel = Instance.new("TextLabel")
+    CurrentSpeakerLabel.Size = UDim2.new(0.4, 0, 0.15, 0)
+    CurrentSpeakerLabel.Position = UDim2.new(0.3, 0, 0.2, 0)
+    CurrentSpeakerLabel.Text = "Current Speaker: 1"
+    CurrentSpeakerLabel.TextScaled = true
+    CurrentSpeakerLabel.Parent = MainContainer
+
+    -- Button for Speaker 1
+    local Speaker1Button = Instance.new("TextButton")
+    Speaker1Button.Size = UDim2.new(0.35, 0, 0.15, 0)
+    Speaker1Button.Position = UDim2.new(0.1, 0, 0.4, 0)
+    Speaker1Button.Text = "Speaker 1"
+    Speaker1Button.Parent = MainContainer
+
+    -- Button for Speaker 2
+    local Speaker2Button = Instance.new("TextButton")
+    Speaker2Button.Size = UDim2.new(0.35, 0, 0.15, 0)
+    Speaker2Button.Position = UDim2.new(0.55, 0, 0.4, 0)
+    Speaker2Button.Text = "Speaker 2"
+    Speaker2Button.Parent = MainContainer
+
+    -- Toggle button to turn the script ON/OFF
+    local ScriptToggleButton = Instance.new("TextButton")
+    ScriptToggleButton.Size = UDim2.new(0.7, 0, 0.15, 0)
+    ScriptToggleButton.Position = UDim2.new(0.15, 0, 0.6, 0)
+    ScriptToggleButton.Text = "Script: ON"
+    ScriptToggleButton.Parent = MainContainer
+
+    -- Function to update the speaker label
+    local function updateSpeakerLabel()
+        CurrentSpeakerLabel.Text = "Current Speaker: " .. _G.Speaker
+    end
+
+    -- Function to update the script toggle label
+    local function updateScriptLabel()
+        ScriptToggleButton.Text = _G.ScriptEnabled and "Script: ON" or "Script: OFF"
+    end
+
+    -- Assign button actions to switch between speakers and update the label
+    Speaker1Button.MouseButton1Click:Connect(function()
+        _G.Speaker = 1
+        updateSpeakerLabel()
+        print("Speaker set to 1")
+    end)
+
+    Speaker2Button.MouseButton1Click:Connect(function()
+        _G.Speaker = 2
+        updateSpeakerLabel()
+        print("Speaker set to 2")
+    end)
+
+    -- Assign toggle button to enable/disable the script
+    ScriptToggleButton.MouseButton1Click:Connect(function()
+        _G.ScriptEnabled = not _G.ScriptEnabled
+        updateScriptLabel()
+        print(_G.ScriptEnabled and "Script Enabled" or "Script Disabled")
+    end)
+
+    -- Update labels initially to reflect the default values
+    updateSpeakerLabel()
+    updateScriptLabel()
+
+    -- Toggle Button to open/close the GUI
+    local ToggleButton = Instance.new("TextButton")
+    ToggleButton.Size = UDim2.new(0.15, 0, 0.1, 0)
+    ToggleButton.Position = UDim2.new(0.85, 0, 0, 0)
+    ToggleButton.Text = "Close"
+    ToggleButton.Parent = ScreenGui
+
+    -- Function to toggle the visibility of the main container
+    ToggleButton.MouseButton1Click:Connect(function()
+        _G.GuiOpen = not _G.GuiOpen
+        MainContainer.Visible = _G.GuiOpen
+        ToggleButton.Text = _G.GuiOpen and "Close" or "Open"
+    end)
+
+    return ScreenGui
+end
+
+-- Call createGui to initialize the GUI when the game starts
+createGui()
+
+-- Make the GUI persist after player reset or respawn
+Client.CharacterAdded:Connect(function(character)
+    -- Ensure the GUI is recreated when the player respawns
+    local existingGui = PlayerGui:FindFirstChild("RhythmControllerGui")
+    if existingGui then
+        existingGui:Destroy() -- Destroy the old GUI to avoid duplicates
+    end
+
+    -- Create and clone the GUI to PlayerGui after respawn
+    local newGui = createGui()
+    newGui.Parent = PlayerGui
+end)
+
+-- Function to simulate pressing a key
+function pressKey(key)
+    VirtualInputManager:SendKeyEvent(true, Enum.KeyCode[key], false, game)
+end
+
+-- Function to simulate releasing a key
+function releaseKey(key)
+    VirtualInputManager:SendKeyEvent(false, Enum.KeyCode[key], false, game)
+end
+
+function getdirect(Arrow)
+    for i, v in next, Arrow:GetChildren() do
+        if v:FindFirstChild('Slider') then
+            return v.Name
+        end
+    end
+end
+
+-- Function to stop the script
+local function stopScript()
+    if connection then
+        connection:Disconnect() -- Disconnect the Heartbeat connection
+        connection = nil
+    end
+end
+
+-- Function to start the script
+local function startScript()
+    if connection then return end -- Prevent multiple connections
+    connection = RunService.Heartbeat:Connect(function()
+        -- Check if the script is enabled before running
+        if not _G.ScriptEnabled then return end
+
+        if not PlayUI.Visible then -- Stop the script if PlayUI is not visible
+            stopScript()
+            return
+        end
+
+        local SideMenu = Menu:FindFirstChild('Speaker' .. _G.Speaker)
+        local IncomingArrows = SideMenu.ComingArrows
+
+        local Keys = IncomingArrows:GetChildren()
+        for Key, RealNote in pairs(Keys) do
+            local ArrowsHolder = RealNote
+            local Direction = getdirect(ArrowsHolder)
+            if Marked[ArrowsHolder] then continue end
+            local Keybind = settings["Arrow" .. string.split(Direction, 'Container')[1]].Value[2]
+
+            local Start = SideMenu.MainContainer:FindFirstChild(Direction) and SideMenu.MainContainer[Direction].AbsolutePosition.Y
+            local Current = ArrowsHolder.AbsolutePosition.Y
+            local Difference = (Start - Current)
+
+            if Difference <= 0 then
+                task.spawn(function()
+                    Marked[ArrowsHolder] = true
+                    pressKey(Keybind)
+
+                    -- Check if the note is a "hold" note (i.e., has a slider with size)
+                    if ArrowsHolder[Direction].Slider.Size.Y.Offset > 0 then
+                        -- Calculate the top position of the slider
+                        local sliderTop = ArrowsHolder[Direction].Slider.AbsolutePosition.Y
+
+                        -- Keep pressing the key until the top of the slider reaches the arrow container
+                        repeat
+                            sliderTop = ArrowsHolder[Direction].Slider.AbsolutePosition.Y
+                            task.wait()
+                        until (Start - sliderTop) <= 5
+                    end
+
+                    releaseKey(Keybind)
+
+                    repeat task.wait() until not PlayUI.Visible
+                    Marked[ArrowsHolder] = nil
+                    Menu:FindFirstChild('Speaker1').ComingArrows:ClearAllChildren()
+                    Menu:FindFirstChild('Speaker2').ComingArrows:ClearAllChildren()
+                end)
+            end
+        end
+    end)
+end
+
+-- Monitor PlayUI visibility and start/stop the script accordingly
+PlayUI:GetPropertyChangedSignal("Visible"):Connect(function()
+    if PlayUI.Visible then
+        startScript() -- Start the script when PlayUI becomes visible
+    else
+        stopScript() -- Stop the script when PlayUI becomes hidden
+    end
+end)
+
+-- Start the script if PlayUI is already visible when the script starts
+if PlayUI.Visible then
+    startScript()
+end
+
+print('work')
