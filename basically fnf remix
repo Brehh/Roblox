@@ -3,6 +3,14 @@ local marked = {}
 local localplayer = game.Players.LocalPlayer
 local vim = game:GetService('VirtualInputManager')
 local RunService = game:GetService("RunService") -- Ensure this is defined
+local keysdata = {}
+local inputData = game:GetService("ReplicatedStorage").Remotes.DataF:InvokeServer()
+
+for i,v in next,inputData[1].Inputs do
+if i <= 4 then
+keysdata[i] = v
+end
+end
 
 -- Function to press keys with better handling
 local function pressKey(key, state)
@@ -61,11 +69,10 @@ print('Script is running')
 -- Use RunService to repeatedly check player inputs during the match
 RunService.Heartbeat:Connect(function()
     if localplayer:FindFirstChild('CurrentMatch') and _G.a then
-        local inputData = game:GetService("ReplicatedStorage").Remotes.DataF:InvokeServer()
-        if inputData and inputData[1] then
+        if keysdata and keysdata[1] then
             for i = 1, 4 do
                 task.defer(function()
-                    xd1(inputData[1].Inputs[i], i)
+                    xd1(keysdata[i], i)
                 end)
             end
         else
