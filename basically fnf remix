@@ -39,7 +39,7 @@ function xd1(key, arrow)
         task.defer(function()
             local start = v.Parent.Parent.AbsolutePosition.Y
             local start2 = v.Parent.Parent.AbsolutePosition.Y + (v.Parent.Parent.AbsoluteSize.Y / 2)
-            if v.ClassName == 'ImageLabel' and start - v.AbsolutePosition.Y <= 0 and not table.find(marked, v) then
+            if v.ClassName == 'ImageLabel' and start - v.AbsolutePosition.Y <= 5 and not table.find(marked, v) then
                 marked[#marked + 1] = v
                 pressKey(key, true)
 
@@ -53,7 +53,7 @@ function xd1(key, arrow)
                                 repeat
                                     task.wait()
                                     local holddiff = start2 - b.Hold.AbsolutePosition.Y
-                                until holddiff <= 0
+                                until holddiff <= 5
                             end
                             pressKey(key, false)
                         end
