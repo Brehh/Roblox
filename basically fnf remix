@@ -111,30 +111,29 @@ function xd1(key, arrow)
     if not matchFrame then return end -- Exit if matchFrame doesn't exist
 
     -- Iterate over the notes in the arrow key sync
-    for _, v in ipairs(matchFrame.Notes:GetChildren()) do
-        task.defer(function()
-            local start = v.Parent.Parent.AbsolutePosition.Y
-            local start2 = v.Parent.Parent.AbsolutePosition.Y + (v.Parent.Parent.AbsoluteSize.Y / 2)
-            if v.ClassName == 'ImageLabel' and start2 - (v.AbsolutePosition.Y + (v.AbsoluteSize.Y / 2)) <= delayed and not table.find(marked, v) then
+    for _, v in ipairs(matchFrame.Notes:GetChildren()) do        
+            if v.ClassName == 'ImageLabel' and v.Parent.Parent.AbsolutePosition.Y + (v.Parent.Parent.AbsoluteSize.Y / 2) - (v.AbsolutePosition.Y + (v.AbsoluteSize.Y / 2)) <= delayed and not table.find(marked, v) then
+                local start2 = v.Parent.Parent.AbsolutePosition.Y + (v.Parent.Parent.AbsoluteSize.Y / 2)
                 marked[#marked + 1] = v
                 pressKey(key, true)
 
                 -- Handle hold events
                 for _, b in ipairs(v.Parent:GetChildren()) do
-                        if b.Name == v.Name and b.ClassName == 'Frame' then
-                            if b.Hold.End.AbsolutePosition.X == 0 then
-                                task.wait()
-                            else
-                                repeat
+                        task.defer(function()
+                            if b.Name == v.Name and b.ClassName == 'Frame' then
+                                if b.Hold.End.AbsolutePosition.X == 0 then
                                     task.wait()
-                                    local holddiff = start2 - b.Hold.AbsolutePosition.Y
-                                until holddiff <= delayed
+                                else
+                                    repeat
+                                        task.wait()
+                                        local holddiff = start2 - b.Hold.AbsolutePosition.Y
+                                    until holddiff <= delayed
+                                end
+                                pressKey(key, false)
                             end
-                            pressKey(key, false)
-                        end
+                        end)
                 end
             end
-        end)
     end
 end
 
