@@ -1,6 +1,6 @@
 _G.a = true
 local marked = {}
-local delayed = 10
+local delayed = 5
 local localplayer = game.Players.LocalPlayer
 local vim = game:GetService('VirtualInputManager')
 local RunService = game:GetService("RunService")
