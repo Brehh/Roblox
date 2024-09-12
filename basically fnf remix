@@ -1,6 +1,6 @@
 _G.a = true
 local marked = {}
-local delayed = 3
+local delayed = 2.9
 local localplayer = game.Players.LocalPlayer
 local vim = game:GetService('VirtualInputManager')
 local RunService = game:GetService("RunService")
@@ -73,12 +73,12 @@ local function createGui()
 
     -- Update delay value when button is pressed
     IncreaseButton.MouseButton1Click:Connect(function()
-        delayed = delayed + 0.05
+        delayed = delayed + 0.01
         DelayLabel.Text = "Delay: " .. tostring(delayed)
     end)
 
     DecreaseButton.MouseButton1Click:Connect(function()
-        delayed = delayed - 0.05 -- Can go negative now
+        delayed = delayed - 0.01 -- Can go negative now
         DelayLabel.Text = "Delay: " .. tostring(delayed)
     end)
 
