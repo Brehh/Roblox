@@ -1,6 +1,6 @@
 _G.a = true
 local marked = {}
-local delayed = 2.9
+local delayed = 4.55
 local localplayer = game.Players.LocalPlayer
 local vim = game:GetService('VirtualInputManager')
 local RunService = game:GetService("RunService")
@@ -100,41 +100,41 @@ end
 local xddd
 
 function xd1(key, arrow)
-    -- Identify current player and assign the appropriate index
-    if tostring(localplayer.File.CurrentPlayer.Value) == 'Player1' then
-        xddd = 1
-    elseif tostring(localplayer.File.CurrentPlayer.Value) == 'Player2' then
-        xddd = 2
-    end
-    
-    local matchFrame = localplayer.PlayerGui.Main.MatchFrame['KeySync' .. xddd]['Arrow' .. arrow]
-    if not matchFrame then return end -- Exit if matchFrame doesn't exist
+    task.defer(function()
+        if tostring(localplayer.File.CurrentPlayer.Value) == 'Player1' then
+            xddd = 1
+        elseif tostring(localplayer.File.CurrentPlayer.Value) == 'Player2' then
+            xddd = 2
+        end
+        
+        local matchFrame = localplayer.PlayerGui.Main.MatchFrame['KeySync' .. xddd]['Arrow' .. arrow]
+        if not matchFrame then return end -- Exit if matchFrame doesn't exist
 
-    -- Iterate over the notes in the arrow key sync
-    for _, v in ipairs(matchFrame.Notes:GetChildren()) do        
-            if v.ClassName == 'ImageLabel' and v.Parent.Parent.AbsolutePosition.Y + (v.Parent.Parent.AbsoluteSize.Y / 2) - (v.AbsolutePosition.Y + (v.AbsoluteSize.Y / 2)) <= delayed and not table.find(marked, v) then
-                local start2 = v.Parent.Parent.AbsolutePosition.Y + (v.Parent.Parent.AbsoluteSize.Y / 2)
-                marked[#marked + 1] = v
-                pressKey(key, true)
+        -- Iterate over the notes in the arrow key sync
+        for _, v in ipairs(matchFrame.Notes:GetChildren()) do        
+                if v.ClassName == 'ImageLabel' and v.Parent.Parent.AbsolutePosition.Y + (v.Parent.Parent.AbsoluteSize.Y / 2) - (v.AbsolutePosition.Y + (v.AbsoluteSize.Y / 2)) <= delayed and not table.find(marked, v) then
+                    local start = v.Parent.Parent.AbsolutePosition.Y
+                    local start2 = v.Parent.Parent.AbsolutePosition.Y + (v.Parent.Parent.AbsoluteSize.Y / 2)
+                    marked[#marked + 1] = v
+                    pressKey(key, true)
 
-                -- Handle hold events
-                for _, b in ipairs(v.Parent:GetChildren()) do
-                        task.defer(function()
-                            if b.Name == v.Name and b.ClassName == 'Frame' then
-                                if b.Hold.End.AbsolutePosition.X == 0 then
-                                    task.wait()
-                                else
-                                    repeat
+                    -- Handle hold events
+                    for _, b in ipairs(matchFrame.Notes:GetChildren()) do
+                                if b.ClassName == 'Frame' and b.Name == v.Name  then
+                                    if b.Hold.End.AbsolutePosition.X == 0 then
                                         task.wait()
-                                        local holddiff = start2 - b.Hold.AbsolutePosition.Y
-                                    until holddiff <= delayed
+                                    else
+                                        repeat
+                                            task.wait()
+                                            local holddiff = start2 - b.Hold.AbsolutePosition.Y
+                                        until holddiff <= delayed
+                                    end
                                 end
-                                pressKey(key, false)
-                            end
-                        end)
+                    end
+                    pressKey(key, false)
                 end
-            end
-    end
+        end
+    end)
 end
 
 print('Script is running')
@@ -144,9 +144,7 @@ RunService.RenderStepped:Connect(function()
     if localplayer:FindFirstChild('CurrentMatch') and _G.a then
         if keysdata and keysdata[1] then
             for i = 1, 4 do
-                task.defer(function()
                     xd1(keysdata[i], i)
-                end)
             end
         else
             warn("Failed to get input data from server.")
