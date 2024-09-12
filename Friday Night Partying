@@ -102,7 +102,7 @@ local function processNotes()
                 local containerIndex = tonumber(containerData[1].Name)
 
                 -- Set a buffer range for detecting when the note reaches the container
-                if diff >= -20 and diff <= 10 then  -- Adjust the range as needed
+                if diff >= -20/(i/4) and diff <= 10/(i/4) then  -- Adjust the range as needed
                     if containerIndex then
                         Marked[note] = true
                         task.defer(function()
@@ -112,7 +112,7 @@ local function processNotes()
                                 local xd = GetHoldingNotes(containerY,ContainerX)
                                 repeat
                                 task.wait()
-                                until (containerY - xd.AbsolutePosition.Y) <= 10 and (containerY - xd.AbsolutePosition.Y) >= -10
+                                until (containerY - xd.AbsolutePosition.Y) <= 10/(i/4) and (containerY - xd.AbsolutePosition.Y) >= -10/(i/4)
                             end
                             task.wait()
                             until not GetHoldingNotes(containerY,ContainerX)
