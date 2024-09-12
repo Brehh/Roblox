@@ -73,12 +73,12 @@ local function createGui()
 
     -- Update delay value when button is pressed
     IncreaseButton.MouseButton1Click:Connect(function()
-        delayed = delayed + 0.25
+        delayed = delayed + 0.1
         DelayLabel.Text = "Delay: " .. tostring(delayed)
     end)
 
     DecreaseButton.MouseButton1Click:Connect(function()
-        delayed = delayed - 0.25 -- Can go negative now
+        delayed = delayed - 0.1 -- Can go negative now
         DelayLabel.Text = "Delay: " .. tostring(delayed)
     end)
 
