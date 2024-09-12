@@ -186,8 +186,9 @@ local function startScript()
             local Keybind = settings["Arrow" .. string.split(Direction, 'Container')[1]].Value[2]
 
             local Start = SideMenu.MainContainer:FindFirstChild(Direction) and SideMenu.MainContainer[Direction].AbsolutePosition.Y
-            local Current = ArrowsHolder.AbsolutePosition.Y
-            local Difference = (Start - Current)
+            local Start2 = SideMenu.MainContainer[Direction].AbsolutePosition.Y + (SideMenu.MainContainer[Direction].AbsoluteSize.Y / 2)
+            local Current = ArrowsHolder.AbsolutePosition.Y + (ArrowsHolder.AbsoluteSize.Y / 2)
+            local Difference = (Start2 - Current)
 
             if Difference <= 0 then
                 task.spawn(function()
@@ -203,7 +204,7 @@ local function startScript()
                         repeat
                             sliderTop = ArrowsHolder[Direction].Slider.AbsolutePosition.Y
                             task.wait()
-                        until (Start - sliderTop) <= 5
+                        until (Start - sliderTop) <= 0
                     end
 
                     releaseKey(Keybind)
