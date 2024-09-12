@@ -112,7 +112,7 @@ function xd1(key, arrow)
 
         -- Iterate over the notes in the arrow key sync
         for _, v in ipairs(matchFrame.Notes:GetChildren()) do        
-                if v.ClassName == 'ImageLabel' and v.Parent.Parent.AbsolutePosition.Y + (v.Parent.Parent.AbsoluteSize.Y / 2) - (v.AbsolutePosition.Y + (v.AbsoluteSize.Y / 2)) <= delayed and not table.find(marked, v) then
+                if v.ClassName == 'ImageLabel' and v.Parent.Parent.AbsolutePosition.Y + (v.Parent.Parent.AbsoluteSize.Y / 2) - (v.AbsolutePosition.Y + (v.AbsoluteSize.Y / 2)) <= 10 and v.Parent.Parent.AbsolutePosition.Y + (v.Parent.Parent.AbsoluteSize.Y / 2) - (v.AbsolutePosition.Y + (v.AbsoluteSize.Y / 2)) >= -10 and not table.find(marked, v) then
                     local start = v.Parent.Parent.AbsolutePosition.Y
                     local start2 = v.Parent.Parent.AbsolutePosition.Y + (v.Parent.Parent.AbsoluteSize.Y / 2)
                     marked[#marked + 1] = v
@@ -127,7 +127,7 @@ function xd1(key, arrow)
                                         repeat
                                             task.wait()
                                             local holddiff = start2 - b.Hold.AbsolutePosition.Y
-                                        until holddiff <= delayed
+                                        until holddiff <= 10 and holddiff >= -10
                                     end
                                 end
                     end
