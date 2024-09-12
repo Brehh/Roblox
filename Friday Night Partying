@@ -102,7 +102,7 @@ local function processNotes()
                 local containerIndex = tonumber(containerData[1].Name)
 
                 -- Set a buffer range for detecting when the note reaches the container
-                if diff >= -10 and diff <= 10 then  -- Adjust the range as needed
+                if diff >= -20 and diff <= 10 then  -- Adjust the range as needed
                     if containerIndex then
                         Marked[note] = true
                         task.defer(function()
