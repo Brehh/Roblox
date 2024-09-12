@@ -1,0 +1,132 @@
+local Keybinds = {{{Enum.KeyCode.A, Enum.KeyCode.Left, Enum.KeyCode.ButtonL2, Enum.KeyCode.ButtonX}, {Enum.KeyCode.S, Enum.KeyCode.Down, Enum.KeyCode.ButtonL1, Enum.KeyCode.ButtonA}, {Enum.KeyCode.W, Enum.KeyCode.Up, Enum.KeyCode.ButtonR1, Enum.KeyCode.ButtonY}, {Enum.KeyCode.D, Enum.KeyCode.Right, Enum.KeyCode.ButtonR2, Enum.KeyCode.ButtonB}}, {{Enum.KeyCode.S, Enum.KeyCode.Z, Enum.KeyCode.One}, {Enum.KeyCode.D, Enum.KeyCode.X, Enum.KeyCode.Two}, {Enum.KeyCode.F, Enum.KeyCode.C, Enum.KeyCode.Three}, {Enum.KeyCode.J, Enum.KeyCode.B, Enum.KeyCode.Eight}, {Enum.KeyCode.K, Enum.KeyCode.N, Enum.KeyCode.Nine}, {Enum.KeyCode.L, Enum.KeyCode.M, Enum.KeyCode.Zero}}, {{Enum.KeyCode.A, Enum.KeyCode.One}, {Enum.KeyCode.S, Enum.KeyCode.Two}, {Enum.KeyCode.D, Enum.KeyCode.Three}, {Enum.KeyCode.F, Enum.KeyCode.Four}, {Enum.KeyCode.Space}, {Enum.KeyCode.H, Enum.KeyCode.Seven}, {Enum.KeyCode.J, Enum.KeyCode.Eight}, {Enum.KeyCode.K, Enum.KeyCode.Nine}, {Enum.KeyCode.L, Enum.KeyCode.Zero}}, {{Enum.KeyCode.D, Enum.KeyCode.Left}, {Enum.KeyCode.F, Enum.KeyCode.Down}, {Enum.KeyCode.Space}, {Enum.KeyCode.J, Enum.KeyCode.Up}, {Enum.KeyCode.K, Enum.KeyCode.Right}}, {{Enum.KeyCode.S, Enum.KeyCode.Z, Enum.KeyCode.One}, {Enum.KeyCode.D, Enum.KeyCode.X, Enum.KeyCode.Two}, {Enum.KeyCode.F, Enum.KeyCode.C, Enum.KeyCode.Three}, {Enum.KeyCode.Space}, {Enum.KeyCode.J, Enum.KeyCode.B, Enum.KeyCode.Eight}, {Enum.KeyCode.K, Enum.KeyCode.N, Enum.KeyCode.Nine}, {Enum.KeyCode.L, Enum.KeyCode.M, Enum.KeyCode.Zero}}, {{Enum.KeyCode.A, Enum.KeyCode.One}, {Enum.KeyCode.S, Enum.KeyCode.Two}, {Enum.KeyCode.D, Enum.KeyCode.Three}, {Enum.KeyCode.F, Enum.KeyCode.Four}, {Enum.KeyCode.J, Enum.KeyCode.Seven}, {Enum.KeyCode.K, Enum.KeyCode.Eight}, {Enum.KeyCode.L, Enum.KeyCode.Nine}, {Enum.KeyCode.Semicolon, Enum.KeyCode.Zero}}, {{Enum.KeyCode.A}, {Enum.KeyCode.S}, {Enum.KeyCode.D}, {Enum.KeyCode.F}, {Enum.KeyCode.C}, {Enum.KeyCode.V}, {Enum.KeyCode.N}, {Enum.KeyCode.M}, {Enum.KeyCode.J}, {Enum.KeyCode.K}, {Enum.KeyCode.L}, {Enum.KeyCode.Semicolon}}};
+local newkeys = {}
+local Marked = {}
+_G.side = 1
+_G.on = true
+
+local vim = game:GetService("VirtualInputManager")
+
+local function pressKey(key, state)
+    if key then
+        vim:SendKeyEvent(state, key, false, game)
+    else
+        warn("Invalid key provided: ", key)
+    end
+end
+
+function printkey()
+    for i,v in next,newkeys do
+    for a,b in next, v do
+        print(i .. ' Keys','Keys ' .. a,b)
+    end
+    end
+end
+
+for i,v in next, Keybinds do
+    -- Initialize newkeys[#v] if it doesn't exist
+    if not newkeys[#v] then
+        newkeys[#v] = {}
+    end
+
+    for a,b in next,v do
+        for c,d in next,b do
+            if c == 1 then
+                newkeys[#v][a] = d
+            end
+        end
+    end
+end
+
+local gameui = game:GetService("Players").UntitiledBa.PlayerGui.GameUI.realGameUI.Notes
+local NotesContain
+if _G.side == 1 then
+    NotesContain = gameui.DadNotes
+elseif _G.side == 2 then
+    NotesContain = gameui.BFNotes
+end
+
+function GetContainer(Note)
+    for i,v in next,NotesContain:GetChildren() do
+        if tonumber(v.Name) ~= nil and v.ZIndex == 1 then
+            local ContainerY = v.AbsolutePosition.Y + (v.AbsoluteSize.Y /2 )
+            local ContainerX = v.AbsolutePosition.X + (v.AbsoluteSize.X /2 )
+            local NoteX = Note.AbsolutePosition.X + (Note.AbsoluteSize.X /2 )
+            local diff = math.abs(ContainerX - NoteX)
+            if diff <= 30 then
+                return {v,ContainerY,ContainerX}
+            end
+        end
+    end
+end
+
+function GetHoldingNotes(contain,containx)
+    for i,v in next,NotesContain:GetChildren() do
+        if not Marked[v] and tonumber(v.Name) == nil and v.ZIndex == 1 then
+            local diffx = math,abs(containx - Currentx)
+            if diffx <= 30 then
+                local Currentx = v.AbsolutePosition.X + (v.AbsoluteSize.X /2 )
+                local Current = v.AbsolutePosition.Y + v.AbsoluteSize.Y
+                local Contains = contain
+                local diff = Contains - Current
+                if diff >= -10 and diff <= 10 then
+                    return v
+                end
+            end
+        end
+    end
+end
+
+function keycount()
+    local keycounts = 0
+    for i,v in next,NotesContain:GetChildren() do
+            if tonumber(v.Name) ~= nil and v.ZIndex == 1 then
+                keycounts = keycounts + 1
+            end
+    end
+    return keycounts
+end
+
+print('work',keycount())
+
+local function processNotes()
+    local keysss = keycount() -- Cache keycount at the start of processing
+
+    for _, note in ipairs(NotesContain:GetChildren()) do
+        if tonumber(note.Name) == nil and note.ZIndex == 2 and not Marked[note] then
+            local containerData = GetContainer(note) -- Cache container data
+            if containerData then
+                local containerY = containerData[2]
+                local ContainerX = containerData[3]
+                local currentY = note.AbsolutePosition.Y + (note.AbsoluteSize.Y / 2)
+                local diff = containerY - currentY
+                local containerIndex = tonumber(containerData[1].Name)
+
+                -- Set a buffer range for detecting when the note reaches the container
+                if diff >= -10 and diff <= 10 then  -- Adjust the range as needed
+                    if containerIndex then
+                        Marked[note] = true
+                        task.defer(function()
+                            pressKey(newkeys[keysss][containerIndex], true)
+                            repeat
+                            if GetHoldingNotes(containerY,ContainerX) then
+                                local xd = GetHoldingNotes(containerY,ContainerX)
+                                repeat
+                                task.wait()
+                                until (containerY - xd.AbsolutePosition.Y) <= 10 and (containerY - xd.AbsolutePosition.Y) >= -10
+                            end
+                            task.wait()
+                            until not GetHoldingNotes(containerY,ContainerX)
+                            pressKey(newkeys[keysss][containerIndex], false)
+                        end)
+                    end
+                end
+            end
+        end
+    end
+end
+
+-- Main loop
+while task.wait() and _G.on == true do
+    task.defer(processNotes) -- Process all notes in one deferred task
+end
+
