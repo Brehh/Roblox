@@ -52,7 +52,7 @@ function GetContainer(Note)
             local ContainerX = v.AbsolutePosition.X + (v.AbsoluteSize.X /2 )
             local NoteX = Note.AbsolutePosition.X + (Note.AbsoluteSize.X /2 )
             local diff = math.abs(ContainerX - NoteX)
-            if diff <= 30 then
+            if diff <= 10 then
                 return {v,ContainerY,ContainerX}
             end
         end
@@ -62,13 +62,14 @@ end
 function GetHoldingNotes(contain,containx)
     for i,v in next,NotesContain:GetChildren() do
         if not Marked[v] and tonumber(v.Name) == nil and v.ZIndex == 1 then
-            local diffx = math,abs(containx - Currentx)
-            if diffx <= 30 then
-                local Currentx = v.AbsolutePosition.X + (v.AbsoluteSize.X /2 )
+            local Currentx = v.AbsolutePosition.X + (v.AbsoluteSize.X /2 )
+            local diffx = containx - Currentx
+            if diffx <= 10 and diffx >= -10 then
                 local Current = v.AbsolutePosition.Y + v.AbsoluteSize.Y
                 local Contains = contain
-                local diff = Contains - Current
-                if diff >= -10 and diff <= 10 then
+                local diff = (Contains - Current)
+                if diff >= -50 and diff <= 50 then
+                    Marked[v] = true
                     return v
                 end
             end
@@ -97,26 +98,32 @@ local function processNotes()
             if containerData then
                 local containerY = containerData[2]
                 local ContainerX = containerData[3]
+                local containerReal = containerData[1]
                 local currentY = note.AbsolutePosition.Y + (note.AbsoluteSize.Y / 2)
                 local diff = containerY - currentY
                 local containerIndex = tonumber(containerData[1].Name)
+                local lockedcontainerY = containerY
+                local lockedContainerX = ContainerX
+                local lockedContainer = containerReal
 
                 -- Set a buffer range for detecting when the note reaches the container
-                if diff >= -20/(keysss/4) and diff <= 10/(keysss/4) then  -- Adjust the range as needed
+                if diff >= -20 and diff <= 10 then  -- Adjust the range as needed
                     if containerIndex then
                         Marked[note] = true
                         task.defer(function()
-                            pressKey(newkeys[keysss][containerIndex], true)
-                            repeat
-                            if GetHoldingNotes(containerY,ContainerX) then
-                                local xd = GetHoldingNotes(containerY,ContainerX)
-                                repeat
-                                task.wait()
-                                until (containerY - xd.AbsolutePosition.Y) <= 10/(keysss/4) and (containerY - xd.AbsolutePosition.Y) >= -10/(keysss/4)
+                            if GetHoldingNotes(lockedcontainerY,lockedContainerX) then
+                                    repeat
+                                        local xd = GetHoldingNotes(lockedcontainerY,lockedContainerX)                                    
+                                        pressKey(newkeys[keysss][containerIndex], true)
+                                        repeat
+                                            task.wait()
+                                        until xd == nil or ((containerY - xd.AbsolutePosition.Y) <= 10 and (containerY - xd.AbsolutePosition.Y) >= -20)
+                                    until GetHoldingNotes(lockedContainer,lockedContainerX) == nil
+                                    pressKey(newkeys[keysss][containerIndex], false)
+                            else
+                                pressKey(newkeys[keysss][containerIndex], true)
+                                pressKey(newkeys[keysss][containerIndex], false)
                             end
-                            task.wait()
-                            until not GetHoldingNotes(containerY,ContainerX)
-                            pressKey(newkeys[keysss][containerIndex], false)
                         end)
                     end
                 end
@@ -129,4 +136,3 @@ end
 while task.wait() and _G.on == true do
     task.defer(processNotes) -- Process all notes in one deferred task
 end
-
