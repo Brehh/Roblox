@@ -64,18 +64,22 @@ function GetHoldingNotes(contain,containx)
         if not Marked[v] and tonumber(v.Name) == nil and v.ZIndex == 1 then
             local Currentx = v.AbsolutePosition.X + (v.AbsoluteSize.X /2 )
             local diffx = containx - Currentx
-            if diffx <= 10 and diffx >= -10 then
+            if diffx <= 30 and diffx >= -30 then
                 local Current = v.AbsolutePosition.Y + v.AbsoluteSize.Y
                 local Contains = contain
                 local diff = (Contains - Current)
-                if diff <= 0 then
+                local xd = 75
+
+                if diff >= 0 and diff <= xd then
                     Marked[v] = true
                     return v
                 end
             end
         end
     end
+    return nil
 end
+
 
 function keycount()
     local keycounts = 0
@@ -111,17 +115,18 @@ local function processNotes()
                     if containerIndex then
                         Marked[note] = true
                         task.defer(function()
+                            pressKey(newkeys[keysss][containerIndex], true)
                             if GetHoldingNotes(lockedcontainerY,lockedContainerX) then
-                                    repeat
-                                        local xd = GetHoldingNotes(lockedcontainerY,lockedContainerX)                                    
-                                        pressKey(newkeys[keysss][containerIndex], true)
+                                repeat 
+                                        task.wait()
+                                        local xd = GetHoldingNotes(lockedcontainerY,lockedContainerX)                     
                                         repeat
-                                            task.wait()
-                                        until xd == nil or ((containerY - xd.AbsolutePosition.Y) <= 10 and (containerY - xd.AbsolutePosition.Y) >= -20)
-                                    until GetHoldingNotes(lockedContainer,lockedContainerX) == nil
-                                    pressKey(newkeys[keysss][containerIndex], false)
+                                            task.wait(0)
+                                        until  xd == nil or xd.AbsoluteSize.Y == 0
+                                        task.wait()
+                                until GetHoldingNotes(lockedcontainerY,lockedContainerX) == nil
+                                pressKey(newkeys[keysss][containerIndex], false)
                             else
-                                pressKey(newkeys[keysss][containerIndex], true)
                                 pressKey(newkeys[keysss][containerIndex], false)
                             end
                         end)
