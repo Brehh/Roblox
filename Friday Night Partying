@@ -68,7 +68,7 @@ function GetHoldingNotes(contain,containx)
                 local Current = v.AbsolutePosition.Y + v.AbsoluteSize.Y
                 local Contains = contain
                 local diff = (Contains - Current)
-                if diff >= -50 and diff <= 50 then
+                if diff >= -100 and diff <= 0 then
                     Marked[v] = true
                     return v
                 end
@@ -98,7 +98,7 @@ local function processNotes()
             if containerData then
                 local containerY = containerData[2]
                 local ContainerX = containerData[3]
-                local containerReal = containerData[1]
+                local containerReal = containerData[1].AbsolutePosition.Y
                 local currentY = note.AbsolutePosition.Y + (note.AbsoluteSize.Y / 2)
                 local diff = containerY - currentY
                 local containerIndex = tonumber(containerData[1].Name)
