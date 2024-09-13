@@ -68,7 +68,7 @@ function GetHoldingNotes(contain,containx)
                 local Current = v.AbsolutePosition.Y + v.AbsoluteSize.Y
                 local Contains = contain
                 local diff = (Contains - Current)
-                if diff >= -100 and diff <= 0 then
+                if diff <= 0 then
                     Marked[v] = true
                     return v
                 end
