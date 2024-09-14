@@ -80,7 +80,7 @@ function getnearestnote(contain,containx)
         end
     end
     if oxd == true then
-      return final
+      return final - 100
     else
       return 10000
     end
