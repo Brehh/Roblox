@@ -59,53 +59,6 @@ function GetContainer(Note)
     end
 end
 
-function GetHoldingNotes(contain,containx)
-    for i,v in next,NotesContain:GetChildren() do
-        if not Marked[v] and tonumber(v.Name) == nil and v.ZIndex == 1 then
-            local Currentx = v.AbsolutePosition.X + (v.AbsoluteSize.X /2 )
-            local diffx = containx - Currentx
-            if diffx <= 30 and diffx >= -30 then
-                local Current = v.AbsolutePosition.Y + v.AbsoluteSize.Y
-                local Contains = contain
-                local diff = (Contains - Current)
-                local xd = 10
-
-                if diff >= -10 and diff <= xd then
-                    Marked[v] = true
-                    print(Contains,Current,diff)
-                    return v
-                end
-            end
-        end
-    end
-    return nil
-end
-
-function GetHoldingNotes2(contain,containx)
-    local lol = 999999999999999
-    local obj = nil
-    for i,v in next,NotesContain:GetChildren() do
-        if not Marked[v] and tonumber(v.Name) == nil and v.ZIndex == 1 then
-            local Currentx = v.AbsolutePosition.X + (v.AbsoluteSize.X /2 )
-            local diffx = containx - Currentx
-            if diffx <= 30 and diffx >= -30 then
-                local Current = v.AbsolutePosition.Y + v.AbsoluteSize.Y
-                local Contains = contain
-                local diff = (Contains - Current)
-                local xd = 1000
-                if diff < lol and v.AbsoluteSize.Y > 0 and diff < getnearestnote(contain,containx) and diff >= -20 then
-                    lol = diff
-                    obj = v
-                end
-            end
-        end
-    end
-    if obj then
-        Marked[obj] = true
-        print(lol)
-    end
-    return obj 
-end
 
 function getnearestnote(contain,containx)
     local final = 1000000000000
@@ -126,11 +79,34 @@ function getnearestnote(contain,containx)
         end
     end
     if oxd == true then
-      print('cool',final)
       return final
     else
-      print('NO ARROW')
       return 1500
+    end
+end
+
+
+function nearestLast(contain,containx,Checked)
+    local lol = 999999999999999
+    local obj = nil
+    for i,v in next,NotesContain:GetChildren() do
+        if not Marked[v] and tonumber(v.Name) == nil and v.ZIndex == 1 and v.AnchorPoint.Y == 1 then
+            local Currentx = v.AbsolutePosition.X + (v.AbsoluteSize.X /2 )
+            local diffx = containx - Currentx
+            if diffx <= 10 and diffx >= -10 then
+                local Current = v.AbsolutePosition.Y + v.AbsoluteSize.Y
+                local Contains = contain
+                local diff = (Contains - Current)
+                local xd = 1000
+                if diff < getnearestnote(contain,containx) then
+                    if Checked == true then
+                        Marked[v] = true
+                    end
+                    print('YESSSSSSSSSSSSSSS',v)
+                    return v
+                end
+            end
+        end
     end
 end
 
@@ -169,16 +145,11 @@ local function processNotes()
                         Marked[note] = true
                         task.defer(function()
                             pressKey(newkeys[keysss][containerIndex], true)
-                            if GetHoldingNotes2(lockedcontainerY,lockedContainerX) then
+                            if nearestLast(lockedcontainerY,lockedContainerX,false) then
+                                local xd = nearestLast(lockedcontainerY,lockedContainerX,true)
                                 repeat 
-                                    if GetHoldingNotes2(lockedcontainerY,lockedContainerX) then
-                                        local xd = GetHoldingNotes2(lockedcontainerY,lockedContainerX)                     
-                                        repeat
-                                            task.wait(0)
-                                        until  xd == nil or xd.AbsoluteSize.Y == 0
-                                    end
-                                until GetHoldingNotes2(lockedcontainerY,lockedContainerX) == nil
-                                print('YO',GetHoldingNotes2(lockedcontainerY,lockedContainerX))
+                                    task.wait(0)   
+                                until xd == nil or xd.AbsoluteSize.Y == 0
                                 pressKey(newkeys[keysss][containerIndex], false)
                             else
                                 pressKey(newkeys[keysss][containerIndex], false)
