@@ -131,9 +131,11 @@ function keydone(containerIndex,note,keysss,lockedcontainerY,lockedContainerX,co
             task.defer(function()
                 repeat 
                 task.wait(0)
-                until math.abs(container1.AbsolutePosition.Y + (container1.AbsoluteSize.Y /2 ) - (note.AbsolutePosition.Y + (note.AbsoluteSize.Y/2))) <= 10
+                until math.abs(container1.AbsolutePosition.Y + (container1.AbsoluteSize.Y /2 ) - (note.AbsolutePosition.Y + (note.AbsoluteSize.Y/2))) <= 5
                 Hitted[note] = true
+                task.wait()
                 pressKey(newkeys[keysss][containerIndex], true)
+                task.wait()
                 if nearestLast(lockedcontainerY,lockedContainerX,false) then
                     local xd = nearestLast(lockedcontainerY,lockedContainerX,true)
                     repeat 
