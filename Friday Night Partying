@@ -131,7 +131,7 @@ function keydone(containerIndex,note,keysss,lockedcontainerY,lockedContainerX,co
             task.defer(function()
                 repeat 
                 task.wait(0)
-                until (container1.AbsolutePosition.Y + (container1.AbsoluteSize.Y /2 ) - (note.AbsolutePosition.Y + (note.AbsoluteSize.Y/2))) <= 0
+                until (container1.AbsolutePosition.Y + (container1.AbsoluteSize.Y /2 ) - (note.AbsolutePosition.Y + (note.AbsoluteSize.Y/2))) <= 2
                 Hitted[note] = true
                 pressKey(newkeys[keysss][containerIndex], true)
                 if nearestLast(lockedcontainerY,lockedContainerX,false) then
