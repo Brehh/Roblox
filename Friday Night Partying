@@ -102,7 +102,6 @@ function nearestLast(contain,containx,Checked)
                     if Checked == true then
                         Marked[v] = true
                     end
-                    print('YESSSSSSSSSSSSSSS',v)
                     return v
                 end
             end
@@ -119,6 +118,26 @@ function keycount()
     end
     return keycounts
 end
+
+
+function keydone(containerIndex,note,keysss,lockedcontainerY,lockedContainerX)
+    if containerIndex then
+            Marked[note] = true
+            task.defer(function()
+                pressKey(newkeys[keysss][containerIndex], true)
+                if nearestLast(lockedcontainerY,lockedContainerX,false) then
+                    local xd = nearestLast(lockedcontainerY,lockedContainerX,true)
+                    repeat 
+                        task.wait(0)   
+                    until xd == nil or xd.AbsoluteSize.Y == 0
+                    pressKey(newkeys[keysss][containerIndex], false)
+                else
+                    pressKey(newkeys[keysss][containerIndex], false)
+                end
+            end)
+    end
+end
+
 
 print('work',keycount())
 
@@ -140,22 +159,8 @@ local function processNotes()
                 local lockedContainer = containerReal
 
                 -- Set a buffer range for detecting when the note reaches the container
-                if diff >= -20 and diff <= 10 then  -- Adjust the range as needed
-                    if containerIndex then
-                        Marked[note] = true
-                        task.defer(function()
-                            pressKey(newkeys[keysss][containerIndex], true)
-                            if nearestLast(lockedcontainerY,lockedContainerX,false) then
-                                local xd = nearestLast(lockedcontainerY,lockedContainerX,true)
-                                repeat 
-                                    task.wait(0)   
-                                until xd == nil or xd.AbsoluteSize.Y == 0
-                                pressKey(newkeys[keysss][containerIndex], false)
-                            else
-                                pressKey(newkeys[keysss][containerIndex], false)
-                            end
-                        end)
-                    end
+                if diff >= -50 and diff <= 30 then  -- Adjust the range as needed
+                    keydone(containerIndex,note,keysss,lockedcontainerY,lockedContainerX)
                 end
             end
         end
