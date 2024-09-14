@@ -82,7 +82,7 @@ function getnearestnote(contain,containx)
     if oxd == true then
       return final
     else
-      return 1500
+      return 1000000000000
     end
 end
 
@@ -127,7 +127,7 @@ function keydone(containerIndex,note,keysss,lockedcontainerY,lockedContainerX)
             task.defer(function()
                 repeat 
                 task.wait(0)
-                until lockedcontainerY - (note.AbsolutePosition.Y + (note.AbsoluteSize.Y/2)) <= 10
+                until lockedcontainerY - (note.AbsolutePosition.Y + (note.AbsoluteSize.Y/2)) <= 15
                 pressKey(newkeys[keysss][containerIndex], true)
                 Hitted[note] = true
                 if nearestLast(lockedcontainerY,lockedContainerX,false) then
