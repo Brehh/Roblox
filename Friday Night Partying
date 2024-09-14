@@ -82,7 +82,7 @@ function getnearestnote(contain,containx)
     if oxd == true then
       return final
     else
-      return 1000000000000
+      return 100000
     end
 end
 
@@ -121,13 +121,13 @@ function keycount()
 end
 
 
-function keydone(containerIndex,note,keysss,lockedcontainerY,lockedContainerX)
+function keydone(containerIndex,note,keysss,lockedcontainerY,lockedContainerX,container1)
     if containerIndex and not Marked[note] then
             Marked[note] = true
             task.defer(function()
                 repeat 
                 task.wait(0)
-                until lockedcontainerY - (note.AbsolutePosition.Y + (note.AbsoluteSize.Y/2)) <= 15
+                until math.abs(container1.AbsolutePosition.Y + (container1.AbsoluteSize.Y /2 ) - (note.AbsolutePosition.Y + (note.AbsoluteSize.Y/2))) <= 20
                 pressKey(newkeys[keysss][containerIndex], true)
                 Hitted[note] = true
                 if nearestLast(lockedcontainerY,lockedContainerX,false) then
@@ -156,13 +156,14 @@ local function processNotes()
                 local containerY = containerData[2]
                 local ContainerX = containerData[3]
                 local containerReal = containerData[1].AbsolutePosition.Y
+                local container1 = containerData[1]
                 local currentY = note.AbsolutePosition.Y + (note.AbsoluteSize.Y / 2)
                 local diff = containerY - currentY
                 local containerIndex = tonumber(containerData[1].Name)
                 local lockedcontainerY = containerY
                 local lockedContainerX = ContainerX
                 local lockedContainer = containerReal
-                keydone(containerIndex,note,keysss,lockedcontainerY,lockedContainerX)
+                keydone(containerIndex,note,keysss,lockedcontainerY,lockedContainerX,container1)
             end
         end
     end
