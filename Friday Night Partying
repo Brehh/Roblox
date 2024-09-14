@@ -82,7 +82,7 @@ function getnearestnote(contain,containx)
     if oxd == true then
       return final
     else
-      return 100000
+      return 10000
     end
 end
 
@@ -99,14 +99,18 @@ function nearestLast(contain,containx,Checked)
                 local Contains = contain
                 local diff = (Contains - Current)
                 local xd = 1000
-                if diff < getnearestnote(contain,containx) then
-                    if Checked == true then
-                        Marked[v] = true
-                    end
-                    return v
+                if not Marked[v] and  diff < lol  and diff < getnearestnote(contain,containx) then
+                    lol = diff
+                    obj = v
                 end
             end
         end
+    end
+    if obj then
+        if Checked == true then
+            Marked[obj] = true
+        end
+        return obj
     end
 end
 
@@ -122,14 +126,14 @@ end
 
 
 function keydone(containerIndex,note,keysss,lockedcontainerY,lockedContainerX,container1)
-    if containerIndex and not Marked[note] then
+    if container1 and not Marked[note] then
             Marked[note] = true
             task.defer(function()
                 repeat 
                 task.wait(0)
                 until math.abs(container1.AbsolutePosition.Y + (container1.AbsoluteSize.Y /2 ) - (note.AbsolutePosition.Y + (note.AbsoluteSize.Y/2))) <= 20
-                pressKey(newkeys[keysss][containerIndex], true)
                 Hitted[note] = true
+                pressKey(newkeys[keysss][containerIndex], true)
                 if nearestLast(lockedcontainerY,lockedContainerX,false) then
                     local xd = nearestLast(lockedcontainerY,lockedContainerX,true)
                     repeat 
@@ -170,6 +174,12 @@ local function processNotes()
 end
 
 -- Main loop
-while task.wait() and _G.on == true do
-    task.defer(processNotes) -- Process all notes in one deferred task
+while _G.on == true do
+    if NotesContain.Visible == true then
+        task.defer(processNotes) -- Process all notes in one deferred task
+    else
+        table.clear(Marked)
+        table.clear(Hitted)
+    end
+    wait()
 end
