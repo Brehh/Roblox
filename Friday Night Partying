@@ -1,6 +1,7 @@
 local Keybinds = {{{Enum.KeyCode.A, Enum.KeyCode.Left, Enum.KeyCode.ButtonL2, Enum.KeyCode.ButtonX}, {Enum.KeyCode.S, Enum.KeyCode.Down, Enum.KeyCode.ButtonL1, Enum.KeyCode.ButtonA}, {Enum.KeyCode.W, Enum.KeyCode.Up, Enum.KeyCode.ButtonR1, Enum.KeyCode.ButtonY}, {Enum.KeyCode.D, Enum.KeyCode.Right, Enum.KeyCode.ButtonR2, Enum.KeyCode.ButtonB}}, {{Enum.KeyCode.S, Enum.KeyCode.Z, Enum.KeyCode.One}, {Enum.KeyCode.D, Enum.KeyCode.X, Enum.KeyCode.Two}, {Enum.KeyCode.F, Enum.KeyCode.C, Enum.KeyCode.Three}, {Enum.KeyCode.J, Enum.KeyCode.B, Enum.KeyCode.Eight}, {Enum.KeyCode.K, Enum.KeyCode.N, Enum.KeyCode.Nine}, {Enum.KeyCode.L, Enum.KeyCode.M, Enum.KeyCode.Zero}}, {{Enum.KeyCode.A, Enum.KeyCode.One}, {Enum.KeyCode.S, Enum.KeyCode.Two}, {Enum.KeyCode.D, Enum.KeyCode.Three}, {Enum.KeyCode.F, Enum.KeyCode.Four}, {Enum.KeyCode.Space}, {Enum.KeyCode.H, Enum.KeyCode.Seven}, {Enum.KeyCode.J, Enum.KeyCode.Eight}, {Enum.KeyCode.K, Enum.KeyCode.Nine}, {Enum.KeyCode.L, Enum.KeyCode.Zero}}, {{Enum.KeyCode.D, Enum.KeyCode.Left}, {Enum.KeyCode.F, Enum.KeyCode.Down}, {Enum.KeyCode.Space}, {Enum.KeyCode.J, Enum.KeyCode.Up}, {Enum.KeyCode.K, Enum.KeyCode.Right}}, {{Enum.KeyCode.S, Enum.KeyCode.Z, Enum.KeyCode.One}, {Enum.KeyCode.D, Enum.KeyCode.X, Enum.KeyCode.Two}, {Enum.KeyCode.F, Enum.KeyCode.C, Enum.KeyCode.Three}, {Enum.KeyCode.Space}, {Enum.KeyCode.J, Enum.KeyCode.B, Enum.KeyCode.Eight}, {Enum.KeyCode.K, Enum.KeyCode.N, Enum.KeyCode.Nine}, {Enum.KeyCode.L, Enum.KeyCode.M, Enum.KeyCode.Zero}}, {{Enum.KeyCode.A, Enum.KeyCode.One}, {Enum.KeyCode.S, Enum.KeyCode.Two}, {Enum.KeyCode.D, Enum.KeyCode.Three}, {Enum.KeyCode.F, Enum.KeyCode.Four}, {Enum.KeyCode.J, Enum.KeyCode.Seven}, {Enum.KeyCode.K, Enum.KeyCode.Eight}, {Enum.KeyCode.L, Enum.KeyCode.Nine}, {Enum.KeyCode.Semicolon, Enum.KeyCode.Zero}}, {{Enum.KeyCode.A}, {Enum.KeyCode.S}, {Enum.KeyCode.D}, {Enum.KeyCode.F}, {Enum.KeyCode.C}, {Enum.KeyCode.V}, {Enum.KeyCode.N}, {Enum.KeyCode.M}, {Enum.KeyCode.J}, {Enum.KeyCode.K}, {Enum.KeyCode.L}, {Enum.KeyCode.Semicolon}}};
 local newkeys = {}
 local Marked = {}
+local Hitted = {}
 _G.side = 1
 _G.on = true
 
@@ -64,7 +65,7 @@ function getnearestnote(contain,containx)
     local final = 1000000000000
     local oxd = false
     for i,v in next,NotesContain:GetChildren() do
-        if tonumber(v.Name) == nil and v.ZIndex == 2 and not Marked[v] then
+        if tonumber(v.Name) == nil and v.ZIndex == 2 and not Hitted[v] then
             local Currentx = v.AbsolutePosition.X + (v.AbsoluteSize.X /2 )
             local diffx = containx - Currentx
             if diffx <= 10 and diffx >= -10 then
@@ -121,10 +122,14 @@ end
 
 
 function keydone(containerIndex,note,keysss,lockedcontainerY,lockedContainerX)
-    if containerIndex then
+    if containerIndex and not Marked[note] then
             Marked[note] = true
             task.defer(function()
+                repeat 
+                task.wait(0)
+                until lockedcontainerY - (note.AbsolutePosition.Y + (note.AbsoluteSize.Y/2)) <= 10
                 pressKey(newkeys[keysss][containerIndex], true)
+                Hitted[note] = true
                 if nearestLast(lockedcontainerY,lockedContainerX,false) then
                     local xd = nearestLast(lockedcontainerY,lockedContainerX,true)
                     repeat 
@@ -157,11 +162,7 @@ local function processNotes()
                 local lockedcontainerY = containerY
                 local lockedContainerX = ContainerX
                 local lockedContainer = containerReal
-
-                -- Set a buffer range for detecting when the note reaches the container
-                if diff >= -50 and diff <= 30 then  -- Adjust the range as needed
-                    keydone(containerIndex,note,keysss,lockedcontainerY,lockedContainerX)
-                end
+                keydone(containerIndex,note,keysss,lockedcontainerY,lockedContainerX)
             end
         end
     end
