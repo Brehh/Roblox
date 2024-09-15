@@ -75,13 +75,20 @@ function keydone(containerIndex,note,keysss,lockedcontainerY)
             Marked[note] = true
             task.defer(function()
                 local NoteX = note.Position.X.Scale
-                while math.abs(lockedcontainerY - note.Position.Y.Scale) >= 0.02 do
+                while ((lockedcontainerY - note.Position.Y.Scale) >= 0.02) or ((lockedcontainerY - note.Position.Y.Scale) <= -0.03) do
                     task.wait()
                 end
                 Hitted[note] = true
+                task.wait()
                 pressKey(newkeys[keysss][containerIndex], true)
-                if getholdkey(NoteX) then
-                    holdnote = getholdkey(NoteX)
+                while getholdkey(NoteX,false,note) do
+                    holdnote = getholdkey(NoteX,true,note)
+                    while holdnote ~= nil and holdnote.Size.Y.Scale > 0 and holdnote.Parent == Parentxd do
+                        task.wait()
+                    end
+                end
+                if getholdkey2(NoteX,false,note) then
+                    holdnote = getholdkey2(NoteX,true,note)
                     while holdnote ~= nil and holdnote.Size.Y.Scale > 0 and holdnote.Parent == Parentxd do
                         task.wait()
                     end
@@ -91,19 +98,18 @@ function keydone(containerIndex,note,keysss,lockedcontainerY)
     end
 end
 
-
-function getholdkey(NoteX)
+function getholdkey2(NoteX,check,notebruh)
     local nearest = nil
     local holdnote = nil
-    local holdpos = -99999999
+    local holdpos = -99999999999
     if getnearestnote(NoteX) then
         nearest = getnearestnote(NoteX)
     end
     for _, note in ipairs(NotesContain:GetChildren()) do
-            if tonumber(note.Name) == nil and note.ZIndex == 1 and not Marked[note] and note.AnchorPoint.Y == 1 then
-                if not Marked[note] and note.Position.X.Scale == NoteX then
+            if note ~= notebruh and tonumber(note.Name) == nil and note.ZIndex == 1 and note.AnchorPoint.Y == 1 then
+                if note.Position.X.Scale == NoteX then
                     if nearest then
-                        if note.Position.Y.Scale > nearest.Position.Y.Scale and note.Position.Y.Scale > holdpos then
+                        if note.Position.Y.Scale > nearest.Position.Y.Scale then
                             holdpos = note.Position.Y.Scale
                             holdnote = note
                         end
@@ -115,6 +121,39 @@ function getholdkey(NoteX)
                     end
                 end
             end
+    end
+    if holdnote and check == true then
+        Marked[holdnote] = true
+    end
+    return holdnote
+end
+
+function getholdkey(NoteX,check,notebruh)
+    local nearest = nil
+    local holdnote = nil
+    local holdpos = 99999999999
+    if getnearestnote(NoteX) then
+        nearest = getnearestnote(NoteX)
+    end
+    for _, note in ipairs(NotesContain:GetChildren()) do
+            if note ~= notebruh and tonumber(note.Name) == nil and note.ZIndex == 1 and note.AnchorPoint.Y == 0.5 then
+                if note.Position.X.Scale == NoteX then
+                    if nearest then
+                        if note.Position.Y.Scale > nearest.Position.Y.Scale and note.Position.Y.Scale < holdpos then
+                            holdpos = note.Position.Y.Scale
+                            holdnote = note
+                        end
+                    else
+                        if note.Position.Y.Scale < holdpos then
+                            holdpos = note.Position.Y.Scale
+                            holdnote = note
+                        end
+                    end
+                end
+            end
+    end
+    if holdnote and check == true then
+        Marked[holdnote] = true
     end
     return holdnote
 end
