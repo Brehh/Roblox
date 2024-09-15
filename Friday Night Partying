@@ -90,9 +90,6 @@ function keydone(containerIndex,note,keysss,lockedcontainerY)
                 pressKey(newkeys[keysss][containerIndex], false)
             end)
     end
-    if note and note.Image ~= 'rbxassetid://12155177766' then
-        note:Destroy()
-    end
 end
 
 
