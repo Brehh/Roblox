@@ -2,6 +2,8 @@ local Keybinds = {{{Enum.KeyCode.A, Enum.KeyCode.Left, Enum.KeyCode.ButtonL2, En
 local newkeys = {}
 local Marked = {}
 local Hitted = {}
+local hold = {}
+
 _G.side = 1
 _G.on = true
 
@@ -78,18 +80,10 @@ function keydone(containerIndex,note,keysss,lockedcontainerY)
                 while ((lockedcontainerY - note.Position.Y.Scale) >= 0.02) or ((lockedcontainerY - note.Position.Y.Scale) <= -0.03) do
                     task.wait()
                 end
-                Hitted[note] = true
                 task.wait()
                 pressKey(newkeys[keysss][containerIndex], true)
-                while getholdkey(NoteX,false,note) do
-                    holdnote = getholdkey(NoteX,true,note)
-                    while holdnote ~= nil and holdnote.Size.Y.Scale > 0 and holdnote.Parent == Parentxd do
-                        task.wait()
-                    end
-                end
-                if getholdkey2(NoteX,false,note) then
-                    holdnote = getholdkey2(NoteX,true,note)
-                    while holdnote ~= nil and holdnote.Size.Y.Scale > 0 and holdnote.Parent == Parentxd do
+                if hold[containerIndex] then
+                    while hold[containerIndex] == true do
                         task.wait()
                     end
                 end
@@ -98,87 +92,35 @@ function keydone(containerIndex,note,keysss,lockedcontainerY)
     end
 end
 
-function getholdkey2(NoteX,check,notebruh)
-    local nearest = nil
-    local holdnote = nil
-    local holdpos = -99999999999
-    if getnearestnote(NoteX) then
-        nearest = getnearestnote(NoteX)
-    end
-    for _, note in ipairs(NotesContain:GetChildren()) do
-            if note ~= notebruh and tonumber(note.Name) == nil and note.ZIndex == 1 and note.AnchorPoint.Y == 1 then
-                if note.Position.X.Scale == NoteX then
-                    if nearest then
-                        if note.Position.Y.Scale > nearest.Position.Y.Scale then
-                            holdpos = note.Position.Y.Scale
-                            holdnote = note
-                        end
-                    else
-                        if note.Position.Y.Scale > holdpos then
-                            holdpos = note.Position.Y.Scale
-                            holdnote = note
-                        end
-                    end
+
+function holddone(containerIndex,note,keysss,lockedcontainerY)
+    if note and not Marked[note] then
+            local Parentxd = note.Parent
+            Marked[note] = true
+            task.defer(function()
+                local NoteX = note.Position.X.Scale
+                while ((lockedcontainerY - (note.Position.Y.Scale + note.Size.Y.Scale)) >= 0.1) or ((lockedcontainerY - (note.Position.Y.Scale + note.Size.Y.Scale)) <= -0.1) do
+                    task.wait()
                 end
-            end
+                hold[containerIndex] = true
+                print(hold[containerIndex],'yay')
+                task.wait()
+                while note ~= nil and note.Size.Y.Scale > 0 and note.Parent == Parentxd do
+                    task.wait()
+                end
+                if note.AnchorPoint.Y == 1 then
+                    hold[containerIndex] = false
+                end
+            end)
     end
-    if holdnote and check == true then
-        Marked[holdnote] = true
-    end
-    return holdnote
 end
 
-function getholdkey(NoteX,check,notebruh)
-    local nearest = nil
-    local holdnote = nil
-    local holdpos = 99999999999
-    if getnearestnote(NoteX) then
-        nearest = getnearestnote(NoteX)
-    end
-    for _, note in ipairs(NotesContain:GetChildren()) do
-            if note ~= notebruh and tonumber(note.Name) == nil and note.ZIndex == 1 and note.AnchorPoint.Y == 0.5 then
-                if note.Position.X.Scale == NoteX then
-                    if nearest then
-                        if note.Position.Y.Scale > nearest.Position.Y.Scale and note.Position.Y.Scale < holdpos then
-                            holdpos = note.Position.Y.Scale
-                            holdnote = note
-                        end
-                    else
-                        if note.Position.Y.Scale < holdpos then
-                            holdpos = note.Position.Y.Scale
-                            holdnote = note
-                        end
-                    end
-                end
-            end
-    end
-    if holdnote and check == true then
-        Marked[holdnote] = true
-    end
-    return holdnote
-end
 
-function getnearestnote(NoteX)
-    local PositionY = -9999999999999
-    local nearest = nil
-    for _, note in ipairs(NotesContain:GetChildren()) do
-        if tonumber(note.Name) == nil and note.ZIndex == 2 and not Hitted[note] then
-            if note.Position.X.Scale == NoteX then
-               if note.Position.Y.Scale > PositionY then
-                   PositionY = note.Position.Y.Scale
-                   nearest = note
-               end 
-            end
-        end
-    end
-    return nearest
-end
 
 print('work',keycount())
 
 local function processNotes()
     local keysss = keycount() -- Cache keycount at the start of processing
-
     for _, note in ipairs(NotesContain:GetChildren()) do
         if tonumber(note.Name) == nil and note.ZIndex == 2 and not Marked[note] then
             local containerData = GetContainer(note) -- Cache container data
@@ -188,6 +130,15 @@ local function processNotes()
                 local containerIndex = tonumber(containerData[1].Name)
                 local lockedcontainerY = containerY
                 keydone(containerIndex,note,keysss,lockedcontainerY)
+            end
+        elseif tonumber(note.Name) == nil and note.ZIndex == 1 and not Marked[note] then
+            local containerData = GetContainer(note) -- Cache container data
+            if containerData and not Marked[note] then
+                local containerY = containerData[2]
+                local currentY = note.Position.Y.Scale
+                local containerIndex = tonumber(containerData[1].Name)
+                local lockedcontainerY = containerY
+                holddone(containerIndex,note,keysss,lockedcontainerY)
             end
         end
     end
@@ -200,6 +151,7 @@ while _G.on == true do
     else
         table.clear(Marked)
         table.clear(Hitted)
+        table.clear(hold)
     end
     wait()
 end
