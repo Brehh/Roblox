@@ -49,70 +49,14 @@ end
 function GetContainer(Note)
     for i,v in next,NotesContain:GetChildren() do
         if tonumber(v.Name) ~= nil and v.ZIndex == 1 then
-            local ContainerY = v.AbsolutePosition.Y + (v.AbsoluteSize.Y /2 )
-            local ContainerX = v.AbsolutePosition.X + (v.AbsoluteSize.X /2 )
-            local NoteX = Note.AbsolutePosition.X + (Note.AbsoluteSize.X /2 )
-            local diff = math.abs(ContainerX - NoteX)
-            if diff <= 10 then
-                return {v,ContainerY,ContainerX}
+            local ContainerY = v.Position.Y.Scale
+            if v.Position.X.Scale == Note.Position.X.Scale then
+                return {v,ContainerY}
             end
         end
     end
 end
 
-
-function getnearestnote(contain,containx)
-    local final = 1000000000000
-    local oxd = false
-    for i,v in next,NotesContain:GetChildren() do
-        if not Hitted[v] and tonumber(v.Name) == nil and v.ZIndex == 2  then
-            local Currentx = v.AbsolutePosition.X + (v.AbsoluteSize.X /2 )
-            local diffx = containx - Currentx
-            if diffx <= 10 and diffx >= -10 then
-                local Current = v.AbsolutePosition.Y + (v.AbsoluteSize.Y/2)
-                local Contains = contain
-                local diff = (Contains - Current)
-                if diff < final then
-                    final = diff
-                    oxd = true
-                end
-            end
-        end
-    end
-    if oxd == true then
-      return final
-    else
-      return 10000
-    end
-end
-
-
-function nearestLast(contain,containx,Checked)
-    local lol = 999999999999999
-    local obj = nil
-    for i,v in next,NotesContain:GetChildren() do
-        if not Marked[v] and tonumber(v.Name) == nil and v.ZIndex == 1 and v.AnchorPoint.Y == 1 then
-            local Currentx = v.AbsolutePosition.X + (v.AbsoluteSize.X /2 )
-            local diffx = containx - Currentx
-            if diffx <= 10 and diffx >= -10 then
-                local Current = v.AbsolutePosition.Y + v.AbsoluteSize.Y
-                local Contains = contain
-                local diff = (Contains - Current)
-                local xd = 1000
-                if not Marked[v] and  diff < lol  and diff < getnearestnote(contain,containx) and diff >= 0 then
-                    lol = diff
-                    obj = v
-                end
-            end
-        end
-    end
-    if obj then
-        if Checked == true then
-            Marked[obj] = true
-        end
-        return obj
-    end
-end
 
 function keycount()
     local keycounts = 0
@@ -125,31 +69,71 @@ function keycount()
 end
 
 
-function keydone(containerIndex,note,keysss,lockedcontainerY,lockedContainerX,container1)
-    if container1 and not Marked[note] then
+function keydone(containerIndex,note,keysss,lockedcontainerY)
+    if note and not Marked[note] then
+            local Parentxd = note.Parent
             Marked[note] = true
             task.defer(function()
-                repeat 
-                task.wait(0)
-                until math.abs(container1.AbsolutePosition.Y + (container1.AbsoluteSize.Y /2 ) - (note.AbsolutePosition.Y + (note.AbsoluteSize.Y/2))) <= 20
+                local NoteX = note.Position.X.Scale
+                while math.abs(lockedcontainerY - note.Position.Y.Scale) >= 0.02 do
+                    task.wait()
+                end
                 Hitted[note] = true
                 pressKey(newkeys[keysss][containerIndex], true)
-                repeat 
-                task.wait(0)
-                until Hitted[note]
-                if nearestLast(lockedcontainerY,lockedContainerX,false) then
-                    local xd = nearestLast(lockedcontainerY,lockedContainerX,true)
-                    repeat 
-                        task.wait(0)   
-                    until xd == nil or xd.AbsoluteSize.Y == 0
-                    pressKey(newkeys[keysss][containerIndex], false)
-                else
-                    pressKey(newkeys[keysss][containerIndex], false)
+                if getholdkey(NoteX) then
+                    holdnote = getholdkey(NoteX)
+                    while holdnote ~= nil and holdnote.Size.Y.Scale > 0 and holdnote.Parent == Parentxd do
+                        task.wait()
+                    end
                 end
+                pressKey(newkeys[keysss][containerIndex], false)
             end)
     end
 end
 
+
+function getholdkey(NoteX)
+    local nearest = nil
+    local holdnote = nil
+    local holdpos = -99999999
+    if getnearestnote(NoteX) then
+        nearest = getnearestnote(NoteX)
+    end
+    for _, note in ipairs(NotesContain:GetChildren()) do
+            if tonumber(note.Name) == nil and note.ZIndex == 1 and not Marked[note] and note.AnchorPoint.Y == 1 then
+                if not Marked[note] and note.Position.X.Scale == NoteX then
+                    if nearest then
+                        if note.Position.Y.Scale > nearest.Position.Y.Scale and note.Position.Y.Scale > holdpos then
+                            holdpos = note.Position.Y.Scale
+                            holdnote = note
+                        end
+                    else
+                        if note.Position.Y.Scale > holdpos then
+                            holdpos = note.Position.Y.Scale
+                            holdnote = note
+                        end
+                    end
+                end
+            end
+    end
+    return holdnote
+end
+
+function getnearestnote(NoteX)
+    local PositionY = -9999999999999
+    local nearest = nil
+    for _, note in ipairs(NotesContain:GetChildren()) do
+        if tonumber(note.Name) == nil and note.ZIndex == 2 and not Hitted[note] then
+            if note.Position.X.Scale == NoteX then
+               if note.Position.Y.Scale > PositionY then
+                   PositionY = note.Position.Y.Scale
+                   nearest = note
+               end 
+            end
+        end
+    end
+    return nearest
+end
 
 print('work',keycount())
 
@@ -159,18 +143,12 @@ local function processNotes()
     for _, note in ipairs(NotesContain:GetChildren()) do
         if tonumber(note.Name) == nil and note.ZIndex == 2 and not Marked[note] then
             local containerData = GetContainer(note) -- Cache container data
-            if containerData then
+            if containerData and not Marked[note] then
                 local containerY = containerData[2]
-                local ContainerX = containerData[3]
-                local containerReal = containerData[1].AbsolutePosition.Y
-                local container1 = containerData[1]
-                local currentY = note.AbsolutePosition.Y + (note.AbsoluteSize.Y / 2)
-                local diff = containerY - currentY
+                local currentY = note.Position.Y.Scale
                 local containerIndex = tonumber(containerData[1].Name)
                 local lockedcontainerY = containerY
-                local lockedContainerX = ContainerX
-                local lockedContainer = containerReal
-                keydone(containerIndex,note,keysss,lockedcontainerY,lockedContainerX,container1)
+                keydone(containerIndex,note,keysss,lockedcontainerY)
             end
         end
     end
