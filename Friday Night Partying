@@ -99,11 +99,10 @@ function holddone(containerIndex,note,keysss,lockedcontainerY)
             Marked[note] = true
             task.defer(function()
                 local NoteX = note.Position.X.Scale
-                while ((lockedcontainerY - (note.Position.Y.Scale + note.Size.Y.Scale)) >= 0.1) or ((lockedcontainerY - (note.Position.Y.Scale + note.Size.Y.Scale)) <= -0.1) do
+                while ((lockedcontainerY - (note.Position.Y.Scale + note.Size.Y.Scale)) >= 0.02) or ((lockedcontainerY - (note.Position.Y.Scale + note.Size.Y.Scale)) <= -0.03) do
                     task.wait()
                 end
                 hold[containerIndex] = true
-                print(hold[containerIndex],'yay')
                 task.wait()
                 while note ~= nil and note.Size.Y.Scale > 0 and note.Parent == Parentxd do
                     task.wait()
