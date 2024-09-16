@@ -1,3 +1,44 @@
+-- Create a new ScreenGui
+local player = game.Players.LocalPlayer
+local screenGui = Instance.new("ScreenGui")
+screenGui.Parent = player:WaitForChild("PlayerGui")
+screenGui.Name = "SideSwitcherGui"
+
+-- Create a button for DadNotes
+local dadButton = Instance.new("TextButton")
+dadButton.Parent = screenGui
+dadButton.Position = UDim2.new(0.1, 0, 0.1, 0)  -- Adjust position as needed
+dadButton.Size = UDim2.new(0, 200, 0, 50)       -- Adjust size as needed
+dadButton.Text = "Switch to Dad Notes"
+dadButton.BackgroundColor3 = Color3.new(0.5, 0.5, 1)
+
+-- Create a button for BFNotes
+local bfButton = Instance.new("TextButton")
+bfButton.Parent = screenGui
+bfButton.Position = UDim2.new(0.1, 0, 0.2, 0)  -- Adjust position as needed
+bfButton.Size = UDim2.new(0, 200, 0, 50)       -- Adjust size as needed
+bfButton.Text = "Switch to BF Notes"
+bfButton.BackgroundColor3 = Color3.new(1, 0.5, 0.5)
+
+-- Button functionality to change sides
+dadButton.MouseButton1Click:Connect(function()
+    _G.side = 1
+    print("Switched to Dad Notes")
+end)
+
+bfButton.MouseButton1Click:Connect(function()
+    _G.side = 2
+    print("Switched to BF Notes")
+end)
+
+
+
+
+
+
+
+
+
 local Keybinds = {{{Enum.KeyCode.A, Enum.KeyCode.Left, Enum.KeyCode.ButtonL2, Enum.KeyCode.ButtonX}, {Enum.KeyCode.S, Enum.KeyCode.Down, Enum.KeyCode.ButtonL1, Enum.KeyCode.ButtonA}, {Enum.KeyCode.W, Enum.KeyCode.Up, Enum.KeyCode.ButtonR1, Enum.KeyCode.ButtonY}, {Enum.KeyCode.D, Enum.KeyCode.Right, Enum.KeyCode.ButtonR2, Enum.KeyCode.ButtonB}}, {{Enum.KeyCode.S, Enum.KeyCode.Z, Enum.KeyCode.One}, {Enum.KeyCode.D, Enum.KeyCode.X, Enum.KeyCode.Two}, {Enum.KeyCode.F, Enum.KeyCode.C, Enum.KeyCode.Three}, {Enum.KeyCode.J, Enum.KeyCode.B, Enum.KeyCode.Eight}, {Enum.KeyCode.K, Enum.KeyCode.N, Enum.KeyCode.Nine}, {Enum.KeyCode.L, Enum.KeyCode.M, Enum.KeyCode.Zero}}, {{Enum.KeyCode.A, Enum.KeyCode.One}, {Enum.KeyCode.S, Enum.KeyCode.Two}, {Enum.KeyCode.D, Enum.KeyCode.Three}, {Enum.KeyCode.F, Enum.KeyCode.Four}, {Enum.KeyCode.Space}, {Enum.KeyCode.H, Enum.KeyCode.Seven}, {Enum.KeyCode.J, Enum.KeyCode.Eight}, {Enum.KeyCode.K, Enum.KeyCode.Nine}, {Enum.KeyCode.L, Enum.KeyCode.Zero}}, {{Enum.KeyCode.D, Enum.KeyCode.Left}, {Enum.KeyCode.F, Enum.KeyCode.Down}, {Enum.KeyCode.Space}, {Enum.KeyCode.J, Enum.KeyCode.Up}, {Enum.KeyCode.K, Enum.KeyCode.Right}}, {{Enum.KeyCode.S, Enum.KeyCode.Z, Enum.KeyCode.One}, {Enum.KeyCode.D, Enum.KeyCode.X, Enum.KeyCode.Two}, {Enum.KeyCode.F, Enum.KeyCode.C, Enum.KeyCode.Three}, {Enum.KeyCode.Space}, {Enum.KeyCode.J, Enum.KeyCode.B, Enum.KeyCode.Eight}, {Enum.KeyCode.K, Enum.KeyCode.N, Enum.KeyCode.Nine}, {Enum.KeyCode.L, Enum.KeyCode.M, Enum.KeyCode.Zero}}, {{Enum.KeyCode.A, Enum.KeyCode.One}, {Enum.KeyCode.S, Enum.KeyCode.Two}, {Enum.KeyCode.D, Enum.KeyCode.Three}, {Enum.KeyCode.F, Enum.KeyCode.Four}, {Enum.KeyCode.J, Enum.KeyCode.Seven}, {Enum.KeyCode.K, Enum.KeyCode.Eight}, {Enum.KeyCode.L, Enum.KeyCode.Nine}, {Enum.KeyCode.Semicolon, Enum.KeyCode.Zero}}, {{Enum.KeyCode.A}, {Enum.KeyCode.S}, {Enum.KeyCode.D}, {Enum.KeyCode.F}, {Enum.KeyCode.C}, {Enum.KeyCode.V}, {Enum.KeyCode.N}, {Enum.KeyCode.M}, {Enum.KeyCode.J}, {Enum.KeyCode.K}, {Enum.KeyCode.L}, {Enum.KeyCode.Semicolon}}};
 local newkeys = {}
 local Marked = {}
@@ -6,6 +47,7 @@ local hold = {}
 
 _G.side = 1
 _G.on = true
+local NotesContain
 
 local vim = game:GetService("VirtualInputManager")
 
@@ -41,12 +83,7 @@ for i,v in next, Keybinds do
 end
 
 local gameui = game:GetService("Players").UntitiledBa.PlayerGui.GameUI.realGameUI.Notes
-local NotesContain
-if _G.side == 1 then
-    NotesContain = gameui.DadNotes
-elseif _G.side == 2 then
-    NotesContain = gameui.BFNotes
-end
+
 
 function GetContainer(Note)
     for i,v in next,NotesContain:GetChildren() do
@@ -77,7 +114,7 @@ function keydone(containerIndex,note,keysss,lockedcontainerY)
             Marked[note] = true
             task.defer(function()
                 local NoteX = note.Position.X.Scale
-                while ((lockedcontainerY - note.Position.Y.Scale) >= 0.02) or ((lockedcontainerY - note.Position.Y.Scale) <= -0.03) do
+                while ((lockedcontainerY - note.Position.Y.Scale) >= 0.02) or ((lockedcontainerY - note.Position.Y.Scale) <= -1) do
                     task.wait()
                 end
                 task.wait()
@@ -99,7 +136,8 @@ function holddone(containerIndex,note,keysss,lockedcontainerY)
             Marked[note] = true
             task.defer(function()
                 local NoteX = note.Position.X.Scale
-                while ((lockedcontainerY - (note.Position.Y.Scale + note.Size.Y.Scale)) >= 0.02) or ((lockedcontainerY - (note.Position.Y.Scale + note.Size.Y.Scale)) <= -0.03) do
+                local NoteAn = note.AnchorPoint.Y
+                while ((lockedcontainerY - (note.Position.Y.Scale + note.Size.Y.Scale)) >= 0.02) or ((lockedcontainerY - (note.Position.Y.Scale + note.Size.Y.Scale)) <= -1) do
                     task.wait()
                 end
                 hold[containerIndex] = true
@@ -107,7 +145,7 @@ function holddone(containerIndex,note,keysss,lockedcontainerY)
                 while note ~= nil and note.Size.Y.Scale > 0 and note.Parent == Parentxd do
                     task.wait()
                 end
-                if note.AnchorPoint.Y == 1 then
+                if NoteAn == 1 then
                     hold[containerIndex] = false
                 end
             end)
@@ -116,7 +154,7 @@ end
 
 
 
-print('work',keycount())
+print('work')
 
 local function processNotes()
     local keysss = keycount() -- Cache keycount at the start of processing
@@ -145,6 +183,12 @@ end
 
 -- Main loop
 while _G.on == true do
+    if _G.side == 1 then
+        NotesContain = gameui.DadNotes
+    elseif _G.side == 2 then
+        NotesContain = gameui.BFNotes
+    end
+
     if NotesContain.Visible == true then
         task.defer(processNotes) -- Process all notes in one deferred task
     else
