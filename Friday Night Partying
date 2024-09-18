@@ -3,10 +3,7 @@ local newkeys = {}
 local Marked = {}
 local Hitted = {}
 local hold = {}
-local hold2 = {}
-local SHOW = {}
 
-_G.side = 1
 _G.on = true
 local NotesContain
 
@@ -69,73 +66,47 @@ function keycount()
 end
 
 
-function keydone(containerIndex, note, keysss, lockedcontainerY)
+function keydone(containerIndex,note,keysss,lockedcontainerY)
     if note and not Marked[note] and note.Image ~= 'rbxassetid://12155177766' then
-        local Parentxd = note.Parent
-        Marked[note] = true
-        task.defer(function()
-            local NoteX = note.Position.X.Scale
-            while note and ((lockedcontainerY - note.Position.Y.Scale) >= 0.02 or (lockedcontainerY - note.Position.Y.Scale) <= -1) do
-                task.defer(function()
-                    if ((lockedcontainerY - note.Position.Y.Scale) >= 0.3 or (lockedcontainerY - note.Position.Y.Scale) <= -1) then
-                        SHOW[containerIndex] = true
-                    end
-                end)
+            local Parentxd = note.Parent
+            Marked[note] = true
+            task.defer(function()
+                local NoteX = note.Position.X.Scale
+                while ((lockedcontainerY - note.Position.Y.Scale) >= 0.02) or ((lockedcontainerY - note.Position.Y.Scale) <= -1) do
+                    task.wait()
+                end
                 task.wait()
-            end
-            SHOW[containerIndex] = false
-            if note and note.Parent == Parentxd then -- Check if the note still exists
                 pressKey(newkeys[keysss][containerIndex], true)
                 if hold[containerIndex] then
                     while hold[containerIndex] == true do
                         task.wait()
                     end
-                else
-                task.wait()
                 end
                 pressKey(newkeys[keysss][containerIndex], false)
-            end
-        end)
+            end)
     end
 end
 
 
-
-
-
-function holddone(containerIndex, note, keysss, lockedcontainerY)
+function holddone(containerIndex,note,keysss,lockedcontainerY)
     if note and not Marked[note] then
-        local Parentxd = note.Parent
-        Marked[note] = true
-        task.defer(function()
-            local NoteX = note.Position.X.Scale
-            local NoteAn = note.AnchorPoint.Y
-            while note and ((lockedcontainerY - (note.Position.Y.Scale + note.Size.Y.Scale)) >= 0.2 or (lockedcontainerY - (note.Position.Y.Scale + note.Size.Y.Scale)) <= -1) do
-                task.wait()
-            end
-            if note and note.Parent == Parentxd then -- Check if the note still exists
+            local Parentxd = note.Parent
+            Marked[note] = true
+            task.defer(function()
+                local NoteX = note.Position.X.Scale
+                local NoteAn = note.AnchorPoint.Y
+                while ((lockedcontainerY - (note.Position.Y.Scale + note.Size.Y.Scale)) >= 0.02) or ((lockedcontainerY - (note.Position.Y.Scale + note.Size.Y.Scale)) <= -1) do
+                    task.wait()
+                end
                 hold[containerIndex] = true
-                task.defer(function()    
-                    if NoteAn ~= 1 then
-                        hold2[containerIndex] = true
-                    else
-                        hold2[containerIndex] = false
-                    end
-                end)
-                while note.Parent do
-                        task.wait()
+                task.wait()
+                while note ~= nil and note.Size.Y.Scale > 0 and note.Parent == Parentxd do
+                    task.wait()
                 end
                 if NoteAn == 1 then
-                    if SHOW[containerIndex] then
-                        hold[containerIndex] = false
-                    else
-                        if not hold2[containerIndex] then
-                            hold[containerIndex] = false
-                        end
-                    end
+                    hold[containerIndex] = false
                 end
-            end
-        end)
+            end)
     end
 end
 
@@ -144,20 +115,25 @@ end
 print('work')
 
 local function processNotes()
-    local keysss = keycount()
+    local keysss = keycount() -- Cache keycount at the start of processing
     for _, note in ipairs(NotesContain:GetChildren()) do
-        if tonumber(note.Name) == nil and not Marked[note] then -- Process both ZIndex 1 and 2 notes together
-            local containerData = GetContainer(note)
-            if containerData then
+        if tonumber(note.Name) == nil and note.ZIndex == 2 and not Marked[note] then
+            local containerData = GetContainer(note) -- Cache container data
+            if containerData and not Marked[note] then
                 local containerY = containerData[2]
+                local currentY = note.Position.Y.Scale
                 local containerIndex = tonumber(containerData[1].Name)
                 local lockedcontainerY = containerY
-
-                if note.ZIndex == 2 then -- Regular note
-                    keydone(containerIndex, note, keysss, lockedcontainerY)
-                elseif note.ZIndex == 1 then -- Hold note
-                    holddone(containerIndex, note, keysss, lockedcontainerY)
-                end
+                keydone(containerIndex,note,keysss,lockedcontainerY)
+            end
+        elseif tonumber(note.Name) == nil and note.ZIndex == 1 and not Marked[note] then
+            local containerData = GetContainer(note) -- Cache container data
+            if containerData and not Marked[note] then
+                local containerY = containerData[2]
+                local currentY = note.Position.Y.Scale
+                local containerIndex = tonumber(containerData[1].Name)
+                local lockedcontainerY = containerY
+                holddone(containerIndex,note,keysss,lockedcontainerY)
             end
         end
     end
@@ -181,8 +157,6 @@ while _G.on == true do
         table.clear(Marked)
         table.clear(Hitted)
         table.clear(hold)
-        table.clear(hold2)
-        table.clear(SHOW)
     end
     wait()
 end
