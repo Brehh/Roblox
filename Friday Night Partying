@@ -3,6 +3,8 @@ local newkeys = {}
 local Marked = {}
 local Hitted = {}
 local hold = {}
+local hold2 = {}
+local SHOW = {}
 
 _G.side = 1
 _G.on = true
@@ -74,8 +76,14 @@ function keydone(containerIndex, note, keysss, lockedcontainerY)
         task.defer(function()
             local NoteX = note.Position.X.Scale
             while note and ((lockedcontainerY - note.Position.Y.Scale) >= 0.02 or (lockedcontainerY - note.Position.Y.Scale) <= -1) do
+                task.defer(function()
+                    if ((lockedcontainerY - note.Position.Y.Scale) >= 0.3 or (lockedcontainerY - note.Position.Y.Scale) <= -1) then
+                        SHOW[containerIndex] = true
+                    end
+                end)
                 task.wait()
             end
+            SHOW[containerIndex] = false
             if note and note.Parent == Parentxd then -- Check if the note still exists
                 pressKey(newkeys[keysss][containerIndex], true)
                 if hold[containerIndex] then
@@ -84,12 +92,6 @@ function keydone(containerIndex, note, keysss, lockedcontainerY)
                     end
                 else
                 task.wait()
-                end
-                task.wait()
-                if hold[containerIndex] then
-                    while hold[containerIndex] == true do
-                        task.wait()
-                    end
                 end
                 pressKey(newkeys[keysss][containerIndex], false)
             end
@@ -113,11 +115,24 @@ function holddone(containerIndex, note, keysss, lockedcontainerY)
             end
             if note and note.Parent == Parentxd then -- Check if the note still exists
                 hold[containerIndex] = true
-                if NoteAn == 1 then
-                    while note.Parent do
-                        task.wait()
+                task.defer(function()    
+                    if NoteAn ~= 1 then
+                        hold2[containerIndex] = true
+                    else
+                        hold2[containerIndex] = false
                     end
-                    hold[containerIndex] = false
+                end)
+                while note.Parent do
+                        task.wait()
+                end
+                if NoteAn == 1 then
+                    if SHOW[containerIndex] then
+                        hold[containerIndex] = false
+                    else
+                        if not hold2[containerIndex] then
+                            hold[containerIndex] = false
+                        end
+                    end
                 end
             end
         end)
