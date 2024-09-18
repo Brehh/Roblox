@@ -181,6 +181,8 @@ while _G.on == true do
         table.clear(Marked)
         table.clear(Hitted)
         table.clear(hold)
+        table.clear(hold2)
+        table.clear(SHOW)
     end
     wait()
 end
