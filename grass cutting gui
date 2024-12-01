@@ -1,0 +1,170 @@
+-- GUI creation
+local ScreenGui = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local NumberLabel = Instance.new("TextLabel")
+local NumberTextbox = Instance.new("TextBox")
+local ModeLabel = Instance.new("TextLabel")
+local ModeDropdown = Instance.new("TextButton")
+local ModeList = Instance.new("Frame")
+local Mode1 = Instance.new("TextButton")
+local Mode2 = Instance.new("TextButton")
+local MinimizeButton = Instance.new("TextButton")
+
+-- Properties
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+Frame.Parent = ScreenGui
+Frame.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Frame.Position = UDim2.new(0.5, -100, 0.5, -75)
+Frame.Size = UDim2.new(0, 200, 0, 150)
+Frame.Draggable = true
+Frame.Active = true
+
+NumberLabel.Parent = Frame
+NumberLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+NumberLabel.BackgroundTransparency = 1.000
+NumberLabel.Position = UDim2.new(0.1, 0, 0.1, 0)
+NumberLabel.Size = UDim2.new(0, 80, 0, 20)
+NumberLabel.Font = Enum.Font.SourceSans
+NumberLabel.Text = "Number:"
+NumberLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+NumberLabel.TextSize = 14.000
+
+NumberTextbox.Parent = Frame
+NumberTextbox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+NumberTextbox.BackgroundTransparency = 1.000
+NumberTextbox.Position = UDim2.new(0.5, 0, 0.1, 0)
+NumberTextbox.Size = UDim2.new(0, 80, 0, 20)
+NumberTextbox.Font = Enum.Font.SourceSans
+NumberTextbox.Text = tostring(_G.oh)
+NumberTextbox.TextColor3 = Color3.fromRGB(255, 255, 255)
+NumberTextbox.TextSize = 14.000
+
+ModeLabel.Parent = Frame
+ModeLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+ModeLabel.BackgroundTransparency = 1.000
+ModeLabel.Position = UDim2.new(0.1, 0, 0.3, 0)
+ModeLabel.Size = UDim2.new(0, 80, 0, 20)
+ModeLabel.Font = Enum.Font.SourceSans
+ModeLabel.Text = "Mode:"
+ModeLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+ModeLabel.TextSize = 14.000
+
+ModeDropdown.Parent = Frame
+ModeDropdown.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+ModeDropdown.BackgroundTransparency = 1.000
+ModeDropdown.Position = UDim2.new(0.5, 0, 0.3, 0)
+ModeDropdown.Size = UDim2.new(0, 80, 0, 20)
+ModeDropdown.Font = Enum.Font.SourceSans
+ModeDropdown.Text = tostring(_G.mode)
+ModeDropdown.TextColor3 = Color3.fromRGB(255, 255, 255)
+ModeDropdown.TextSize = 14.000
+
+ModeList.Parent = Frame
+ModeList.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+ModeList.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ModeList.Position = UDim2.new(0.5, 0, 0.5, 0)
+ModeList.Size = UDim2.new(0, 80, 0, 40)
+ModeList.Visible = false
+
+Mode1.Parent = ModeList
+Mode1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Mode1.BackgroundTransparency = 1.000
+Mode1.Size = UDim2.new(1, 0, 0.5, 0)
+Mode1.Font = Enum.Font.SourceSans
+Mode1.Text = "x100"
+Mode1.TextColor3 = Color3.fromRGB(255, 255, 255)
+Mode1.TextSize = 14.000
+
+Mode2.Parent = ModeList
+Mode2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Mode2.BackgroundTransparency = 1.000
+Mode2.Position = UDim2.new(0, 0, 0.5, 0)
+Mode2.Size = UDim2.new(1, 0, 0.5, 0)
+Mode2.Font = Enum.Font.SourceSans
+Mode2.Text = "platinum"
+Mode2.TextColor3 = Color3.fromRGB(255, 255, 255)
+Mode2.TextSize = 14.000
+
+MinimizeButton.Parent = Frame
+MinimizeButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+MinimizeButton.BackgroundTransparency = 1.000
+MinimizeButton.Position = UDim2.new(0.8, 0, 0.1, 0)
+MinimizeButton.Size = UDim2.new(0, 20, 0, 20)
+MinimizeButton.Font = Enum.Font.SourceSans
+MinimizeButton.Text = "-"
+MinimizeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+MinimizeButton.TextSize = 14.000
+
+-- Functionality
+NumberTextbox:GetPropertyChangedSignal("Text"):Connect(function()
+    local num = tonumber(NumberTextbox.Text)
+    if num then
+        _G.oh = num
+    end
+end)
+
+ModeDropdown.MouseButton1Click:Connect(function()
+    ModeList.Visible = not ModeList.Visible
+end)
+
+Mode1.MouseButton1Click:Connect(function()
+    _G.mode = 1
+    ModeDropdown.Text = "x100"
+    ModeList.Visible = false
+end)
+
+Mode2.MouseButton1Click:Connect(function()
+    _G.mode = 2
+    ModeDropdown.Text = "platinum"
+    ModeList.Visible = false
+end)
+
+local minimized = false
+MinimizeButton.MouseButton1Click:Connect(function()
+    minimized = not minimized
+    if minimized then
+        Frame.Size = UDim2.new(0, 200, 0, 20)
+        MinimizeButton.Text = "+"
+        NumberLabel.Visible = false
+        NumberTextbox.Visible = false
+        ModeLabel.Visible = false
+        ModeDropdown.Visible = false
+        ModeList.Visible = false
+    else
+        Frame.Size = UDim2.new(0, 200, 0, 150)
+        MinimizeButton.Text = "-"
+        NumberLabel.Visible = true
+        NumberTextbox.Visible = true
+        ModeLabel.Visible = true
+        ModeDropdown.Visible = true
+    end
+end)
+
+local mt = getrawmetatable(game)
+    local oldNamecall = mt.__namecall
+    setreadonly(mt, false)
+    mt.__namecall = newcclosure(function(self, ...)
+        -- Capture the method and arguments
+        local method = getnamecallmethod()
+        local args = {...}
+        local xd = args
+        -- Ensure it's the InvokeServer method and the correct RemoteFunction
+        if method == "InvokeServer" and self.Name == 'GenericFunction' then
+            if _G.mode == 1 then
+                if args[1]['id'] == "cut" and args[1]["identifier"] ~= "platinum" then
+                    xd[1]["quantity"] = math.floor(_G.oh)
+                    return oldNamecall(self, unpack(xd))
+                end
+            elseif _G.mode == 2 then
+                if args[1]['id'] == "cut" and args[1]["identifier"] ~= "platinum" then
+                    xd[1]["quantity"] = 1
+                    xd[1]["identifier"] = "platinum"
+                    return oldNamecall(self, unpack(xd))
+                end
+            end
+        end
+        return oldNamecall(self, ...)
+    end)
