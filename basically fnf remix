@@ -93,28 +93,33 @@ task.defer(getside)
 RunService.Heartbeat:Connect(function()
     if side and playergui then
         for i = 1,4 do
-            task.defer(function()
+            coroutine.wrap(function()
                 for a,v in next, playergui['Arrow'..i].Notes:GetChildren() do
-                    task.defer(function()
+                    coroutine.wrap(function()
                         if not Marked[v.Name] then
-                            local keys = inputs[tonumber(i)]
-                            local diff = v.Position.Y.Scale
-                            
-                            if diff >= _G.diff then
-                                Marked[v.Name] = true
-                                local hold = gethold(v)
-                                pressKey(keys)
-                                if hold then
-                                    repeat
-                                    task.wait()
-                                    until hold.Position.Y.Scale > (hold.Size.X.Scale - hold.Size.Y.Scale)
+                            coroutine.wrap(function()
+                                while task.wait(0) do
+                                    Marked[v.Name] = true
+                                    local diff = v.Position.Y.Scale
+            
+                                    if diff >= _G.diff then
+                                        local keys = inputs[tonumber(i)]
+                                        local hold = gethold(v)
+                                        pressKey(keys)
+                                        if hold then
+                                            repeat
+                                            task.wait()
+                                            until hold.Position.Y.Scale > (hold.Size.X.Scale - hold.Size.Y.Scale)
+                                        end
+                                        releaseKey(keys)
+                                        break
+                                    end
                                 end
-                                releaseKey(keys)
-                            end
+                            end)()
                         end
-                    end)
+                    end)()
                 end
-            end)
+            end)()
         end
     end
 end)
