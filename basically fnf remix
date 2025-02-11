@@ -1,12 +1,15 @@
 print('--------------------------------------------------')
 print('Runned BRO')
+
 local inputs = getrenv()._G.Settings.Inputs
 local player = game:GetService("Players").LocalPlayer
 local side = nil
 local playergui = nil
 local RunService = game:GetService("RunService")
 local Marked = {}
-_G.diff = 0.425
+_G.diff = 0
+
+
 
 local utf8 = {
 	["A"] = 0x41,
@@ -90,12 +93,14 @@ end
 
 task.defer(getside)
 
+
+
 RunService.Heartbeat:Connect(function()
     if side and playergui then
         for i = 1,4 do
             coroutine.wrap(function()
                 for a,v in next, playergui['Arrow'..i].Notes:GetChildren() do
-                    if v.ClassName ~= 'Frame' then
+                    if #v:GetChildren() == 0 then
                         coroutine.wrap(function()
                             if not Marked[v.Name] then
                                 coroutine.wrap(function()
