@@ -1,0 +1,37 @@
+function xd(args,self)
+    
+end
+
+function xd2(args,self)
+    if self.Name == 'Notes' then
+        args[2] = 0
+    end
+end
+
+
+_G.a = xd
+_G.b = xd2
+
+
+
+
+local mt = getrawmetatable(game)
+    local oldNamecall = mt.__namecall
+    setreadonly(mt, false)
+
+    mt.__namecall = newcclosure(function(self, ...)
+        -- Capture the method and arguments
+        local method = getnamecallmethod()
+        local args = {...}
+        
+        -- Ensure it's the InvokeServer method and the correct RemoteFunction
+        if method == "InvokeServer" then
+            _G.a(args,self)
+        elseif method == 'FireServer' then
+            _G.b(args,self)
+        end
+        return oldNamecall(self, unpack(args))
+    end)
+
+    -- Set the metatable back to readonly
+    setreadonly(mt, true)
