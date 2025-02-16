@@ -1,0 +1,131 @@
+-- อ้างอิงไปยัง LocalPlayer และ Folder ที่เก็บ waypoint
+local player = game.Players.LocalPlayer
+local waypointsFolder = game:GetService("Workspace"):WaitForChild("Waypoints")
+local UserInputService = game:GetService("UserInputService")
+player.Character.Humanoid.WalkSpeed = 32
+-- สร้าง ScreenGui (สมมติว่า script นี้อยู่ภายใน ScreenGui)
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "Warp Gui"
+screenGui.Parent = player:WaitForChild("PlayerGui")
+
+-- สร้าง Main Frame ที่จะเป็นตัว GUI หลัก
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 250, 0, 350)
+mainFrame.Position = UDim2.new(0, 50, 0, 50)
+mainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+mainFrame.BorderSizePixel = 0
+mainFrame.Active = true -- ต้อง Active เพื่อให้ลากได้
+mainFrame.Parent = screenGui
+
+-- สร้าง Top Bar สำหรับลาก GUI และมีปุ่มย่อ
+local topBar = Instance.new("Frame")
+topBar.Size = UDim2.new(1, 0, 0, 30)
+topBar.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+topBar.BorderSizePixel = 0
+topBar.Parent = mainFrame
+
+-- ป้ายแสดงชื่อ (Title)
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Size = UDim2.new(1, -30, 1, 0)
+titleLabel.Position = UDim2.new(0, 0, 0, 0)
+titleLabel.BackgroundTransparency = 1
+titleLabel.Text = "Waypoints"
+titleLabel.TextColor3 = Color3.new(1, 1, 1)
+titleLabel.TextScaled = true
+titleLabel.Parent = topBar
+
+-- สร้างปุ่มสำหรับย่อ/ขยาย GUI
+local minimizeButton = Instance.new("TextButton")
+minimizeButton.Size = UDim2.new(0, 30, 1, 0)
+minimizeButton.Position = UDim2.new(1, -30, 0, 0)
+minimizeButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+minimizeButton.Text = "–"
+minimizeButton.TextColor3 = Color3.new(1, 1, 1)
+minimizeButton.Parent = topBar
+
+-- สร้าง ScrollingFrame สำหรับเก็บปุ่ม waypoint (ทำให้เลื่อนดูได้)
+local contentFrame = Instance.new("ScrollingFrame")
+contentFrame.Size = UDim2.new(1, 0, 1, -30)
+contentFrame.Position = UDim2.new(0, 0, 0, 30)
+contentFrame.BackgroundTransparency = 1
+contentFrame.ScrollBarThickness = 6
+contentFrame.Parent = mainFrame
+
+-- ใช้ UIListLayout สำหรับจัดเรียงปุ่มในแนวตั้ง
+local layout = Instance.new("UIListLayout")
+layout.Padding = UDim.new(0, 5)
+layout.SortOrder = Enum.SortOrder.LayoutOrder
+layout.Parent = contentFrame
+
+-- ปรับ CanvasSize ของ ScrollingFrame ตามขนาดของเนื้อหา
+layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+    contentFrame.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y)
+end)
+
+-- ฟังก์ชันสำหรับย่อ/ขยาย GUI
+local minimized = false
+minimizeButton.MouseButton1Click:Connect(function()
+    minimized = not minimized
+    if minimized then
+        contentFrame.Visible = false
+        mainFrame.Size = UDim2.new(0, 250, 0, 30)
+        minimizeButton.Text = "+"
+    else
+        contentFrame.Visible = true
+        mainFrame.Size = UDim2.new(0, 250, 0, 350)
+        minimizeButton.Text = "–"
+    end
+end)
+
+-- ฟังก์ชันสำหรับลาก GUI
+local dragging = false
+local dragStart, startPos
+
+topBar.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragStart = input.Position
+        startPos = mainFrame.Position
+        
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+topBar.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement then
+        if dragging then
+            local delta = input.Position - dragStart
+            mainFrame.Position = UDim2.new(
+                startPos.X.Scale,
+                startPos.X.Offset + delta.X,
+                startPos.Y.Scale,
+                startPos.Y.Offset + delta.Y
+            )
+        end
+    end
+end)
+
+-- สร้างปุ่มสำหรับแต่ละ waypoint ที่เป็น Part
+for _, waypoint in ipairs(waypointsFolder:GetChildren()) do
+    if waypoint:IsA("Part") then
+        local button = Instance.new("TextButton")
+        button.Size = UDim2.new(1, -10, 0, 30)
+        button.Position = UDim2.new(0, 5, 0, 0)
+        button.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+        button.TextColor3 = Color3.new(1, 1, 1)
+        button.Text = waypoint.Name
+        button.Parent = contentFrame
+
+        button.MouseButton1Click:Connect(function()
+            local character = player.Character
+            if character and character:FindFirstChild("HumanoidRootPart") then
+                -- ปรับตำแหน่งเล็กน้อยเพื่อไม่ให้ติดพื้น
+                character.HumanoidRootPart.CFrame = waypoint.CFrame + Vector3.new(0, 5, 0)
+            end
+        end)
+    end
+end
