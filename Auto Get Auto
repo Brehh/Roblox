@@ -4,9 +4,10 @@ local player = game.Players.LocalPlayer.Character.HumanoidRootPart
 
 local part = game:GetService("Workspace").Buttons.Beach.Insane.HH
 local part2 = game:GetService("Workspace").Buttons["Snowy Forest"].Extra.HH
+local part3 = game:GetService("Workspace").Buttons.Beach.SuperSanity.HH
 
 for i,v in next,part2.Parent:GetChildren() do
-    if v.Name == part2.Name and v.config.Special1T.Value == 'Extra' then
+    if v.Name == part2.Name and v.config.Special1T.Value ~= 'Extra' then
         part2 = v
         break
     end
@@ -15,6 +16,8 @@ end
 
 
 while task.wait() and _G.a do
+    firetouchinterest(player,part3,0)
+    firetouchinterest(player,part3,1)
     firetouchinterest(player,part2,0)
     firetouchinterest(player,part2,1)
     firetouchinterest(player,part,0)
