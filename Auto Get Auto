@@ -1,0 +1,22 @@
+_G.a = true
+
+local player = game.Players.LocalPlayer.Character.HumanoidRootPart
+
+local part = game:GetService("Workspace").Buttons.Beach.Insane.HH
+local part2 = game:GetService("Workspace").Buttons["Snowy Forest"].Extra.HH
+
+for i,v in next,part2.Parent:GetChildren() do
+    if v.Name == part2.Name and v.config.Special1T.Value == 'Extra' then
+        part2 = v
+        break
+    end
+end
+
+
+
+while task.wait() and _G.a do
+    firetouchinterest(player,part2,0)
+    firetouchinterest(player,part2,1)
+    firetouchinterest(player,part,0)
+    firetouchinterest(player,part,1)
+end
