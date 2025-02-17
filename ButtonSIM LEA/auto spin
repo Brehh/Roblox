@@ -1,0 +1,141 @@
+-- Create ScreenGUI
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "AutoSpinGUI"
+screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+-- Create Main Frame
+local frame = Instance.new("Frame")
+frame.Parent = screenGui
+frame.BackgroundColor3 = Color3.new(0.15, 0.15, 0.15)
+frame.Position = UDim2.new(0.5, -150, 0.5, -75)
+frame.Size = UDim2.new(0, 300, 0, 200)
+frame.Active = true
+frame.Draggable = true
+frame.BorderSizePixel = 0
+frame.BackgroundTransparency = 0.2
+
+-- Create Title Label
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Parent = frame
+titleLabel.Size = UDim2.new(1, -40, 0, 30)
+titleLabel.Position = UDim2.new(0, 20, 0, 10)
+titleLabel.Text = "Auto Spin Controller"
+titleLabel.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+titleLabel.TextColor3 = Color3.new(1, 1, 1)
+titleLabel.Font = Enum.Font.GothamBold
+titleLabel.TextSize = 20
+titleLabel.BorderSizePixel = 0
+titleLabel.BackgroundTransparency = 1
+
+-- Create Minimize Button
+local minimizeButton = Instance.new("TextButton")
+minimizeButton.Parent = frame
+minimizeButton.Size = UDim2.new(0, 30, 0, 30)
+minimizeButton.Position = UDim2.new(1, -40, 0, 10)
+minimizeButton.Text = "-"
+minimizeButton.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
+minimizeButton.TextColor3 = Color3.new(1, 1, 1)
+minimizeButton.Font = Enum.Font.GothamBold
+minimizeButton.TextSize = 18
+minimizeButton.BorderSizePixel = 0
+
+-- Create Toggle Spin Button
+local button = Instance.new("TextButton")
+button.Parent = frame
+button.Size = UDim2.new(1, -40, 0, 50)
+button.Position = UDim2.new(0, 20, 0, 60)
+button.Text = "Start Spinning"
+button.BackgroundColor3 = Color3.new(0.1, 0.6, 0.2)
+button.TextColor3 = Color3.new(1, 1, 1)
+button.Font = Enum.Font.GothamBold
+button.TextSize = 24
+button.BorderSizePixel = 0
+button.BackgroundTransparency = 0.1
+
+-- Create Speed Input Label
+local speedLabel = Instance.new("TextLabel")
+speedLabel.Parent = frame
+speedLabel.Size = UDim2.new(1, -40, 0, 30)
+speedLabel.Position = UDim2.new(0, 20, 0, 120)
+speedLabel.Text = "Spin Speed (Degrees per Millisecond):"
+speedLabel.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+speedLabel.TextColor3 = Color3.new(1, 1, 1)
+speedLabel.Font = Enum.Font.Gotham
+speedLabel.TextSize = 18
+speedLabel.BorderSizePixel = 0
+speedLabel.BackgroundTransparency = 1
+
+-- Create Speed Input TextBox
+local speedInput = Instance.new("TextBox")
+speedInput.Parent = frame
+speedInput.Size = UDim2.new(1, -40, 0, 30)
+speedInput.Position = UDim2.new(0, 20, 0, 150)
+speedInput.PlaceholderText = "Enter Spin Speed"
+speedInput.Text = ""
+speedInput.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
+speedInput.TextColor3 = Color3.new(1, 1, 1)
+speedInput.Font = Enum.Font.Gotham
+speedInput.TextSize = 20
+speedInput.BorderSizePixel = 0
+speedInput.BackgroundTransparency = 0.1
+
+-- Spinning variables
+local spinning = false
+local spinSpeed = 0.06 -- Default to 0.06 degrees per millisecond (1 full spin every 6000 ms or 6 seconds)
+local minimized = false
+
+-- Function to handle spinning
+local function spinCharacter()
+    local hrp = game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart")
+    local runService = game:GetService("RunService")
+
+    local connection
+    connection = runService.RenderStepped:Connect(function(deltaTime)
+        -- Convert deltaTime from seconds to milliseconds and apply spin
+        local degreesThisFrame = spinSpeed * deltaTime * 1000
+        hrp.CFrame = hrp.CFrame * CFrame.Angles(0, math.rad(degreesThisFrame), 0)
+        if not spinning then
+            connection:Disconnect()
+        end
+    end)
+end
+
+local function toggleSpin()
+    if speedInput.Text ~= "" then
+        spinSpeed = tonumber(speedInput.Text) or 0.06
+    end
+
+    spinning = not spinning
+    if spinning then
+        button.Text = "Stop Spinning"
+        button.BackgroundColor3 = Color3.new(0.8, 0.1, 0.1)
+        spinCharacter()
+    else
+        button.Text = "Start Spinning"
+        button.BackgroundColor3 = Color3.new(0.1, 0.6, 0.2)
+    end
+end
+
+-- Function to handle minimizing and maximizing
+local function toggleMinimize()
+    minimized = not minimized
+    if minimized then
+        for _, child in ipairs(frame:GetChildren()) do
+            if child ~= titleLabel and child ~= minimizeButton then
+                child.Visible = false
+            end
+        end
+        frame.Size = UDim2.new(0, 300, 0, 50)
+        minimizeButton.Text = "+"
+    else
+        for _, child in ipairs(frame:GetChildren()) do
+            child.Visible = true
+        end
+        frame.Size = UDim2.new(0, 300, 0, 200)
+        minimizeButton.Text = "-"
+    end
+end
+
+-- Connect button click to toggleSpin function
+button.MouseButton1Click:Connect(toggleSpin)
+minimizeButton.MouseButton1Click:Connect(toggleMinimize)
