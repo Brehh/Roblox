@@ -2,7 +2,7 @@
 local player = game.Players.LocalPlayer
 local waypointsFolder = game:GetService("Workspace"):WaitForChild("Waypoints")
 local UserInputService = game:GetService("UserInputService")
-player.Character.Humanoid.WalkSpeed = 32
+player.Character.Humanoid.WalkSpeed *= 2
 -- สร้าง ScreenGui (สมมติว่า script นี้อยู่ภายใน ScreenGui)
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "Warp Gui"
