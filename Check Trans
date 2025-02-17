@@ -1,0 +1,14 @@
+local module = game:GetService("ReplicatedStorage").Functions.Trans
+local rmod = require(module)
+local player = game.Players.LocalPlayer
+local trans = player.MiscStats.TotalTranscension.Value
+
+print('---------------------------------------')
+
+
+
+for i = 1,15  do
+    if tonumber(i) >= tonumber(trans) then
+        print('Trans ' .. i .. 'th','Require '.. rmod.RegTrans[tostring(i)] .. 'Level')
+    end
+end
