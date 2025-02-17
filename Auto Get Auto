@@ -1,8 +1,13 @@
 _G.a = true
-
+local mode = 2
 local player = game.Players.LocalPlayer.Character.HumanoidRootPart
-
-local part = game:GetService("Workspace").Buttons.Beach.Insane.HH
+local wow
+if mode == 1 then
+    wow = "Beach"
+elseif mode == 2 then
+    wow = 'Milky Way'
+end
+local part = game:GetService("Workspace").Buttons[wow].Insane.HH
 local part2 = game:GetService("Workspace").Buttons["Snowy Forest"].Extra.HH
 local part3 = game:GetService("Workspace").Buttons.Beach.SuperSanity.HH
 
