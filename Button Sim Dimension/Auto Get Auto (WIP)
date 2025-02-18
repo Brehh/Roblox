@@ -1,0 +1,39 @@
+_G.a = true
+local mode = 2
+local mode2 = 2
+local player = game.Players.LocalPlayer.Character.HumanoidRootPart
+local wow
+local wow2
+if mode == 1 then
+    wow = "Beach"
+elseif mode == 2 then
+    wow = 'Milky Way'
+end
+if mode2 == 1 then
+    wow2 = "Snowy Forest"
+elseif mode2 == 2 then
+    wow2 = 'Milky Way'
+end
+
+local part = game:GetService("Workspace").Buttons[wow].Insane.HH
+local part2 = game:GetService("Workspace").Buttons[wow2].Extra.HH
+local part3 = game:GetService("Workspace").Buttons.Beach.SuperSanity.HH
+
+for i,v in next,part2.Parent:GetChildren() do
+    if v.Name == part2.Name and v.config.Special1T.Value == 'Lunar' then
+        part2 = v
+        break
+    end
+end
+
+function fire(parts)
+    firetouchinterest(player,parts,0)
+    firetouchinterest(player,parts,1)
+end
+
+
+while task.wait() and _G.a do
+    task.defer(fire,part3)
+    task.defer(fire,part2)
+    task.defer(fire,part)
+end
