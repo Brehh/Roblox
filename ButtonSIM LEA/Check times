@@ -1,8 +1,16 @@
 local player = game.Players
 print('---------------------------------------------------------------')
+local listplayer = {}
+
 
 for a,b in next, player:GetChildren() do
-    local time = tonumber(b.MiscStats.Time.Value)
+    table.insert(listplayer, {key = b, value = tonumber(b.MiscStats.Time.Value)})
+end
+
+table.sort(listplayer, function(a, b) return a.value > b.value end)
+
+for _, item in ipairs(listplayer) do
+    local time = item.value
     local day
     local hour
     local mins
@@ -34,7 +42,7 @@ for a,b in next, player:GetChildren() do
     end
 
 
-    local text = b.Name .. ' '
+    local text = item.key.Name .. ' '
 
     for i = 1,4 do
         local v
