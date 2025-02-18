@@ -1,0 +1,61 @@
+local player = game.Players
+print('---------------------------------------------------------------')
+local listplayer = {}
+count = 0
+
+for a,b in next, player:GetChildren() do
+    table.insert(listplayer, {key = b, value = tonumber(b.Playtime.Value)})
+end
+
+table.sort(listplayer, function(a, b) return a.value > b.value end)
+
+for _, item in ipairs(listplayer) do
+    count += 1
+    local time = item.value
+    local day
+    local hour
+    local mins
+    local sec
+    local wow = {}
+
+    if (time//(60*60*24)) > 0 then
+        day = time//(60*60*24)
+        time = time%(60*60*24)
+        wow[1] = {}
+        wow[1]['Days'] = day
+    end
+    if (time//(60*60)) > 0 then
+        hour = time//(60*60)
+        time = time%(60*60)
+        wow[2] = {}
+        wow[2]['Hours'] = hour
+    end
+    if (time//(60)) > 0 then
+        mins = time//(60)
+        time = time%(60)
+        wow[3] = {}
+        wow[3]['Minutes'] = mins
+    end
+    if (time) > 0 then
+        sec = time
+        wow[4] = {}
+        wow[4]['Second'] = sec
+    end
+
+
+    local text = count .. '. ' .. item.key.DisplayName .. ' '
+
+    for i = 1,4 do
+        local v
+        if wow[i] then
+            for c,d in next,wow[i] do
+                v = d
+                i = c
+                break
+            end
+            text = text .. v .. ' ' ..  i .. ' '
+        end
+    end
+
+    print(text)
+end
