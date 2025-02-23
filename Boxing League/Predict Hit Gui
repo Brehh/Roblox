@@ -1,0 +1,116 @@
+-- Gui to Lua
+-- Version: 3.2
+print('AYO')
+-- Instances:
+
+local ScreenGui = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local TextLabel = Instance.new("TextLabel")
+ScreenGui.ResetOnSpawn = false
+
+-- Properties:
+
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+Frame.Parent = ScreenGui
+Frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Frame.BackgroundTransparency = 0
+Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Frame.BorderSizePixel = 0
+Frame.Position = UDim2.new(0.398564816, 0, 0.115716755, 0)
+Frame.Size = UDim2.new(0.248149976, 0, 0.046632126, 0)
+
+TextLabel.Parent = Frame
+TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel.BackgroundTransparency = 1.000
+TextLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel.BorderSizePixel = 0
+TextLabel.Size = UDim2.new(1, 0, 1, 0)
+TextLabel.Font = Enum.Font.SourceSansBold
+TextLabel.TextColor3 = Color3.fromRGB(255, 85, 0)
+TextLabel.TextScaled = true
+TextLabel.TextSize = 14.000
+TextLabel.TextWrapped = true
+
+-- ฟังก์ชันตรวจสอบ opponent
+function check()
+    local opponent = game:GetService("ReplicatedStorage").Stats[game.Players.LocalPlayer.Name].M1V1.E1.Value
+    local playerList = {}
+
+    for i, v in next, game.Players:GetPlayers() do
+        table.insert(playerList, tostring(v))
+    end
+
+    if table.find(playerList, opponent) then
+        return opponent  -- คืนค่า opponent เมื่อพบแล้ว
+    else
+        TextLabel.Text = ''
+        Frame.Visible = false
+        repeat
+            opponent = game:GetService("ReplicatedStorage").Stats[game.Players.LocalPlayer.Name].M1V1.E1.Value
+            table.clear(playerList)
+            for i, v in next, game.Players:GetPlayers() do
+                table.insert(playerList, tostring(v))
+            end
+            wait(1)
+        until table.find(playerList, opponent)
+        return opponent
+    end
+end
+
+print('WP')
+
+while task.wait() do
+    local opponent = check()  -- เรียก check() ครั้งเดียวแล้วเก็บไว้ในตัวแปร
+    if opponent then
+        local playerObj = game.Players:FindFirstChild(opponent)
+        if playerObj and playerObj.Character then
+            local character = playerObj.Character
+            local humanoid = character:WaitForChild("Humanoid")
+            local Animator = humanoid:WaitForChild("Animator")
+            -- ถ้า GetPlayingAnimationTracks คืนค่า nil ให้แทนที่ด้วยตารางว่าง
+            local playingAnimations = Animator:GetPlayingAnimationTracks() or {}
+            
+            local moves = nil
+            for i, v in ipairs(playingAnimations) do
+                if v.Animation.AnimationId == 'rbxassetid://3738519606' then
+                    moves = 'Uppercut'
+                    break
+                elseif v.Animation.AnimationId == 'rbxassetid://3738476938' then
+                    moves = 'Kick'
+                    break
+                elseif v.Animation.AnimationId == 'rbxassetid://782845736' then
+                    moves = 'StringCross'
+                    break
+                elseif v.Animation.AnimationId == 'rbxassetid://3738307442' then
+                    moves = 'Double Kick'
+                    break
+                elseif v.Animation.AnimationId == 'rbxassetid://3738310509' then
+                    moves = 'Spin Kick'
+                    break
+                elseif v.Animation.AnimationId == 'rbxassetid://6375133992' then
+                    moves = 'OverHand'
+                    break
+                elseif v.Animation.AnimationId == 'rbxassetid://4555527945' then
+                    moves = '360 Uppercut'
+                    break
+                elseif v.Animation.AnimationId == 'rbxassetid://3738299383' then
+                    moves = 'Spammer'
+                    break
+                elseif v.Animation.AnimationId == 'rbxassetid://5171193156' then
+                    moves = 'String Cross'
+                    break
+                end
+            end
+            
+            if moves then
+                TextLabel.Text = moves
+                Frame.Visible = true
+            else 
+                TextLabel.Text = ''
+                Frame.Visible = false
+            end
+        end
+    end
+end
+
