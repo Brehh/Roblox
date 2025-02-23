@@ -1,0 +1,138 @@
+print('WORK')
+game:GetService("ReplicatedStorage").UITrada.SY:Destroy()
+local s_rs = game:GetService("RunService")
+local l_plr = game:GetService("Players").LocalPlayer
+local vim = game:GetService('VirtualInputManager')
+local gameSettings = UserSettings().GameSettings
+local inFullscreen = gameSettings:InFullScreen()
+local l_humrp = l_plr.Character and l_plr.Character:FindFirstChild("HumanoidRootPart")
+local l_hum = l_plr.Character and l_plr.Character:FindFirstChild("Humanoid")
+
+local resp_con = l_plr.CharacterAdded:Connect(function(c) 
+    l_humrp = c:WaitForChild("HumanoidRootPart",3)
+    l_hum = c:WaitForChild("Humanoid",3)
+end)
+
+
+
+local function dnec(signal) 
+    local s = {}
+    for _, con in ipairs(getconnections(signal)) do 
+        local func = con.Function
+        if (func and islclosure(func)) then
+            if (not is_synapse_function(func)) then 
+                s[#s+1] = con
+                con:Disable() 
+            end
+        end
+    end
+    return s
+end
+
+local speed_amnt = 0.5
+local bef = game:GetService("ReplicatedStorage").Stats[l_plr.Name].WHERE
+local t = game:GetService("ReplicatedStorage").Stats[l_plr.Name].KiPending.WZ
+local bruh = game:GetService("ReplicatedStorage").Stats[l_plr.Name].KiPending
+local check = false
+
+
+
+    do
+    local a,b
+    
+bef:GetPropertyChangedSignal("Value"):Connect(function()
+    if bef.Value == 'A' then
+            s_rs:UnbindFromRenderStep("speed")
+            
+            for i,v in ipairs(a) do 
+                v:Enable()
+            end
+            for i,v in ipairs(b) do 
+                v:Enable()
+            end
+            check = false
+    end
+end)
+
+
+    t:GetPropertyChangedSignal("Value"):Connect(function()
+        if t.Value == false and check == false then
+            a = dnec(l_humrp.Changed)
+            b = dnec(l_humrp:GetPropertyChangedSignal("CFrame"))
+            
+            s_rs:BindToRenderStep("speed",2000,function(dt)
+                l_humrp.CFrame += l_hum.MoveDirection*dt*5*speed_amnt
+            end)
+            check = true
+        elseif t.Value == true then
+            s_rs:UnbindFromRenderStep("speed")
+            
+            for i,v in ipairs(a) do 
+                v:Enable()
+            end
+            for i,v in ipairs(b) do 
+                v:Enable()
+            end
+            check = false
+        end
+    end)
+end
+
+bruh:GetPropertyChangedSignal("Value"):Connect(function()
+ if bruh.Value == -2 then
+  while bruh.Value == -2 do
+   game:GetService("ReplicatedStorage").UseItem:FireServer("Use")
+   task.wait()
+  end
+ end
+end)
+
+print('YES')
+local PlayerGui = game:GetService("Players").LocalPlayer.PlayerGui
+
+
+PlayerGui.ChildAdded:Connect(function(Object)
+    local getobj
+    local getbestdex = -99999999999999999
+    local e = 0
+    local b = 0
+    if Object.Name == 'VS' then
+        
+        wait(0.2)
+        while e ~= 1 do
+            b = 0
+            getbestdex = -99999999999999999
+            for i,v in next,Object:WaitForChild('ZN'):GetChildren() do
+            if v.MC.MX.Value > 0 and v.ZIndex > getbestdex then
+              getbestdex = v.ZIndex
+              getobj = v
+            end
+             
+            if getobj ~= nil then
+            local obj = getobj.MC.TV
+                while b ~= 1 do
+                 if getobj.MC.MX.Value > 0 then
+                    b = 0
+                    local xddd = obj.AbsolutePosition + obj.AbsoluteSize / 2
+                    if not inFullscreen then
+                        vim:SendMouseButtonEvent(xddd.X,xddd.Y+50, 0, true, game, 1)
+                        vim:SendMouseButtonEvent(xddd.X,xddd.Y+50, 0, false, game, 1)
+                    else
+                        vim:SendMouseButtonEvent(xddd.X,xddd.Y, 0, true, game, 1)
+                        vim:SendMouseButtonEvent(xddd.X,xddd.Y, 0, false, game, 1)
+                    end
+                    wait(0.06)
+                 else
+                    b = 1
+                    wait()
+                 end
+                end
+                wait()
+            else
+            e = 1
+            wait(0.1)
+            end
+            end
+        end
+    end
+end)
