@@ -39,12 +39,12 @@ local scrollingFrame = game:GetService("Players").LocalPlayer.PlayerGui.Main.Fra
 local top5Names = getTop5LayoutOrderFrameNames(scrollingFrame)
 
 local data = {
-		["Egg"] = "Lava Egg",
-		["Type"] = "Normal",
-		["Name"] = "Pearl Phantom",
+		["Egg"] = "Necromancer Egg",
+		["Type"] = "Golden",
+		["Name"] = "Cursed Banshee",
 		["Multiplier2"] = 0,
 		["Autodeleted"] = false,
-		["Multiplier"] = 117,
+		["Multiplier"] = 1350,
 		["Equipped"] = false
 	}
 
@@ -55,6 +55,6 @@ for i,v in ipairs(top5Names) do
 end
 
 
-local ohString2 = "Golden"
+local ohString2 = "Rainbow"
 
 game:GetService("ReplicatedStorage").KPets.Events.Craft:FireServer(ohTable1, ohString2)
