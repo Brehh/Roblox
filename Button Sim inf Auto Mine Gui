@@ -1,0 +1,190 @@
+-- Create the ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "CustomGUI"
+screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+screenGui.ResetOnSpawn = false -- Keep the GUI even after respawning
+
+-- Create the Main Frame
+local mainFrame = Instance.new("Frame")
+mainFrame.Name = "MainFrame"
+mainFrame.Size = UDim2.new(0, 200, 0, 150)
+mainFrame.Position = UDim2.new(0.1, 0, 0.1, 0) -- Adjust position as needed
+mainFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+mainFrame.BorderSizePixel = 2
+mainFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+mainFrame.Parent = screenGui
+
+-- Create the Title Bar Frame
+local titleBar = Instance.new("Frame")
+titleBar.Name = "TitleBar"
+titleBar.Size = UDim2.new(1, 0, 0, 30)
+titleBar.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+titleBar.BorderSizePixel = 1
+titleBar.BorderColor3 = Color3.fromRGB(0, 0, 0)
+titleBar.Parent = mainFrame
+titleBar.Draggable = true
+
+-- Create the Title Label
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Name = "TitleLabel"
+titleLabel.Size = UDim2.new(1, 0, 1, 0)
+titleLabel.Text = "Custom GUI"
+titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+titleLabel.BackgroundTransparency = 1
+titleLabel.Font = Enum.Font.SourceSansBold
+titleLabel.TextSize = 16
+titleLabel.Parent = titleBar
+
+-- Create the Minimize Button
+local minimizeButton = Instance.new("TextButton")
+minimizeButton.Name = "MinimizeButton"
+minimizeButton.Size = UDim2.new(0, 30, 1, 0)
+minimizeButton.Position = UDim2.new(1, -30, 0, 0)
+minimizeButton.Text = "-"
+minimizeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+minimizeButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+minimizeButton.Font = Enum.Font.SourceSansBold
+minimizeButton.TextSize = 20
+minimizeButton.Parent = titleBar
+
+local isMinimized = false
+local contentFrame
+
+-- Function to toggle minimize
+local function toggleMinimize()
+	isMinimized = not isMinimized
+	if contentFrame then
+		contentFrame.Visible = not isMinimized
+	end
+	minimizeButton.Text = isMinimized and "+" or "-"
+	mainFrame.Size = isMinimized and UDim2.new(0, 200, 0, 30) or UDim2.new(0, 200, 0, 150)
+end
+
+minimizeButton.MouseButton1Click:Connect(toggleMinimize)
+
+-- Create the Content Frame (holds the buttons)
+contentFrame = Instance.new("Frame")
+contentFrame.Name = "ContentFrame"
+contentFrame.Size = UDim2.new(1, 0, 1, -30)
+contentFrame.Position = UDim2.new(0, 0, 0, 30)
+contentFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+contentFrame.Parent = mainFrame
+
+-- Create the _G.a Toggle Button
+local toggleAButton = Instance.new("TextButton")
+toggleAButton.Name = "ToggleAButton"
+toggleAButton.Size = UDim2.new(0.9, 0, 0.3, 0)
+toggleAButton.Position = UDim2.new(0.05, 0, 0.1, 0)
+toggleAButton.Text = "_G.a = false"
+toggleAButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+toggleAButton.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+toggleAButton.Font = Enum.Font.SourceSansBold
+toggleAButton.TextSize = 16
+toggleAButton.Parent = contentFrame
+
+-- Initialize _G.a if it doesn't exist
+if _G.a == nil then
+	_G.a = false
+end
+
+-- Function to update the toggle button text
+local function updateToggleAButton()
+	toggleAButton.Text = "_G.a = " .. tostring(_G.a)
+end
+
+-- Initial update
+updateToggleAButton()
+
+-- Toggle _G.a when the button is clicked
+toggleAButton.MouseButton1Click:Connect(function()
+	_G.a = not _G.a
+	updateToggleAButton()
+end)
+
+-- Create the Walkspeed Button
+local walkspeedButton = Instance.new("TextButton")
+walkspeedButton.Name = "WalkspeedButton"
+walkspeedButton.Size = UDim2.new(0.9, 0, 0.3, 0)
+walkspeedButton.Position = UDim2.new(0.05, 0, 0.6, 0)
+walkspeedButton.Text = "Double Walkspeed"
+walkspeedButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+walkspeedButton.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+walkspeedButton.Font = Enum.Font.SourceSansBold
+walkspeedButton.TextSize = 16
+walkspeedButton.Parent = contentFrame
+
+-- Function to double walkspeed
+walkspeedButton.MouseButton1Click:Connect(function()
+	local player = game.Players.LocalPlayer
+	if player and player.Character and player.Character:FindFirstChild("Humanoid") then
+		local humanoid = player.Character:FindFirstChild("Humanoid")
+		humanoid.WalkSpeed = humanoid.WalkSpeed * 2
+		-- You might want to add a cooldown or a way to revert this
+	end
+end)
+
+print("Custom GUI created successfully!")
+
+while task.wait(0.05) do
+	if _G.a then
+        task.defer(function()
+            local mapFolder = workspace.Map.Mine
+            local replicatedStorage = game:GetService("ReplicatedStorage")
+            local oreClickedEvent = replicatedStorage.Events.OreClicked
+            local player = game.Players.LocalPlayer -- Get the local player
+
+            local function findHighestNearestPart(folder)
+                local highestY = -math.huge
+                local highestParts = {}
+
+                if not player or not player.Character or not player.Character.PrimaryPart then return nil end -- check if the player and character exist.
+
+                local playerPosition = player.Character.PrimaryPart.Position
+
+                -- First, find the highest Y-value among parts within the distance
+                for _, part in ipairs(folder:GetChildren()) do
+                    if part:IsA("BasePart") and part.Name ~= 'Part' then
+                        local distance = (part.Position - playerPosition).Magnitude
+                        if distance <= 23 then -- Check if the part is within 23 studs
+                            if part.Position.Y > highestY then
+                                highestY = part.Position.Y
+                            end
+                        end
+                    end
+                end
+
+                -- Second, collect all parts that have the highest Y-value and are within the distance
+                for _, part in ipairs(folder:GetChildren()) do
+                    if part:IsA("BasePart") and part.Name ~= 'Part' then
+                        local distance = (part.Position - playerPosition).Magnitude
+                        if distance <= 23 and part.Position.Y == highestY then
+                            table.insert(highestParts, part)
+                        end
+                    end
+                end
+
+                -- Third, find the nearest part among the collected highest parts
+                local nearestHighestPart = nil
+                local nearestDistance = math.huge
+
+                if #highestParts > 0 then
+                    for _, part in ipairs(highestParts) do
+                        local distance = (part.Position - playerPosition).Magnitude
+                        if distance < nearestDistance then
+                            nearestDistance = distance
+                            nearestHighestPart = part
+                        end
+                    end
+                end
+
+                return nearestHighestPart
+            end
+
+            local ohInstance1 = findHighestNearestPart(mapFolder)
+
+            if ohInstance1 then
+                oreClickedEvent:FireServer(ohInstance1)
+            end
+        end)
+	end
+end
