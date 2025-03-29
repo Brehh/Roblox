@@ -121,21 +121,6 @@ local function createGui()
     return ScreenGui
 end
 
--- Call createGui to initialize the GUI when the game starts
-createGui()
-
--- Make the GUI persist after player reset or respawn
-Client.CharacterAdded:Connect(function(character)
-    -- Ensure the GUI is recreated when the player respawns
-    local existingGui = PlayerGui:FindFirstChild("RhythmControllerGui")
-    if existingGui then
-        existingGui:Destroy() -- Destroy the old GUI to avoid duplicates
-    end
-
-    -- Create and clone the GUI to PlayerGui after respawn
-    local newGui = createGui()
-    newGui.Parent = PlayerGui
-end)
 
 -- Function to simulate pressing a key
 function pressKey(key)
@@ -175,7 +160,7 @@ local function startScript()
             return
         end
 
-        local SideMenu = Menu:FindFirstChild('Speaker' .. _G.Speaker)
+        local SideMenu = Menu:FindFirstChild('Speaker' .. getrenv()._G.CurrentSpeakerNum)
         local IncomingArrows = SideMenu.ComingArrows
 
         local Keys = IncomingArrows:GetChildren()
@@ -188,9 +173,9 @@ local function startScript()
             local Start = SideMenu.MainContainer:FindFirstChild(Direction) and SideMenu.MainContainer[Direction].AbsolutePosition.Y
             local Start2 = SideMenu.MainContainer[Direction].AbsolutePosition.Y + (SideMenu.MainContainer[Direction].AbsoluteSize.Y / 2)
             local Current = ArrowsHolder.AbsolutePosition.Y + (ArrowsHolder.AbsoluteSize.Y / 2)
-            local Difference = (Start2 - Current)
+            local Difference = ArrowsHolder.Position.Y.Offset
 
-            if Difference <= 0 then
+            if Difference >= 0 then
                 task.spawn(function()
                     Marked[ArrowsHolder] = true
                     pressKey(Keybind)
