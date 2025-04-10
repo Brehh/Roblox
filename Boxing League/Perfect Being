@@ -29,7 +29,7 @@ local function dnec(signal)
     return s
 end
 
-local speed_amnt = 0.5
+local speed_amnt = 0.1
 local bef = game:GetService("ReplicatedStorage").Stats[l_plr.Name].WHERE
 local t = game:GetService("ReplicatedStorage").Stats[l_plr.Name].KiPending.WZ
 local bruh = game:GetService("ReplicatedStorage").Stats[l_plr.Name].KiPending
