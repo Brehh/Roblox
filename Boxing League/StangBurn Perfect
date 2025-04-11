@@ -251,6 +251,10 @@ local moveAnimationIds = {
     ['rbxassetid://4555527945'] = '360 Uppercut',
     ['rbxassetid://3738299383'] = 'Spammer',
     ['rbxassetid://5171193156'] = 'String Cross', -- Note: Duplicate ID/Name?
+}
+
+local moveAnimationIds2 = {
+    ['rbxassetid://3738213890'] = 'Grab'
     -- Add more moves here if needed
 }
 
@@ -325,47 +329,55 @@ print('WP - Starting Main Loop')
 
 -- Main Loop
 while task.wait() do -- task.wait() is preferred over wait()
-    if updateOpponentReferences() and opponentAnimator then
-        -- We have a valid opponent and animator, check their animations
-        local playingTracks = opponentAnimator:GetPlayingAnimationTracks()
-        local currentMoveName = nil
+    task.defer(function()
+        if updateOpponentReferences() and opponentAnimator then
+                -- We have a valid opponent and animator, check their animations
+                local playingTracks = opponentAnimator:GetPlayingAnimationTracks()
+                local currentMoveName = nil
+                local opponentknock = game:GetService("ReplicatedStorage").Stats[opponentPlayer.Name].Knock.Value
 
-        -- Iterate through currently playing tracks
-        for i = #playingTracks, 1, -1 do -- Check in reverse, potentially newer tracks are added later? Not guaranteed.
-            local track = playingTracks[i]
-            local animId = track.Animation.AnimationId
-            local foundMove = moveAnimationIds[animId]
-            if foundMove then
-                currentMoveName = foundMove
-                break -- Found a relevant move, use this one
-            end
-        end
+                -- Iterate through currently playing tracks
+                for i = #playingTracks, 1, -1 do -- Check in reverse, potentially newer tracks are added later? Not guaranteed.
+                    local track = playingTracks[i]
+                    local animId = track.Animation.AnimationId
+                    local foundMove = moveAnimationIds[animId]
+                    local foundMove2 = moveAnimationIds2[animId]
+                    if foundMove then
+                        currentMoveName = foundMove
+                        break -- Found a relevant move, use this one
+                    elseif foundMove2 and opponentknock == 0 then
+                        keyrelease(0x20)
+                        break
+                    end
+                end
 
-        -- Update the display only if the move has changed
-        if currentMoveName ~= lastDisplayedMove then
-            if currentMoveName then
-                TextLabel.Text = currentMoveName
-                Frame.Visible = true
-                --print("Displaying move:", currentMoveName) -- Debug print
-            else
+                -- Update the display only if the move has changed
+                if currentMoveName ~= lastDisplayedMove then
+                    if currentMoveName then
+                        TextLabel.Text = currentMoveName
+                        Frame.Visible = true
+                        --print("Displaying move:", currentMoveName) -- Debug print
+                    else
+                        TextLabel.Text = ""
+                        Frame.Visible = false
+                        --print("Clearing move display") -- Debug print
+                    end
+                    lastDisplayedMove = currentMoveName
+                end
+            
+
+        else
+            -- Opponent not found or references invalid, ensure UI is hidden
+            if Frame.Visible then
                 TextLabel.Text = ""
                 Frame.Visible = false
-                --print("Clearing move display") -- Debug print
+                lastDisplayedMove = nil -- Reset last displayed move
+                --print("Opponent lost, hiding display") -- Debug print
             end
-            lastDisplayedMove = currentMoveName
+            -- Optional: Add a small delay if opponent isn't found to prevent spamming checks too fast
+            -- task.wait(0.5) -- Uncomment if needed, but updateOpponentReferences should be fairly light
         end
-
-    else
-        -- Opponent not found or references invalid, ensure UI is hidden
-        if Frame.Visible then
-            TextLabel.Text = ""
-            Frame.Visible = false
-            lastDisplayedMove = nil -- Reset last displayed move
-            --print("Opponent lost, hiding display") -- Debug print
-        end
-        -- Optional: Add a small delay if opponent isn't found to prevent spamming checks too fast
-        -- task.wait(0.5) -- Uncomment if needed, but updateOpponentReferences should be fairly light
-    end
+    end)
 end
 
 print("Script loop somehow ended") -- Should not happen in normal gameplay
