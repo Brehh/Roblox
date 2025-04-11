@@ -1,0 +1,371 @@
+print('WORK')
+
+
+local folder
+
+if not game:GetService("ReplicatedStorage"):FindFirstChild('Player') then
+    folder = Instance.new('Folder',game:GetService("ReplicatedStorage"))
+    folder.Name = 'Player'
+else
+    folder = game:GetService("ReplicatedStorage"):FindFirstChild('Player')
+end
+
+local s_rs = game:GetService("RunService")
+local l_plr = game:GetService("Players").LocalPlayer
+local vim = game:GetService('VirtualInputManager')
+local gameSettings = UserSettings().GameSettings
+local inFullscreen = gameSettings:InFullScreen()
+local l_humrp = l_plr.Character and l_plr.Character:FindFirstChild("HumanoidRootPart")
+local l_hum = l_plr.Character and l_plr.Character:FindFirstChild("Humanoid")
+
+local resp_con = l_plr.CharacterAdded:Connect(function(c) 
+    l_humrp = c:WaitForChild("HumanoidRootPart",3)
+    l_hum = c:WaitForChild("Humanoid",3)
+end)
+
+
+
+local function dnec(signal) 
+    local s = {}
+    for _, con in ipairs(getconnections(signal)) do 
+        local func = con.Function
+        if (func and islclosure(func)) then
+            if (not is_synapse_function(func)) then 
+                s[#s+1] = con
+                con:Disable() 
+            end
+        end
+    end
+    return s
+end
+
+local speed_amnt = 0.1
+local bef = game:GetService("ReplicatedStorage").Stats[l_plr.Name].WHERE
+local t = game:GetService("ReplicatedStorage").Stats[l_plr.Name].KiPending.WZ
+local bruh = game:GetService("ReplicatedStorage").Stats[l_plr.Name].KiPending
+local fight = game:GetService("ReplicatedStorage").Stats[l_plr.Name]:FindFirstChild('M1V1')
+local check = false
+
+
+
+    do
+    local a,b
+
+function getplayer(mode)
+    if mode == 1 then
+        _G.mode = 2
+        for i,v in next, game.Players:GetChildren() do
+            if v ~= game.Players.LocalPlayer and v.Name ~= fight.ALLY.Value and v.Name ~= fight.E1.Value and v.Name ~= fight.E2.Value then
+                v.Character.Parent = folder
+            end
+        end
+    elseif mode == 2 then
+        for i,v in next, folder:GetChildren() do
+            _G.mode = 1
+            v.Parent = workspace
+        end
+    end
+end
+
+if not _G.mode then
+    _G.mode = 1
+
+    local Players = game:GetService("Players")
+
+    Players.PlayerAdded:Connect(function(player)
+        player.CharacterAdded:Connect(function(character)
+            if _G.mode == 2 then
+                player.Character.Parent = folder
+            end
+        end)
+    end)
+
+    for i,v in next,game.Players:GetChildren() do
+        if v ~= game.Players.LocalPlayer then
+            v.CharacterAdded:Connect(function(character)
+                if _G.mode == 2 then
+                    v.Character.Parent = folder
+                end
+            end)
+        end
+    end
+end
+
+fight:GetPropertyChangedSignal("Value"):Connect(function()
+    if fight.Value == 'A' then
+        getplayer(2)
+    else
+        getplayer(1)
+    end
+end)
+
+bef:GetPropertyChangedSignal("Value"):Connect(function()
+    if bef.Value == 'A' then
+            s_rs:UnbindFromRenderStep("speed")
+            
+            for i,v in ipairs(a) do 
+                v:Enable()
+            end
+            for i,v in ipairs(b) do 
+                v:Enable()
+            end
+            check = false
+    end
+end)
+
+
+    t:GetPropertyChangedSignal("Value"):Connect(function()
+        if t.Value == false and check == false then
+            a = dnec(l_humrp.Changed)
+            b = dnec(l_humrp:GetPropertyChangedSignal("CFrame"))
+            
+            s_rs:BindToRenderStep("speed",2000,function(dt)
+                l_humrp.CFrame += l_hum.MoveDirection*dt*5*speed_amnt
+            end)
+            check = true
+        elseif t.Value == true then
+            s_rs:UnbindFromRenderStep("speed")
+            
+            for i,v in ipairs(a) do 
+                v:Enable()
+            end
+            for i,v in ipairs(b) do 
+                v:Enable()
+            end
+            check = false
+        end
+    end)
+end
+
+bruh:GetPropertyChangedSignal("Value"):Connect(function()
+ if bruh.Value == -2 then
+  while bruh.Value == -2 do
+   game:GetService("ReplicatedStorage").UseItem:FireServer("Use")
+   task.wait()
+  end
+ end
+end)
+
+print('YES')
+local PlayerGui = game:GetService("Players").LocalPlayer.PlayerGui
+
+
+PlayerGui.ChildAdded:Connect(function(Object)
+    local getobj
+    local getbestdex = -99999999999999999
+    local e = 0
+    local b = 0
+    if Object.Name == 'VS' then
+        
+        wait(0.2)
+        while e ~= 1 do
+            b = 0
+            getbestdex = -99999999999999999
+            for i,v in next,Object:WaitForChild('ZN'):GetChildren() do
+            if v.MC.MX.Value > 0 and v.ZIndex > getbestdex then
+              getbestdex = v.ZIndex
+              getobj = v
+            end
+             
+            if getobj ~= nil then
+            local obj = getobj.MC.TV
+                while b ~= 1 do
+                 if getobj.MC.MX.Value > 0 then
+                    b = 0
+                    local xddd = obj.AbsolutePosition + obj.AbsoluteSize / 2
+                    if not inFullscreen then
+                        vim:SendMouseButtonEvent(xddd.X,xddd.Y+50, 0, true, game, 1)
+                        vim:SendMouseButtonEvent(xddd.X,xddd.Y+50, 0, false, game, 1)
+                    else
+                        vim:SendMouseButtonEvent(xddd.X,xddd.Y, 0, true, game, 1)
+                        vim:SendMouseButtonEvent(xddd.X,xddd.Y, 0, false, game, 1)
+                    end
+                    wait(0.06)
+                 else
+                    b = 1
+                    wait()
+                 end
+                end
+                wait()
+            else
+            e = 1
+            wait(0.1)
+            end
+            end
+        end
+    end
+end)
+
+-- Gui to Lua
+-- Version: 3.2 Improved
+print('AYO - Improved Script Initializing')
+
+-- Services
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+local PlayerGui2 = LocalPlayer:WaitForChild("PlayerGui")
+
+-- Instances:
+local ScreenGui = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local TextLabel = Instance.new("TextLabel")
+
+-- Properties:
+ScreenGui.Name = "OpponentMoveTracker"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = PlayerGui2 -- Parent last after setup
+
+Frame.Name = "MoveDisplayFrame"
+Frame.Parent = ScreenGui
+Frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Frame.BackgroundTransparency = 0 -- Assuming you want a white background
+Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Frame.BorderSizePixel = 0
+Frame.Position = UDim2.new(0.398564816, 0, 0.115716755, 0)
+Frame.Size = UDim2.new(0.248149976, 0, 0.046632126, 0)
+Frame.Visible = false -- Start hidden
+
+TextLabel.Name = "MoveTextLabel"
+TextLabel.Parent = Frame
+TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel.BackgroundTransparency = 1.000
+TextLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel.BorderSizePixel = 0
+TextLabel.Size = UDim2.new(1, 0, 1, 0)
+TextLabel.Font = Enum.Font.SourceSansBold
+TextLabel.TextColor3 = Color3.fromRGB(255, 85, 0)
+TextLabel.TextScaled = true
+TextLabel.TextSize = 14.000 -- TextScaled overrides this, but good default
+TextLabel.TextWrapped = true
+TextLabel.Text = "" -- Start empty
+
+-- Configuration: Map Animation IDs to Move Names
+local moveAnimationIds = {
+    ['rbxassetid://3738519606'] = 'Uppercut',
+    ['rbxassetid://3738476938'] = 'Kick',
+    ['rbxassetid://782845736'] = 'StringCross', -- Note: Duplicate ID/Name?
+    ['rbxassetid://3738307442'] = 'Double Kick',
+    ['rbxassetid://3738310509'] = 'Spin Kick',
+    ['rbxassetid://6375133992'] = 'OverHand',
+    ['rbxassetid://4555527945'] = '360 Uppercut',
+    ['rbxassetid://3738299383'] = 'Spammer',
+    ['rbxassetid://5171193156'] = 'String Cross', -- Note: Duplicate ID/Name?
+    -- Add more moves here if needed
+}
+
+-- Variables to cache opponent details
+local opponentName = nil
+local opponentPlayer = nil
+local opponentCharacter = nil
+local opponentHumanoid = nil
+local opponentAnimator = nil
+local lastDisplayedMove = nil
+
+-- Function to find and update opponent references
+local function updateOpponentReferences()
+    -- Get the target opponent name (assuming this path is correct)
+    local opponentNameValue = ReplicatedStorage:FindFirstChild("Stats")
+    if not opponentNameValue then print("Stats folder not found in ReplicatedStorage") return false end
+    opponentNameValue = opponentNameValue:FindFirstChild(LocalPlayer.Name)
+    if not opponentNameValue then return false end -- Player stats not ready?
+    opponentNameValue = opponentNameValue:FindFirstChild("M1V1")
+    if not opponentNameValue then return false end
+    opponentNameValue = opponentNameValue:FindFirstChild("E1")
+    if not opponentNameValue or not opponentNameValue:IsA("StringValue") then print("E1 value not found or not a StringValue") return false end
+
+    opponentName = opponentNameValue.Value
+
+    if not opponentName or opponentName == "" then
+        -- No opponent assigned
+        return false
+    end
+
+    -- Check if the cached player is still valid
+    if opponentPlayer and opponentPlayer.Parent == Players and opponentPlayer.Name == opponentName then
+        -- Player reference is good, check character/humanoid/animator
+        if not opponentCharacter or opponentCharacter.Parent ~= workspace then
+            opponentCharacter = opponentPlayer.Character -- Might be nil if respawning
+        end
+        if opponentCharacter and (not opponentHumanoid or opponentHumanoid.Parent ~= opponentCharacter) then
+            opponentHumanoid = opponentCharacter:FindFirstChildWhichIsA("Humanoid")
+        end
+        if opponentHumanoid and (not opponentAnimator or opponentAnimator.Parent ~= opponentHumanoid) then
+             opponentAnimator = opponentHumanoid:FindFirstChildWhichIsA("Animator")
+        end
+
+        -- Return true if we have a valid animator to check
+        return opponentAnimator ~= nil
+    else
+        -- Cached player is invalid or doesn't match, try to find the new one
+        opponentPlayer = Players:FindFirstChild(opponentName)
+        if opponentPlayer then
+            opponentCharacter = opponentPlayer.Character -- Might be nil initially
+            if opponentCharacter then
+                opponentHumanoid = opponentCharacter:FindFirstChildWhichIsA("Humanoid")
+                if opponentHumanoid then
+                    opponentAnimator = opponentHumanoid:FindFirstChildWhichIsA("Animator")
+                    -- Return true if we successfully found everything
+                    return opponentAnimator ~= nil
+                end
+            end
+        end
+    end
+
+    -- If we reached here, something is missing
+    opponentPlayer = nil
+    opponentCharacter = nil
+    opponentHumanoid = nil
+    opponentAnimator = nil
+    return false
+end
+
+
+print('WP - Starting Main Loop')
+
+-- Main Loop
+while task.wait() do -- task.wait() is preferred over wait()
+    if updateOpponentReferences() and opponentAnimator then
+        -- We have a valid opponent and animator, check their animations
+        local playingTracks = opponentAnimator:GetPlayingAnimationTracks()
+        local currentMoveName = nil
+
+        -- Iterate through currently playing tracks
+        for i = #playingTracks, 1, -1 do -- Check in reverse, potentially newer tracks are added later? Not guaranteed.
+            local track = playingTracks[i]
+            local animId = track.Animation.AnimationId
+            local foundMove = moveAnimationIds[animId]
+            if foundMove then
+                currentMoveName = foundMove
+                break -- Found a relevant move, use this one
+            end
+        end
+
+        -- Update the display only if the move has changed
+        if currentMoveName ~= lastDisplayedMove then
+            if currentMoveName then
+                TextLabel.Text = currentMoveName
+                Frame.Visible = true
+                --print("Displaying move:", currentMoveName) -- Debug print
+            else
+                TextLabel.Text = ""
+                Frame.Visible = false
+                --print("Clearing move display") -- Debug print
+            end
+            lastDisplayedMove = currentMoveName
+        end
+
+    else
+        -- Opponent not found or references invalid, ensure UI is hidden
+        if Frame.Visible then
+            TextLabel.Text = ""
+            Frame.Visible = false
+            lastDisplayedMove = nil -- Reset last displayed move
+            --print("Opponent lost, hiding display") -- Debug print
+        end
+        -- Optional: Add a small delay if opponent isn't found to prevent spamming checks too fast
+        -- task.wait(0.5) -- Uncomment if needed, but updateOpponentReferences should be fairly light
+    end
+end
+
+print("Script loop somehow ended") -- Should not happen in normal gameplay
