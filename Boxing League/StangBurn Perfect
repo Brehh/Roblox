@@ -340,7 +340,7 @@ while task.wait() do -- task.wait() is preferred over wait()
                     local animId = track.Animation.AnimationId
                     local foundMove2 = moveAnimationIds2[animId]
                     if foundMove2 and opponentknock == 0 then
-                        keyrelease(0x20)
+                        game:GetService("ReplicatedStorage").Action.CharacterUse:FireServer("KiDisabled")
                         break
                     end
                 end
