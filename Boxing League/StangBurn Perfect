@@ -254,10 +254,9 @@ local moveAnimationIds = {
 }
 
 local moveAnimationIds2 = {
-    ['rbxassetid://3738213890'] = 'Grab'
-    -- Add more moves here if needed
+    ['rbxassetid://3738213890'] = 'Grab',
+    ['rbxassetid://4571278159'] = 'Grab'
 }
-
 -- Variables to cache opponent details
 local opponentName = nil
 local opponentPlayer = nil
