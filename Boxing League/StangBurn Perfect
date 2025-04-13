@@ -244,7 +244,6 @@ TextLabel.Text = "" -- Start empty
 local moveAnimationIds = {
     ['rbxassetid://3738519606'] = 'Uppercut',
     ['rbxassetid://3738476938'] = 'Kick',
-    ['rbxassetid://782845736'] = 'StringCross', -- Note: Duplicate ID/Name?
     ['rbxassetid://3738307442'] = 'Double Kick',
     ['rbxassetid://3738310509'] = 'Spin Kick',
     ['rbxassetid://6375133992'] = 'OverHand',
