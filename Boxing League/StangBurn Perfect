@@ -53,10 +53,37 @@ local check = false
 
 function getplayer(mode)
     if mode == 1 then
-        _G.mode = 2
+        _G.mode = 2  
         for i,v in next, game.Players:GetChildren() do
             if v ~= game.Players.LocalPlayer and v.Name ~= fight.ALLY.Value and v.Name ~= fight.E1.Value and v.Name ~= fight.E2.Value then
                 v.Character.Parent = folder
+            elseif v ~= game.Players.LocalPlayer then
+                for _,char in next, v.Character:GetChildren() do
+                    if char:IsA('MeshPart') then
+                        char.Transparency = 0
+                    end
+                    if char.Name:find('Glove') and char:FindFirstChildWhichIsA('SpecialMesh') and char:FindFirstChildWhichIsA('Part') then
+                        local Neon = char:FindFirstChildWhichIsA('Part')
+                        local SpecialMesh1 = char:FindFirstChildWhichIsA('SpecialMesh')
+                        if not Neon:FindFirstChildWhichIsA('SpecialMeshMesh') and char:FindFirstChild('BodyGloveEquip') and #char:FindFirstChild('BodyGloveEquip'):GetChildren() == 2 then
+                            SpecialMesh1.MeshId = 'rbxassetid://4331789696'
+                        end
+                    end
+                end
+                
+                if v.Character.Gloves1:FindFirstChildWhichIsA('Decal') then
+                    v.Character.Gloves1:FindFirstChildWhichIsA('Decal'):Destroy()
+                end
+                if v.Character.Gloves2:FindFirstChildWhichIsA('Decal') then
+                    v.Character.Gloves2:FindFirstChildWhichIsA('Decal'):Destroy()
+                end
+                if v.Character:FindFirstChild('BodyGloveEquip') then
+                    v.Character:FindFirstChild('BodyGloveEquip'):Destroy()
+                end
+                if v.Character.Gloves1:FindFirstChildWhichIsA('SpecialMesh') then
+                    v.Character.Gloves1:FindFirstChildWhichIsA('SpecialMesh').MeshId = 'rbxassetid://4331789696'
+                end
+
             end
         end
     elseif mode == 2 then
@@ -326,9 +353,9 @@ end
 print('WP - Starting Main Loop')
 
 -- Main Loop
-while task.wait() do -- task.wait() is preferred over wait()
+while wait() do -- task.wait() is preferred over wait()
     task.defer(function()
-        if updateOpponentReferences() and opponentAnimator then
+        if updateOpponentReferences() and opponentAnimator and fight.Value == 'FIGHT' then
                 -- We have a valid opponent and animator, check their animations
                 local playingTracks = opponentAnimator:GetPlayingAnimationTracks()
                 local currentMoveName = nil
