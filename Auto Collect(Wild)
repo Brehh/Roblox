@@ -1,0 +1,18 @@
+local workspace = game:GetService("Workspace")
+
+-- Define the path to the Part.  This assumes the structure is exactly as described.
+local partPath = workspace:WaitForChild("StnagBurn"):WaitForChild("Detector")
+
+local CFrame = partPath.CFrame
+
+partPath:GetPropertyChangedSignal("CFrame"):Connect(function()
+    partPath.CFrame = CFrame
+end)
+
+partPath.Size = Vector3.new(0.001, 2048, 2048)
+
+partPath:GetPropertyChangedSignal("Size"):Connect(function()
+    partPath.Size = Vector3.new(0.001, 2048, 2048)
+end)
+
+partPath:ClearAllChildren()
