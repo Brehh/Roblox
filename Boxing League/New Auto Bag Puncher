@@ -1,0 +1,115 @@
+
+
+local vim = game:GetService('VirtualInputManager')
+
+
+local mystats = game:GetService("ReplicatedStorage").Stats[game.Players.LocalPlayer.Name]
+local where = mystats.WHERE.ST
+
+function click()
+    vim:SendMouseButtonEvent(0,0, 0, true, game, 1)
+    task.wait()
+    vim:SendMouseButtonEvent(0,0, 0, false, game, 1)
+end
+
+function uppercut()
+    vim:SendKeyEvent(true, Enum.KeyCode['Space'], false, game)
+    task.wait()
+    vim:SendKeyEvent(false, Enum.KeyCode['Space'], false, game)
+end
+
+
+function pressdexupgrade()
+    
+    local obj = game:GetService("Players").IkThatImSmurf.PlayerGui.MainGui.Stats.E3.Choice
+    if obj.Visible == true then
+        local xddd = obj.AbsolutePosition + obj.AbsoluteSize / 2
+
+        vim:SendMouseButtonEvent(xddd.X,xddd.Y+50, 0, true, game, 1)
+        vim:SendMouseButtonEvent(xddd.X,xddd.Y+50, 0, false, game, 1)
+    end
+end
+
+function isNumber(x)
+	return tonumber(x) ~= nil
+end
+
+function getdoing(box)
+    local wowtable = {}
+    local highest = -math.huge
+    local current
+    if not box.TV:FindFirstChildWhichIsA('SurfaceGui') then return end
+    local guis = box.TV:FindFirstChildWhichIsA('SurfaceGui')
+    for i,v in next, guis:GetChildren() do
+        if v.BackgroundColor3 == Color3.fromRGB(27, 42, 53) and v.Visible == true then
+            table.insert(wowtable,v)
+        end
+    end
+    for i,v in next,wowtable do
+        if v.ZIndex > highest then
+            current = v.Text
+            highest = v.ZIndex
+        end
+    end
+
+    if isNumber(current) then
+        return tonumber(current)
+    else
+        return current
+    end
+end
+
+function getMax(box)
+    local wowtable = {}
+    local highest = -math.huge
+    local current
+    if not box.TV:FindFirstChildWhichIsA('SurfaceGui') then return end
+    local guis = box.TV:FindFirstChildWhichIsA('SurfaceGui')
+    for i,v in next, guis:GetChildren() do
+        if v.BackgroundColor3 ~= Color3.fromRGB(27, 42, 53) and v.Visible == true and v.Position.Y.Scale < 1 then
+            table.insert(wowtable,v)
+        end
+    end
+    for i,v in next,wowtable do
+        if v.ZIndex > highest then
+            current = v.Text
+            highest = v.ZIndex
+        end
+    end
+    return tonumber(current)
+end
+
+local vim = game:GetService('VirtualInputManager')
+local waiting = nil
+local mainmin = 0
+
+_G.a = true
+
+while where.Value:find('BOX') and _G.a do
+    if where.Value:find('BOX') then
+        local box = game:GetService("Workspace").Machinery[where.Value]
+        local min = getdoing(box)
+        local max = getMax(box)
+        
+        
+        if type(min) == 'number' then
+            waiting = nil
+            if min ~= mainmin then
+                if (max - min) >= 100 then
+                    task.wait(0.33)
+                    uppercut()
+                    mainmin = min
+                else
+                    click()
+                    pressdexupgrade()
+                end
+            end
+        elseif not waiting then
+            mainmin = 0
+            waiting = true
+            wait(2)
+            uppercut()
+        end
+    end
+    task.wait()
+end
