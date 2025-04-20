@@ -1,0 +1,63 @@
+local vim = game:GetService('VirtualInputManager')
+
+function click(obj)
+    local xddd = obj.AbsolutePosition + obj.AbsoluteSize / 2
+    vim:SendMouseButtonEvent(xddd.X,xddd.Y+50, 0, true, game, 1)
+    task.wait()
+    vim:SendMouseButtonEvent(xddd.X,xddd.Y+50, 0, false, game, 1)
+end
+
+
+for i,v in next, game:GetService("Players").StnagBurn.PlayerGui.ScreenGui:GetChildren() do
+    if v.Name == 'ScrollingFrame' and v:FindFirstChild('C') then
+        v.Name = 'ScrollingFrame1'
+    end
+end
+
+for i,v in next, game:GetService("Players").StnagBurn.PlayerGui.ScreenGui.Energy.Frame:GetChildren() do
+    if v.Name == 'ScrollingFrame' and v:FindFirstChild('BA') then
+        v.Name = 'ScrollingFrame1'
+    end
+end
+
+
+local button = {}
+
+
+button['Iron'] = {}
+button['GetIron'] = game:GetService("Players").StnagBurn.PlayerGui.ScreenGui.ScrollingFrame.BA
+button['Iron'][1] = game:GetService("Players").StnagBurn.PlayerGui.ScreenGui.ScrollingFrame1.C.G
+button['Iron'][2] = game:GetService("Players").StnagBurn.PlayerGui.ScreenGui.ScrollingFrame1.C.F
+button['Iron'][3] = game:GetService("Players").StnagBurn.PlayerGui.ScreenGui.ScrollingFrame1.C.E
+button['EnergyTab'] = game:GetService("Players").StnagBurn.PlayerGui.ScreenGui.ScrollingFrame.CA
+button['GetEnergy'] = game:GetService("Players").StnagBurn.PlayerGui.ScreenGui.Energy.Frame.ScrollingFrame1.BA
+button['OutFromEnergy'] = game:GetService("Players").StnagBurn.PlayerGui.ScreenGui.Energy.Frame.TextButton
+
+for i = 1,5 do
+
+for i = 1,3 do
+click(button['GetIron'])
+
+wait(0.02)
+for i,v in next, button['Iron'] do
+    click(v)
+    task.wait(0.02)
+end
+
+wait(1)
+end
+
+for i = 1,2 do
+click(button['GetIron'])
+wait(1)
+end
+
+click(button['EnergyTab'])
+wait(0.5)
+click(button['GetEnergy'])
+wait(0.2)
+click(button['OutFromEnergy'])
+
+wait(1)
+
+end
