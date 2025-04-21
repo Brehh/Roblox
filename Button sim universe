@@ -1,0 +1,943 @@
+--[=[
+ d888b  db    db d888888b      .d888b.      db      db    db  .d8b.  
+88' Y8b 88    88   `88'        VP  `8D      88      88    88 d8' `8b 
+88      88    88    88            odD'      88      88    88 88ooo88 
+88  ooo 88    88    88          .88'        88      88    88 88~~~88 
+88. ~8~ 88b  d88   .88.        j88.         88booo. 88b  d88 88   88    @uniquadev
+ Y888P  ~Y8888P' Y888888P      888888D      Y88888P ~Y8888P' YP   YP  CONVERTER 
+]=]
+
+-- Instances: 58 | Scripts: 2 | Modules: 0 | Tags: 0
+local G2L = {};
+
+-- StarterGui.ButtonSim
+G2L["1"] = Instance.new("ScreenGui", game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"));
+G2L["1"]["Name"] = [[ButtonSim]];
+G2L["1"]["ZIndexBehavior"] = Enum.ZIndexBehavior.Sibling;
+
+
+-- StarterGui.ButtonSim.Main
+G2L["2"] = Instance.new("ScrollingFrame", G2L["1"]);
+G2L["2"]["Active"] = true;
+G2L["2"]["BorderSizePixel"] = 0;
+G2L["2"]["CanvasPosition"] = Vector2.new(0, 840);
+G2L["2"]["BackgroundColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["2"]["Name"] = [[Main]];
+G2L["2"]["AutomaticCanvasSize"] = Enum.AutomaticSize.XY;
+G2L["2"]["Size"] = UDim2.new(0.181, 0, 0.508, 0);
+G2L["2"]["ScrollBarImageColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["2"]["Position"] = UDim2.new(0.25666, 0, 0.27015, 0);
+G2L["2"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["2"]["BackgroundTransparency"] = 0.6;
+
+
+-- StarterGui.ButtonSim.Main.AutoBuy
+G2L["3"] = Instance.new("TextButton", G2L["2"]);
+G2L["3"]["TextWrapped"] = true;
+G2L["3"]["BorderSizePixel"] = 3;
+G2L["3"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["3"]["TextSize"] = 38;
+G2L["3"]["BackgroundColor3"] = Color3.fromRGB(171, 0, 0);
+G2L["3"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+G2L["3"]["Size"] = UDim2.new(0.78296, 0, 0.12758, 0);
+G2L["3"]["Name"] = [[AutoBuy]];
+G2L["3"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["3"]["Text"] = [[AutoBuy: Off]];
+G2L["3"]["Position"] = UDim2.new(0.10714, 0, 0.06038, 0);
+
+
+-- StarterGui.ButtonSim.Main.AutoBuy.UICorner
+G2L["4"] = Instance.new("UICorner", G2L["3"]);
+G2L["4"]["CornerRadius"] = UDim.new(1, 0);
+
+
+-- StarterGui.ButtonSim.Main.LocalScript
+G2L["5"] = Instance.new("LocalScript", G2L["2"]);
+
+
+
+-- StarterGui.ButtonSim.Main.UIListLayout
+G2L["6"] = Instance.new("UIListLayout", G2L["2"]);
+G2L["6"]["HorizontalAlignment"] = Enum.HorizontalAlignment.Center;
+G2L["6"]["Padding"] = UDim.new(0.1, 0);
+G2L["6"]["SortOrder"] = Enum.SortOrder.LayoutOrder;
+
+
+-- StarterGui.ButtonSim.Main.UIPadding
+G2L["7"] = Instance.new("UIPadding", G2L["2"]);
+G2L["7"]["PaddingTop"] = UDim.new(0.02, 0);
+
+
+-- StarterGui.ButtonSim.Main.Rebirth
+G2L["8"] = Instance.new("ScrollingFrame", G2L["2"]);
+G2L["8"]["Active"] = true;
+G2L["8"]["BorderSizePixel"] = 0;
+G2L["8"]["CanvasSize"] = UDim2.new(2, 0, 0, 0);
+G2L["8"]["CanvasPosition"] = Vector2.new(326.94766, 0);
+G2L["8"]["BackgroundColor3"] = Color3.fromRGB(171, 255, 0);
+G2L["8"]["Name"] = [[Rebirth]];
+G2L["8"]["AutomaticCanvasSize"] = Enum.AutomaticSize.XY;
+G2L["8"]["Size"] = UDim2.new(0.783, 0, 0.48906, 0);
+G2L["8"]["ScrollBarImageColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["8"]["Position"] = UDim2.new(0.1085, 0, 0.29217, 0);
+G2L["8"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["8"]["LayoutOrder"] = 1;
+
+
+-- StarterGui.ButtonSim.Main.Rebirth.UIListLayout
+G2L["9"] = Instance.new("UIListLayout", G2L["8"]);
+G2L["9"]["HorizontalAlignment"] = Enum.HorizontalAlignment.Center;
+G2L["9"]["Padding"] = UDim.new(0.1, 0);
+G2L["9"]["VerticalAlignment"] = Enum.VerticalAlignment.Center;
+G2L["9"]["SortOrder"] = Enum.SortOrder.LayoutOrder;
+G2L["9"]["FillDirection"] = Enum.FillDirection.Horizontal;
+
+
+-- StarterGui.ButtonSim.Main.Rebirth.Frame1
+G2L["a"] = Instance.new("Frame", G2L["8"]);
+G2L["a"]["BorderSizePixel"] = 0;
+G2L["a"]["BackgroundColor3"] = Color3.fromRGB(0, 86, 255);
+G2L["a"]["Size"] = UDim2.new(0.82222, 0, 0.83465, 0);
+G2L["a"]["Position"] = UDim2.new(-0.27565, 0, 0.09288, 0);
+G2L["a"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["a"]["Name"] = [[Frame1]];
+
+
+-- StarterGui.ButtonSim.Main.Rebirth.Frame1.UICorner
+G2L["b"] = Instance.new("UICorner", G2L["a"]);
+G2L["b"]["CornerRadius"] = UDim.new(0.3, 0);
+
+
+-- StarterGui.ButtonSim.Main.Rebirth.Frame1.TextLabel
+G2L["c"] = Instance.new("TextLabel", G2L["a"]);
+G2L["c"]["TextWrapped"] = true;
+G2L["c"]["BorderSizePixel"] = 0;
+G2L["c"]["TextSize"] = 14;
+G2L["c"]["TextScaled"] = true;
+G2L["c"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["c"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+G2L["c"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["c"]["BackgroundTransparency"] = 1;
+G2L["c"]["Size"] = UDim2.new(0.85717, 0, 0.68324, 0);
+G2L["c"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["c"]["Text"] = [[Cost: ???]];
+G2L["c"]["Position"] = UDim2.new(0.06828, 0, 0.15779, 0);
+
+
+-- StarterGui.ButtonSim.Main.Rebirth.Frame1.TextButton
+G2L["d"] = Instance.new("TextButton", G2L["a"]);
+G2L["d"]["BorderSizePixel"] = 0;
+G2L["d"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["d"]["TextSize"] = 14;
+G2L["d"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["d"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+G2L["d"]["Size"] = UDim2.new(1, 0, 1, 0);
+G2L["d"]["BackgroundTransparency"] = 1;
+G2L["d"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["d"]["Text"] = [[]];
+
+
+-- StarterGui.ButtonSim.Main.Rebirth.Frame2
+G2L["e"] = Instance.new("Frame", G2L["8"]);
+G2L["e"]["BorderSizePixel"] = 0;
+G2L["e"]["BackgroundColor3"] = Color3.fromRGB(0, 86, 255);
+G2L["e"]["Size"] = UDim2.new(0.82222, 0, 0.83465, 0);
+G2L["e"]["Position"] = UDim2.new(-0.27565, 0, 0.09288, 0);
+G2L["e"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["e"]["Name"] = [[Frame2]];
+
+
+-- StarterGui.ButtonSim.Main.Rebirth.Frame2.UICorner
+G2L["f"] = Instance.new("UICorner", G2L["e"]);
+G2L["f"]["CornerRadius"] = UDim.new(0.3, 0);
+
+
+-- StarterGui.ButtonSim.Main.Rebirth.Frame2.TextLabel
+G2L["10"] = Instance.new("TextLabel", G2L["e"]);
+G2L["10"]["TextWrapped"] = true;
+G2L["10"]["BorderSizePixel"] = 0;
+G2L["10"]["TextSize"] = 14;
+G2L["10"]["TextScaled"] = true;
+G2L["10"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["10"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+G2L["10"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["10"]["BackgroundTransparency"] = 1;
+G2L["10"]["Size"] = UDim2.new(0.85717, 0, 0.68324, 0);
+G2L["10"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["10"]["Text"] = [[Cost: ???]];
+G2L["10"]["Position"] = UDim2.new(0.06828, 0, 0.08876, 0);
+
+
+-- StarterGui.ButtonSim.Main.Rebirth.Frame2.TextLabel2
+G2L["11"] = Instance.new("TextLabel", G2L["e"]);
+G2L["11"]["TextWrapped"] = true;
+G2L["11"]["BorderSizePixel"] = 0;
+G2L["11"]["TextSize"] = 14;
+G2L["11"]["TextScaled"] = true;
+G2L["11"]["BackgroundColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["11"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+G2L["11"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["11"]["Size"] = UDim2.new(0.68648, 0, 0.1211, 0);
+G2L["11"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["11"]["Text"] = [[??? %]];
+G2L["11"]["Name"] = [[TextLabel2]];
+G2L["11"]["Position"] = UDim2.new(0.15363, 0, 0.80375, 0);
+
+
+-- StarterGui.ButtonSim.Main.Rebirth.Frame2.TextLabel2.UICorner
+G2L["12"] = Instance.new("UICorner", G2L["11"]);
+G2L["12"]["CornerRadius"] = UDim.new(1, 0);
+
+
+-- StarterGui.ButtonSim.Main.Rebirth.UIPadding
+G2L["13"] = Instance.new("UIPadding", G2L["8"]);
+G2L["13"]["PaddingTop"] = UDim.new(0.02, 0);
+G2L["13"]["PaddingLeft"] = UDim.new(0.2, 0);
+
+
+-- StarterGui.ButtonSim.Main.UltraRebirth
+G2L["14"] = Instance.new("ScrollingFrame", G2L["2"]);
+G2L["14"]["Active"] = true;
+G2L["14"]["BorderSizePixel"] = 0;
+G2L["14"]["CanvasSize"] = UDim2.new(2, 0, 0, 0);
+G2L["14"]["BackgroundColor3"] = Color3.fromRGB(86, 255, 255);
+G2L["14"]["Name"] = [[UltraRebirth]];
+G2L["14"]["AutomaticCanvasSize"] = Enum.AutomaticSize.XY;
+G2L["14"]["Size"] = UDim2.new(0.783, 0, 0.48906, 0);
+G2L["14"]["ScrollBarImageColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["14"]["Position"] = UDim2.new(0.1085, 0, 0.29217, 0);
+G2L["14"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["14"]["LayoutOrder"] = 2;
+
+
+-- StarterGui.ButtonSim.Main.UltraRebirth.UIListLayout
+G2L["15"] = Instance.new("UIListLayout", G2L["14"]);
+G2L["15"]["HorizontalAlignment"] = Enum.HorizontalAlignment.Center;
+G2L["15"]["Padding"] = UDim.new(0.1, 0);
+G2L["15"]["VerticalAlignment"] = Enum.VerticalAlignment.Center;
+G2L["15"]["SortOrder"] = Enum.SortOrder.LayoutOrder;
+G2L["15"]["FillDirection"] = Enum.FillDirection.Horizontal;
+
+
+-- StarterGui.ButtonSim.Main.UltraRebirth.Frame1
+G2L["16"] = Instance.new("Frame", G2L["14"]);
+G2L["16"]["BorderSizePixel"] = 0;
+G2L["16"]["BackgroundColor3"] = Color3.fromRGB(255, 0, 255);
+G2L["16"]["Size"] = UDim2.new(0.82222, 0, 0.83465, 0);
+G2L["16"]["Position"] = UDim2.new(-0.27565, 0, 0.09288, 0);
+G2L["16"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["16"]["Name"] = [[Frame1]];
+
+
+-- StarterGui.ButtonSim.Main.UltraRebirth.Frame1.UICorner
+G2L["17"] = Instance.new("UICorner", G2L["16"]);
+G2L["17"]["CornerRadius"] = UDim.new(0.3, 0);
+
+
+-- StarterGui.ButtonSim.Main.UltraRebirth.Frame1.TextLabel
+G2L["18"] = Instance.new("TextLabel", G2L["16"]);
+G2L["18"]["TextWrapped"] = true;
+G2L["18"]["BorderSizePixel"] = 0;
+G2L["18"]["TextSize"] = 14;
+G2L["18"]["TextScaled"] = true;
+G2L["18"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["18"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+G2L["18"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["18"]["BackgroundTransparency"] = 1;
+G2L["18"]["Size"] = UDim2.new(0.85717, 0, 0.68324, 0);
+G2L["18"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["18"]["Text"] = [[Cost: ???]];
+G2L["18"]["Position"] = UDim2.new(0.06828, 0, 0.15779, 0);
+
+
+-- StarterGui.ButtonSim.Main.UltraRebirth.Frame1.TextButton
+G2L["19"] = Instance.new("TextButton", G2L["16"]);
+G2L["19"]["BorderSizePixel"] = 0;
+G2L["19"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["19"]["TextSize"] = 14;
+G2L["19"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["19"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+G2L["19"]["Size"] = UDim2.new(1, 0, 1, 0);
+G2L["19"]["BackgroundTransparency"] = 1;
+G2L["19"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["19"]["Text"] = [[]];
+
+
+-- StarterGui.ButtonSim.Main.UltraRebirth.Frame2
+G2L["1a"] = Instance.new("Frame", G2L["14"]);
+G2L["1a"]["BorderSizePixel"] = 0;
+G2L["1a"]["BackgroundColor3"] = Color3.fromRGB(255, 0, 255);
+G2L["1a"]["Size"] = UDim2.new(0.82222, 0, 0.83465, 0);
+G2L["1a"]["Position"] = UDim2.new(-0.27565, 0, 0.09288, 0);
+G2L["1a"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["1a"]["Name"] = [[Frame2]];
+
+
+-- StarterGui.ButtonSim.Main.UltraRebirth.Frame2.UICorner
+G2L["1b"] = Instance.new("UICorner", G2L["1a"]);
+G2L["1b"]["CornerRadius"] = UDim.new(0.3, 0);
+
+
+-- StarterGui.ButtonSim.Main.UltraRebirth.Frame2.TextLabel
+G2L["1c"] = Instance.new("TextLabel", G2L["1a"]);
+G2L["1c"]["TextWrapped"] = true;
+G2L["1c"]["BorderSizePixel"] = 0;
+G2L["1c"]["TextSize"] = 14;
+G2L["1c"]["TextScaled"] = true;
+G2L["1c"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["1c"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+G2L["1c"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["1c"]["BackgroundTransparency"] = 1;
+G2L["1c"]["Size"] = UDim2.new(0.85717, 0, 0.68324, 0);
+G2L["1c"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["1c"]["Text"] = [[Cost: ???]];
+G2L["1c"]["Position"] = UDim2.new(0.06828, 0, 0.08876, 0);
+
+
+-- StarterGui.ButtonSim.Main.UltraRebirth.Frame2.TextLabel2
+G2L["1d"] = Instance.new("TextLabel", G2L["1a"]);
+G2L["1d"]["TextWrapped"] = true;
+G2L["1d"]["BorderSizePixel"] = 0;
+G2L["1d"]["TextSize"] = 14;
+G2L["1d"]["TextScaled"] = true;
+G2L["1d"]["BackgroundColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["1d"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+G2L["1d"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["1d"]["Size"] = UDim2.new(0.68648, 0, 0.1211, 0);
+G2L["1d"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["1d"]["Text"] = [[??? %]];
+G2L["1d"]["Name"] = [[TextLabel2]];
+G2L["1d"]["Position"] = UDim2.new(0.15363, 0, 0.80375, 0);
+
+
+-- StarterGui.ButtonSim.Main.UltraRebirth.Frame2.TextLabel2.UICorner
+G2L["1e"] = Instance.new("UICorner", G2L["1d"]);
+G2L["1e"]["CornerRadius"] = UDim.new(1, 0);
+
+
+-- StarterGui.ButtonSim.Main.UltraRebirth.UIPadding
+G2L["1f"] = Instance.new("UIPadding", G2L["14"]);
+G2L["1f"]["PaddingTop"] = UDim.new(0.02, 0);
+G2L["1f"]["PaddingLeft"] = UDim.new(0.2, 0);
+
+
+-- StarterGui.ButtonSim.Main.Renewal
+G2L["20"] = Instance.new("ScrollingFrame", G2L["2"]);
+G2L["20"]["Active"] = true;
+G2L["20"]["BorderSizePixel"] = 0;
+G2L["20"]["CanvasSize"] = UDim2.new(2, 0, 0, 0);
+G2L["20"]["BackgroundColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["20"]["Name"] = [[Renewal]];
+G2L["20"]["AutomaticCanvasSize"] = Enum.AutomaticSize.XY;
+G2L["20"]["Size"] = UDim2.new(0.783, 0, 0.48906, 0);
+G2L["20"]["Position"] = UDim2.new(0.1085, 0, 0.29217, 0);
+G2L["20"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["20"]["LayoutOrder"] = 4;
+
+
+-- StarterGui.ButtonSim.Main.Renewal.UIListLayout
+G2L["21"] = Instance.new("UIListLayout", G2L["20"]);
+G2L["21"]["HorizontalAlignment"] = Enum.HorizontalAlignment.Center;
+G2L["21"]["Padding"] = UDim.new(0.1, 0);
+G2L["21"]["VerticalAlignment"] = Enum.VerticalAlignment.Center;
+G2L["21"]["SortOrder"] = Enum.SortOrder.LayoutOrder;
+G2L["21"]["FillDirection"] = Enum.FillDirection.Horizontal;
+
+
+-- StarterGui.ButtonSim.Main.Renewal.Frame1
+G2L["22"] = Instance.new("Frame", G2L["20"]);
+G2L["22"]["BorderSizePixel"] = 0;
+G2L["22"]["BackgroundColor3"] = Color3.fromRGB(171, 0, 128);
+G2L["22"]["Size"] = UDim2.new(0.82222, 0, 0.83465, 0);
+G2L["22"]["Position"] = UDim2.new(-0.27565, 0, 0.09288, 0);
+G2L["22"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["22"]["Name"] = [[Frame1]];
+
+
+-- StarterGui.ButtonSim.Main.Renewal.Frame1.UICorner
+G2L["23"] = Instance.new("UICorner", G2L["22"]);
+G2L["23"]["CornerRadius"] = UDim.new(0.3, 0);
+
+
+-- StarterGui.ButtonSim.Main.Renewal.Frame1.TextLabel
+G2L["24"] = Instance.new("TextLabel", G2L["22"]);
+G2L["24"]["TextWrapped"] = true;
+G2L["24"]["BorderSizePixel"] = 0;
+G2L["24"]["TextSize"] = 14;
+G2L["24"]["TextScaled"] = true;
+G2L["24"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["24"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+G2L["24"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["24"]["BackgroundTransparency"] = 1;
+G2L["24"]["Size"] = UDim2.new(0.85717, 0, 0.68324, 0);
+G2L["24"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["24"]["Text"] = [[Cost: ???]];
+G2L["24"]["Position"] = UDim2.new(0.06828, 0, 0.15779, 0);
+
+
+-- StarterGui.ButtonSim.Main.Renewal.Frame1.TextButton
+G2L["25"] = Instance.new("TextButton", G2L["22"]);
+G2L["25"]["BorderSizePixel"] = 0;
+G2L["25"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["25"]["TextSize"] = 14;
+G2L["25"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["25"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+G2L["25"]["Size"] = UDim2.new(1, 0, 1, 0);
+G2L["25"]["BackgroundTransparency"] = 1;
+G2L["25"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["25"]["Text"] = [[]];
+
+
+-- StarterGui.ButtonSim.Main.Renewal.Frame2
+G2L["26"] = Instance.new("Frame", G2L["20"]);
+G2L["26"]["BorderSizePixel"] = 0;
+G2L["26"]["BackgroundColor3"] = Color3.fromRGB(171, 0, 128);
+G2L["26"]["Size"] = UDim2.new(0.82222, 0, 0.83465, 0);
+G2L["26"]["Position"] = UDim2.new(-0.27565, 0, 0.09288, 0);
+G2L["26"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["26"]["Name"] = [[Frame2]];
+
+
+-- StarterGui.ButtonSim.Main.Renewal.Frame2.UICorner
+G2L["27"] = Instance.new("UICorner", G2L["26"]);
+G2L["27"]["CornerRadius"] = UDim.new(0.3, 0);
+
+
+-- StarterGui.ButtonSim.Main.Renewal.Frame2.TextLabel
+G2L["28"] = Instance.new("TextLabel", G2L["26"]);
+G2L["28"]["TextWrapped"] = true;
+G2L["28"]["BorderSizePixel"] = 0;
+G2L["28"]["TextSize"] = 14;
+G2L["28"]["TextScaled"] = true;
+G2L["28"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["28"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+G2L["28"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["28"]["BackgroundTransparency"] = 1;
+G2L["28"]["Size"] = UDim2.new(0.85717, 0, 0.68324, 0);
+G2L["28"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["28"]["Text"] = [[Cost: ???]];
+G2L["28"]["Position"] = UDim2.new(0.06828, 0, 0.08876, 0);
+
+
+-- StarterGui.ButtonSim.Main.Renewal.Frame2.TextLabel2
+G2L["29"] = Instance.new("TextLabel", G2L["26"]);
+G2L["29"]["TextWrapped"] = true;
+G2L["29"]["BorderSizePixel"] = 0;
+G2L["29"]["TextSize"] = 14;
+G2L["29"]["TextScaled"] = true;
+G2L["29"]["BackgroundColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["29"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+G2L["29"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["29"]["Size"] = UDim2.new(0.68648, 0, 0.1211, 0);
+G2L["29"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["29"]["Text"] = [[??? %]];
+G2L["29"]["Name"] = [[TextLabel2]];
+G2L["29"]["Position"] = UDim2.new(0.15363, 0, 0.80375, 0);
+
+
+-- StarterGui.ButtonSim.Main.Renewal.Frame2.TextLabel2.UICorner
+G2L["2a"] = Instance.new("UICorner", G2L["29"]);
+G2L["2a"]["CornerRadius"] = UDim.new(1, 0);
+
+
+-- StarterGui.ButtonSim.Main.Renewal.UIPadding
+G2L["2b"] = Instance.new("UIPadding", G2L["20"]);
+G2L["2b"]["PaddingTop"] = UDim.new(0.02, 0);
+G2L["2b"]["PaddingLeft"] = UDim.new(0.2, 0);
+
+
+-- StarterGui.ButtonSim.Main.ResetButton
+G2L["2c"] = Instance.new("TextButton", G2L["2"]);
+G2L["2c"]["TextWrapped"] = true;
+G2L["2c"]["BorderSizePixel"] = 3;
+G2L["2c"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["2c"]["TextSize"] = 38;
+G2L["2c"]["BackgroundColor3"] = Color3.fromRGB(171, 0, 0);
+G2L["2c"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+G2L["2c"]["Size"] = UDim2.new(0.78296, 0, 0.12758, 0);
+G2L["2c"]["LayoutOrder"] = -1;
+G2L["2c"]["Name"] = [[ResetButton]];
+G2L["2c"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["2c"]["Text"] = [[PressToReset]];
+G2L["2c"]["Position"] = UDim2.new(0.10714, 0, 0.06038, 0);
+
+
+-- StarterGui.ButtonSim.Main.ResetButton.UICorner
+G2L["2d"] = Instance.new("UICorner", G2L["2c"]);
+G2L["2d"]["CornerRadius"] = UDim.new(1, 0);
+
+
+-- StarterGui.ButtonSim.Main.Prestige
+G2L["2e"] = Instance.new("ScrollingFrame", G2L["2"]);
+G2L["2e"]["Active"] = true;
+G2L["2e"]["BorderSizePixel"] = 0;
+G2L["2e"]["CanvasSize"] = UDim2.new(2, 0, 0, 0);
+G2L["2e"]["BackgroundColor3"] = Color3.fromRGB(255, 0, 0);
+G2L["2e"]["Name"] = [[Prestige]];
+G2L["2e"]["AutomaticCanvasSize"] = Enum.AutomaticSize.XY;
+G2L["2e"]["Size"] = UDim2.new(0.783, 0, 0.48906, 0);
+G2L["2e"]["ScrollBarImageColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["2e"]["Position"] = UDim2.new(0.1085, 0, 0.29217, 0);
+G2L["2e"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["2e"]["LayoutOrder"] = 3;
+
+
+-- StarterGui.ButtonSim.Main.Prestige.UIListLayout
+G2L["2f"] = Instance.new("UIListLayout", G2L["2e"]);
+G2L["2f"]["HorizontalAlignment"] = Enum.HorizontalAlignment.Center;
+G2L["2f"]["Padding"] = UDim.new(0.1, 0);
+G2L["2f"]["VerticalAlignment"] = Enum.VerticalAlignment.Center;
+G2L["2f"]["SortOrder"] = Enum.SortOrder.LayoutOrder;
+G2L["2f"]["FillDirection"] = Enum.FillDirection.Horizontal;
+
+
+-- StarterGui.ButtonSim.Main.Prestige.Frame1
+G2L["30"] = Instance.new("Frame", G2L["2e"]);
+G2L["30"]["BorderSizePixel"] = 0;
+G2L["30"]["BackgroundColor3"] = Color3.fromRGB(86, 255, 255);
+G2L["30"]["Size"] = UDim2.new(0.82222, 0, 0.83465, 0);
+G2L["30"]["Position"] = UDim2.new(-0.27565, 0, 0.09288, 0);
+G2L["30"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["30"]["Name"] = [[Frame1]];
+
+
+-- StarterGui.ButtonSim.Main.Prestige.Frame1.UICorner
+G2L["31"] = Instance.new("UICorner", G2L["30"]);
+G2L["31"]["CornerRadius"] = UDim.new(0.3, 0);
+
+
+-- StarterGui.ButtonSim.Main.Prestige.Frame1.TextLabel
+G2L["32"] = Instance.new("TextLabel", G2L["30"]);
+G2L["32"]["TextWrapped"] = true;
+G2L["32"]["BorderSizePixel"] = 0;
+G2L["32"]["TextSize"] = 14;
+G2L["32"]["TextScaled"] = true;
+G2L["32"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["32"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+G2L["32"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["32"]["BackgroundTransparency"] = 1;
+G2L["32"]["Size"] = UDim2.new(0.85717, 0, 0.68324, 0);
+G2L["32"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["32"]["Text"] = [[Cost: ???]];
+G2L["32"]["Position"] = UDim2.new(0.06828, 0, 0.15779, 0);
+
+
+-- StarterGui.ButtonSim.Main.Prestige.Frame1.TextButton
+G2L["33"] = Instance.new("TextButton", G2L["30"]);
+G2L["33"]["BorderSizePixel"] = 0;
+G2L["33"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["33"]["TextSize"] = 14;
+G2L["33"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["33"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+G2L["33"]["Size"] = UDim2.new(1, 0, 1, 0);
+G2L["33"]["BackgroundTransparency"] = 1;
+G2L["33"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["33"]["Text"] = [[]];
+
+
+-- StarterGui.ButtonSim.Main.Prestige.Frame2
+G2L["34"] = Instance.new("Frame", G2L["2e"]);
+G2L["34"]["BorderSizePixel"] = 0;
+G2L["34"]["BackgroundColor3"] = Color3.fromRGB(86, 255, 255);
+G2L["34"]["Size"] = UDim2.new(0.82222, 0, 0.83465, 0);
+G2L["34"]["Position"] = UDim2.new(-0.27565, 0, 0.09288, 0);
+G2L["34"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["34"]["Name"] = [[Frame2]];
+
+
+-- StarterGui.ButtonSim.Main.Prestige.Frame2.UICorner
+G2L["35"] = Instance.new("UICorner", G2L["34"]);
+G2L["35"]["CornerRadius"] = UDim.new(0.3, 0);
+
+
+-- StarterGui.ButtonSim.Main.Prestige.Frame2.TextLabel
+G2L["36"] = Instance.new("TextLabel", G2L["34"]);
+G2L["36"]["TextWrapped"] = true;
+G2L["36"]["BorderSizePixel"] = 0;
+G2L["36"]["TextSize"] = 14;
+G2L["36"]["TextScaled"] = true;
+G2L["36"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["36"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+G2L["36"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["36"]["BackgroundTransparency"] = 1;
+G2L["36"]["Size"] = UDim2.new(0.85717, 0, 0.68324, 0);
+G2L["36"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["36"]["Text"] = [[Cost: ???]];
+G2L["36"]["Position"] = UDim2.new(0.06828, 0, 0.08876, 0);
+
+
+-- StarterGui.ButtonSim.Main.Prestige.Frame2.TextLabel2
+G2L["37"] = Instance.new("TextLabel", G2L["34"]);
+G2L["37"]["TextWrapped"] = true;
+G2L["37"]["BorderSizePixel"] = 0;
+G2L["37"]["TextSize"] = 14;
+G2L["37"]["TextScaled"] = true;
+G2L["37"]["BackgroundColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["37"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+G2L["37"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["37"]["Size"] = UDim2.new(0.68648, 0, 0.1211, 0);
+G2L["37"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["37"]["Text"] = [[??? %]];
+G2L["37"]["Name"] = [[TextLabel2]];
+G2L["37"]["Position"] = UDim2.new(0.15363, 0, 0.80375, 0);
+
+
+-- StarterGui.ButtonSim.Main.Prestige.Frame2.TextLabel2.UICorner
+G2L["38"] = Instance.new("UICorner", G2L["37"]);
+G2L["38"]["CornerRadius"] = UDim.new(1, 0);
+
+
+-- StarterGui.ButtonSim.Main.Prestige.UIPadding
+G2L["39"] = Instance.new("UIPadding", G2L["2e"]);
+G2L["39"]["PaddingTop"] = UDim.new(0.02, 0);
+G2L["39"]["PaddingLeft"] = UDim.new(0.2, 0);
+
+
+-- StarterGui.ButtonSim.LocalScript
+G2L["3a"] = Instance.new("LocalScript", G2L["1"]);
+
+
+
+-- StarterGui.ButtonSim.Main.LocalScript
+local function C_5()
+local script = G2L["5"];
+	local UserInputService = game:GetService("UserInputService")
+	
+	local gui = script.Parent
+	
+	local dragging
+	local dragInput
+	local dragStart
+	local startPos
+	
+	local function update(input)
+		local delta = input.Position - dragStart
+		gui.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+	end
+	
+	gui.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			dragging = true
+			dragStart = input.Position
+			startPos = gui.Position
+	
+			input.Changed:Connect(function()
+				if input.UserInputState == Enum.UserInputState.End then
+					dragging = false
+				end
+			end)
+		end
+	end)
+	
+	gui.InputChanged:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+			dragInput = input
+		end
+	end)
+	
+	UserInputService.InputChanged:Connect(function(input)
+		if input == dragInput and dragging then
+			update(input)
+		end
+	end)
+end;
+task.spawn(C_5);
+-- StarterGui.ButtonSim.LocalScript
+local function C_3a()
+local script = G2L["3a"];
+	
+	local toggle = false
+	
+	
+	local resetall = script.Parent.Main.ResetButton
+	local autobuy = script.Parent.Main.AutoBuy
+	local Rebirth = script.Parent.Main.Rebirth
+	local URebirth = script.Parent.Main.UltraRebirth
+	local Prestige = script.Parent.Main.Prestige
+	local Renew = script.Parent.Main.Renewal
+	
+	
+	
+	autobuy.MouseButton1Click:Connect(function()
+		toggle = not toggle
+		autobuy.BackgroundColor3 = toggle and Color3.new(0,1,0) or Color3.new(1,0,0)
+	end)
+	
+	local eter = require(game:GetService("ReplicatedStorage").Data.EternityNum)
+	local convert = eter.convert
+	local me = eter.me
+	local mul = eter.mul
+	local div = eter.div
+	local short = eter.short
+	
+	
+	local cash = game:GetService("Players").LocalPlayer.Stats.Cash
+	local Multi = game:GetService("Players").LocalPlayer.Stats.Multi
+	local RebirthS = game:GetService("Players").StnagBurn.Stats.Rebirth
+	local UltraRebirthS = game:GetService("Players").StnagBurn.Stats.UltraRebirth
+	local PrestigeS = game:GetService("Players").StnagBurn.Stats.Prestige
+	
+	
+	local multtab = {}
+	local rebtab = {}
+	local urebtab = {}
+	local prestab = {}
+	local renewtab = {}
+	
+	
+	
+	function getallmultibutton()
+		multtab = {}
+		for _,fold in next,game:GetService("Workspace").Buttonz:GetChildren() do
+			local xd = fold:FindFirstChild('Multi')
+			if not xd then continue end
+			xd = xd:FindFirstChildWhichIsA('Model')
+			for _,part in next,xd:GetChildren() do
+				table.insert(multtab,part)
+			end
+		end
+		
+		table.sort(multtab,function(a,b)
+			return me(b.config.Cost.Value,a.config.Cost.Value)
+		end)
+	end
+	
+	getallmultibutton()
+	
+	function getcost1()
+		local cool
+		for i,v in next, multtab do
+			if me(cash.Value, mul(v.config.Cost.Value,3)) then
+				cool = v
+			end
+		end
+		return cool
+	end
+	
+	function getallrebbutton()
+		rebtab = {}
+		for _,fold in next,game:GetService("Workspace").Buttonz:GetChildren() do
+			local xd = fold:FindFirstChild('Rebirth')
+			if not xd then continue end
+			xd = xd:FindFirstChildWhichIsA('Model')
+			for _,part in next,xd:GetChildren() do
+				table.insert(rebtab,part)
+			end
+		end
+		table.sort(rebtab,function(a,b)
+			return me(b.config.Cost.Value,a.config.Cost.Value)
+		end)
+	end
+	
+	getallrebbutton()
+	
+	function getrebcost()
+		local cool
+		local wow
+		for i,v in next, rebtab do
+			if me(Multi.Value, v.config.Cost.Value) then
+				cool = v
+				wow = i
+			end
+		end
+		if cool and wow then
+			return {cool,wow}
+		else
+			return nil
+		end
+	end
+	
+	function getallurebbutton()
+		urebtab = {}
+		for _,fold in next,game:GetService("Workspace").Buttonz:GetChildren() do
+			local xd = fold:FindFirstChild('UltraRebirth')
+			if not xd then continue end
+			xd = xd:FindFirstChildWhichIsA('Model')
+			for _,part in next,xd:GetChildren() do
+				table.insert(urebtab,part)
+			end
+		end
+		table.sort(urebtab,function(a,b)
+			return me(b.config.Cost.Value,a.config.Cost.Value)
+		end)
+	end
+	
+	getallurebbutton()
+	
+	function geturebcost()
+		local cool
+		local wow
+		for i,v in next, urebtab do
+			if me(RebirthS.Value, v.config.Cost.Value) then
+				cool = v
+				wow = i
+			end
+		end
+		if cool and wow then
+			return {cool,wow}
+		else
+			return nil
+		end
+	end
+	
+	function getallpresbutton()
+		prestab = {}
+		for _,fold in next,game:GetService("Workspace").Buttonz:GetChildren() do
+			local xd = fold:FindFirstChild('Prestige')
+			if not xd then continue end
+			xd = xd:FindFirstChildWhichIsA('Model')
+			if xd then
+				for _,part in next,xd:GetChildren() do
+					table.insert(prestab,part)
+				end
+			end
+		end
+		table.sort(prestab,function(a,b)
+			return me(b.config.Cost.Value,a.config.Cost.Value)
+		end)
+	end
+	
+	getallpresbutton()
+	
+	function getprescost()
+		local cool
+		local wow
+		for i,v in next, prestab do
+			if me(UltraRebirthS.Value, v.config.Cost.Value) then
+				cool = v
+				wow = i
+			end
+		end
+		if cool and wow then
+			return {cool,wow}
+		else
+			return nil
+		end
+	end
+	
+	
+	function getallrenewbutton()
+		renewtab = {}
+		for _,fold in next,game:GetService("Workspace").Buttonz:GetChildren() do
+			local xd = fold:FindFirstChild('Renewal')
+			if not xd then continue end
+			xd = xd:FindFirstChildWhichIsA('Model')
+			if xd then
+				for _,part in next,xd:GetChildren() do
+					table.insert(renewtab,part)
+				end
+			end
+		end
+		table.sort(renewtab,function(a,b)
+			return me(b.config.Cost.Value,a.config.Cost.Value)
+		end)
+	end
+	
+	getallrenewbutton()
+	
+	function getrenewcost()
+		local cool
+		local wow
+		for i,v in next, renewtab do
+			if me(PrestigeS.Value, v.config.Cost.Value) then
+				cool = v
+				wow = i
+			end
+		end
+		if cool and wow then
+			return {cool,wow}
+		else
+			return nil
+		end
+	end
+	
+	
+	
+	
+	resetall.MouseButton1Click:Connect(function()
+		getallmultibutton()
+		getallrebbutton()
+		getallurebbutton()
+		getallpresbutton()
+		getrenewcost()
+	end)
+	
+	local currentmul = nil
+	
+	task.defer(function()
+		while wait(0.2)  do
+			if toggle then
+				local part = getcost1()
+				if part ~= currentmul and part then
+					local hum = game.Players.LocalPlayer.Character["Right Leg"]
+					pcall(function()
+						hum.CFrame = part.CFrame
+						currentmul = part
+					end)
+				end
+			end
+		end
+	end)
+	
+	
+	function auto(getcost,gettab,MainFrame,BuyValue)
+		
+		local currentreb = nil
+	
+		MainFrame.Frame1.TextButton.MouseButton1Click:Connect(function()
+			if MainFrame ~= Rebirth then
+				toggle = false
+				autobuy.BackgroundColor3 = Color3.new(1,0,0)
+			end
+			if currentreb then
+				firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart,currentreb,0)
+				task.wait()
+				firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart,currentreb,1)
+			end
+		end)
+	
+		task.defer(function()
+			while wait(0.1)  do
+				local check = getcost()
+				if check then
+					currentreb = check[1]
+					MainFrame.Visible = true
+					local part = check[1]
+					local board = part:FindFirstChildWhichIsA('BillboardGui')
+					local Cost = board.Cost.Text
+					MainFrame.Frame1.TextLabel.Text = 'Cost: ' .. Cost 
+					
+					if gettab[check[2]+1] then
+						local part2 = gettab[check[2]+1]
+						local board2 = part2:FindFirstChildWhichIsA('BillboardGui')
+						local Cost2 = board2.Cost.Text
+						
+						MainFrame.Frame2.TextLabel.Text = 'Cost: ' .. Cost2
+						MainFrame.Frame2.TextLabel2.Text = short(mul(div(BuyValue.Value,part2.config.Cost.Value),100)) .. '%'
+					else
+						MainFrame.Frame2.TextLabel.Text = 'Cost: Max'
+						MainFrame.Frame2.TextLabel2.Visible = false
+					end
+				else
+					MainFrame.Visible = false
+					currentreb = nil
+				end
+			end
+		end)
+		
+	end
+	
+	
+	auto(getrebcost,rebtab,Rebirth,Multi)
+	
+	auto(geturebcost,urebtab,URebirth,RebirthS)
+	
+	auto(getprescost,prestab,Prestige,UltraRebirthS)
+	
+	auto(getrenewcost,renewtab,Renew,PrestigeS)
+	
+	
+end;
+task.spawn(C_3a);
+
+return G2L["1"], require;
