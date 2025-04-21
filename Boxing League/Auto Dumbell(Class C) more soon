@@ -36,7 +36,7 @@ if game.PlaceId == Lobby then
     space()
     wait(0.5)
     space()
-    
+
     wait(1.5)
 
     local L1 = game:GetService("Players").LocalPlayer.PlayerGui.MenuLeague.League.List.L1
@@ -91,9 +91,7 @@ elseif game.PlaceId == checkclass then
 
         function Equip()
             repeat 
-                vim:SendKeyEvent(true, Enum.KeyCode['E'], false, game)
-                task.wait()
-                vim:SendKeyEvent(false, Enum.KeyCode['E'], false, game)
+                workspace.Machinery.DUMB1.RS.RemoteEvent:FireServer({"Interact"})
                 wait(0.5)
             until where.Value:find('DUMB')
         end
