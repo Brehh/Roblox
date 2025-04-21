@@ -21,7 +21,7 @@ end
 
 function pressdexupgrade()
     
-    local obj = game:GetService("Players").IkThatImSmurf.PlayerGui.MainGui.Stats.E3.Choice
+    local obj = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.Stats.E3.Choice
     if obj.Visible == true then
         local xddd = obj.AbsolutePosition + obj.AbsoluteSize / 2
 
