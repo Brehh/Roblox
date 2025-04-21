@@ -34,6 +34,9 @@ if game.PlaceId == Lobby then
     print("Done Loading!")
     wait(1)
     space()
+    wait(0.5)
+    space()
+    
     wait(1.5)
 
     local L1 = game:GetService("Players").LocalPlayer.PlayerGui.MenuLeague.League.List.L1
@@ -112,6 +115,7 @@ elseif game.PlaceId == checkclass then
             walk(grabpos.Position)
             Equip()
             print('Done Progess 1')
+            task.defer(walk,bgrab1.Position)
             repeat 
                 game:GetService("ReplicatedStorage").UseItem:FireServer("Use")
                 strupgrade()
@@ -133,3 +137,5 @@ elseif game.PlaceId == checkclass then
         testwalk()
     end
 end
+
+
