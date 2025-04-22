@@ -1,0 +1,408 @@
+--[=[
+ d888b  db    db d888888b      .d888b.      db      db    db  .d8b.  
+88' Y8b 88    88   `88'        VP  `8D      88      88    88 d8' `8b 
+88      88    88    88            odD'      88      88    88 88ooo88 
+88  ooo 88    88    88          .88'        88      88    88 88~~~88 
+88. ~8~ 88b  d88   .88.        j88.         88booo. 88b  d88 88   88    @uniquadev
+ Y888P  ~Y8888P' Y888888P      888888D      Y88888P ~Y8888P' YP   YP  CONVERTER 
+]=]
+
+-- Instances: 17 | Scripts: 2 | Modules: 0 | Tags: 0
+local G2L = {};
+
+-- StarterGui.ButtonSim
+G2L["1"] = Instance.new("ScreenGui", game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"));
+G2L["1"]["Name"] = [[ButtonSim]];
+G2L["1"]["ZIndexBehavior"] = Enum.ZIndexBehavior.Sibling;
+
+
+-- StarterGui.ButtonSim.Main
+G2L["2"] = Instance.new("ScrollingFrame", G2L["1"]);
+G2L["2"]["Active"] = true;
+G2L["2"]["BorderSizePixel"] = 0;
+G2L["2"]["BackgroundColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["2"]["Name"] = [[Main]];
+G2L["2"]["AutomaticCanvasSize"] = Enum.AutomaticSize.XY;
+G2L["2"]["Size"] = UDim2.new(0.181, 0, 0.508, 0);
+G2L["2"]["ScrollBarImageColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["2"]["Position"] = UDim2.new(0.25666, 0, 0.27015, 0);
+G2L["2"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["2"]["BackgroundTransparency"] = 0.6;
+
+
+-- StarterGui.ButtonSim.Main.AutoBuy
+G2L["3"] = Instance.new("TextButton", G2L["2"]);
+G2L["3"]["TextWrapped"] = true;
+G2L["3"]["BorderSizePixel"] = 3;
+G2L["3"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["3"]["TextSize"] = 38;
+G2L["3"]["BackgroundColor3"] = Color3.fromRGB(172, 0, 0);
+G2L["3"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+G2L["3"]["Size"] = UDim2.new(0.78296, 0, 0.12758, 0);
+G2L["3"]["Name"] = [[AutoBuy]];
+G2L["3"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["3"]["Text"] = [[AutoBuy: Off]];
+G2L["3"]["Position"] = UDim2.new(0.10714, 0, 0.06038, 0);
+
+
+-- StarterGui.ButtonSim.Main.AutoBuy.UICorner
+G2L["4"] = Instance.new("UICorner", G2L["3"]);
+G2L["4"]["CornerRadius"] = UDim.new(1, 0);
+
+
+-- StarterGui.ButtonSim.Main.LocalScript
+G2L["5"] = Instance.new("LocalScript", G2L["2"]);
+
+
+
+-- StarterGui.ButtonSim.Main.UIListLayout
+G2L["6"] = Instance.new("UIListLayout", G2L["2"]);
+G2L["6"]["HorizontalAlignment"] = Enum.HorizontalAlignment.Center;
+G2L["6"]["Padding"] = UDim.new(0.1, 0);
+G2L["6"]["SortOrder"] = Enum.SortOrder.LayoutOrder;
+
+
+-- StarterGui.ButtonSim.Main.UIPadding
+G2L["7"] = Instance.new("UIPadding", G2L["2"]);
+G2L["7"]["PaddingTop"] = UDim.new(0.02, 0);
+
+
+-- StarterGui.ButtonSim.Main.Main
+G2L["8"] = Instance.new("Frame", G2L["2"]);
+G2L["8"]["Visible"] = false;
+G2L["8"]["BorderSizePixel"] = 0;
+G2L["8"]["BackgroundColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["8"]["Size"] = UDim2.new(0.783, 0, 0.489, 0);
+G2L["8"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["8"]["Name"] = [[Main]];
+G2L["8"]["LayoutOrder"] = -999;
+
+
+-- StarterGui.ButtonSim.Main.Main.Frame1
+G2L["9"] = Instance.new("Frame", G2L["8"]);
+G2L["9"]["BorderSizePixel"] = 0;
+G2L["9"]["BackgroundColor3"] = Color3.fromRGB(86, 171, 255);
+G2L["9"]["Size"] = UDim2.new(0.82222, 0, 0.83465, 0);
+G2L["9"]["Position"] = UDim2.new(0.08597, 0, 0.08, 0);
+G2L["9"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["9"]["Name"] = [[Frame1]];
+
+
+-- StarterGui.ButtonSim.Main.Main.Frame1.UICorner
+G2L["a"] = Instance.new("UICorner", G2L["9"]);
+G2L["a"]["CornerRadius"] = UDim.new(0.3, 0);
+
+
+-- StarterGui.ButtonSim.Main.Main.Frame1.TextLabel
+G2L["b"] = Instance.new("TextLabel", G2L["9"]);
+G2L["b"]["TextWrapped"] = true;
+G2L["b"]["BorderSizePixel"] = 0;
+G2L["b"]["TextSize"] = 14;
+G2L["b"]["TextScaled"] = true;
+G2L["b"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["b"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+G2L["b"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["b"]["BackgroundTransparency"] = 1;
+G2L["b"]["Size"] = UDim2.new(0.86997, 0, 0.2929, 0);
+G2L["b"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["b"]["Text"] = [[Cost: ???]];
+G2L["b"]["Position"] = UDim2.new(0.05975, 0, 0.15286, 0);
+
+
+-- StarterGui.ButtonSim.Main.Main.Frame1.TextButton
+G2L["c"] = Instance.new("TextButton", G2L["9"]);
+G2L["c"]["BorderSizePixel"] = 0;
+G2L["c"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["c"]["TextSize"] = 14;
+G2L["c"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["c"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+G2L["c"]["Size"] = UDim2.new(1, 0, 1, 0);
+G2L["c"]["BackgroundTransparency"] = 1;
+G2L["c"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["c"]["Text"] = [[]];
+
+
+-- StarterGui.ButtonSim.Main.Main.Frame1.UIGradient
+G2L["d"] = Instance.new("UIGradient", G2L["9"]);
+
+
+
+-- StarterGui.ButtonSim.Main.Main.Frame1.TextLabel2
+G2L["e"] = Instance.new("TextLabel", G2L["9"]);
+G2L["e"]["TextWrapped"] = true;
+G2L["e"]["BorderSizePixel"] = 0;
+G2L["e"]["TextSize"] = 14;
+G2L["e"]["TextScaled"] = true;
+G2L["e"]["BackgroundColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["e"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+G2L["e"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["e"]["Size"] = UDim2.new(0.68648, 0, 0.1211, 0);
+G2L["e"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["e"]["Text"] = [[??? %]];
+G2L["e"]["Name"] = [[TextLabel2]];
+G2L["e"]["Position"] = UDim2.new(0.15363, 0, 0.83827, 0);
+
+
+-- StarterGui.ButtonSim.Main.Main.Frame1.TextLabel2.UICorner
+G2L["f"] = Instance.new("UICorner", G2L["e"]);
+G2L["f"]["CornerRadius"] = UDim.new(1, 0);
+
+
+-- StarterGui.ButtonSim.Main.Main.Frame1.TextLabel1
+G2L["10"] = Instance.new("TextLabel", G2L["9"]);
+G2L["10"]["TextWrapped"] = true;
+G2L["10"]["BorderSizePixel"] = 0;
+G2L["10"]["TextSize"] = 14;
+G2L["10"]["TextScaled"] = true;
+G2L["10"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["10"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+G2L["10"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["10"]["BackgroundTransparency"] = 1;
+G2L["10"]["Size"] = UDim2.new(0.86997, 0, 0.2929, 0);
+G2L["10"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["10"]["Text"] = [[Next: ???]];
+G2L["10"]["Name"] = [[TextLabel1]];
+G2L["10"]["Position"] = UDim2.new(0.05975, 0, 0.49388, 0);
+
+
+-- StarterGui.ButtonSim.LocalScript
+G2L["11"] = Instance.new("LocalScript", G2L["1"]);
+
+
+
+-- StarterGui.ButtonSim.Main.LocalScript
+local function C_5()
+local script = G2L["5"];
+	local UserInputService = game:GetService("UserInputService")
+	
+	local gui = script.Parent
+	
+	local dragging
+	local dragInput
+	local dragStart
+	local startPos
+	
+	local function update(input)
+		local delta = input.Position - dragStart
+		gui.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+	end
+	
+	gui.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			dragging = true
+			dragStart = input.Position
+			startPos = gui.Position
+	
+			input.Changed:Connect(function()
+				if input.UserInputState == Enum.UserInputState.End then
+					dragging = false
+				end
+			end)
+		end
+	end)
+	
+	gui.InputChanged:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+			dragInput = input
+		end
+	end)
+	
+	UserInputService.InputChanged:Connect(function(input)
+		if input == dragInput and dragging then
+			update(input)
+		end
+	end)
+end;
+task.spawn(C_5);
+-- StarterGui.ButtonSim.LocalScript
+local function C_11()
+local script = G2L["11"];
+	local toggle = false
+	
+	local autobuy = script.Parent.Main.AutoBuy
+	
+	
+	autobuy.MouseButton1Click:Connect(function()
+		toggle = not toggle
+		autobuy.BackgroundColor3 = toggle and Color3.new(0,1,0) or Color3.new(1,0,0)
+	end)
+	
+	
+	local eter = require(game:GetService("ReplicatedStorage").Data.EternityNum)
+	local convert = eter.convert
+	local me = eter.me
+	local mul = eter.mul
+	local div = eter.div
+	local short = eter.short
+	
+	local Stats = {
+		[1] = "Cash", 
+		[2] = "Multi", 
+		[3] = "Rebirth", 
+		[4] = "UltraRebirth", 
+		[5] = "Prestige", 
+		[6] = "Renewal", 
+		[7] = "Ultimate", 
+		[8] = "Magma", 
+		[9] = "Ancient", 
+		[10] = "Enchanted", 
+		[11] = "Galaxy"
+	}
+	
+	
+	
+	
+	for i,v in next, Stats do
+		
+		if i >= 3 then
+			
+			local function getcost()
+	
+				local BestTable = {}
+	
+				local wanted = Stats[i-1]
+				wanted = game:GetService("Players").LocalPlayer.Stats[wanted]
+	
+				for _,fold in next,game:GetService("Workspace").Buttonz:GetChildren() do
+					local xd = fold:FindFirstChild(v)
+					if not xd then continue end
+					xd = xd:FindFirstChildWhichIsA('Model')
+					for _,part in next,xd:GetChildren() do
+						table.insert(BestTable,part)
+					end
+				end
+	
+				table.sort(BestTable,function(a,b)
+					return me(b.config.Cost.Value,a.config.Cost.Value)
+				end)
+	
+				local cool
+	
+				for i,v in next, BestTable do
+					if me(wanted.Value, v.config.Cost.Value) then
+						cool = v
+					end
+				end
+	
+				local theend = table.find(BestTable,cool)
+	
+				if theend then
+					local another = BestTable[theend+1]
+					if another then
+						return {cool,another}
+					else
+						return {cool}
+					end
+				end
+			end
+			local overhead = game.Players.LocalPlayer.Character.Head.OverheadUI
+			local overtext = overhead:FindFirstChild(v)
+			
+			local MainFrame = script.Parent.Main.Main:Clone()
+			MainFrame.Parent = script.Parent.Main
+			MainFrame.Name = v
+			MainFrame.LayoutOrder = i
+			MainFrame.Visible = false
+			MainFrame.Frame1.BackgroundColor3 = overtext.TextColor3
+			MainFrame.Frame1.UIGradient.Color = overtext.UIGradient.Color
+			
+			local currentreb = nil
+			
+			MainFrame.Frame1.TextButton.MouseButton1Click:Connect(function()
+				if i ~= 3 then
+					toggle = false
+					autobuy.BackgroundColor3 = Color3.new(1,0,0)
+				end
+				if currentreb then
+					firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart,currentreb,0)
+					task.wait()
+					firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart,currentreb,1)
+				end
+			end)
+	
+			task.defer(function()
+				while wait(0.1)  do
+					local check = getcost()
+					if check then
+						currentreb = check[1]
+						MainFrame.Visible = true
+						local part = check[1]
+						local board = part:FindFirstChildWhichIsA('BillboardGui')
+						local Cost = board.Cost.Text
+						MainFrame.Frame1.TextLabel.Text = 'Cost: ' .. Cost 
+	
+						if check[2] then
+							local part2 = check[2]
+							local board2 = part2:FindFirstChildWhichIsA('BillboardGui')
+							local Cost2 = board2.Cost.Text
+							
+							local BuyValue = Stats[i-1]
+							BuyValue = game:GetService("Players").LocalPlayer.Stats[BuyValue]
+							
+							MainFrame.Frame1.TextLabel1.Text = 'Next: ' .. Cost2
+							MainFrame.Frame1.TextLabel2.Text = short(mul(div(BuyValue.Value,part2.config.Cost.Value),100)) .. '%'
+						else
+							MainFrame.Frame1.TextLabel1.Text = 'Next: Max'
+							MainFrame.Frame1.TextLabel2.Visible = false
+						end
+					else
+						MainFrame.Visible = false
+						currentreb = nil
+					end
+				end
+			end)
+		elseif i == 2 then
+			local function getcost()
+	
+				local BestTable = {}
+	
+				local wanted = Stats[i-1]
+				wanted = game:GetService("Players").LocalPlayer.Stats[wanted]
+	
+				for _,fold in next,game:GetService("Workspace").Buttonz:GetChildren() do
+					local xd = fold:FindFirstChild(v)
+					if not xd then continue end
+					xd = xd:FindFirstChildWhichIsA('Model')
+					for _,part in next,xd:GetChildren() do
+						table.insert(BestTable,part)
+					end
+				end
+	
+				table.sort(BestTable,function(a,b)
+					return me(b.config.Cost.Value,a.config.Cost.Value)
+				end)
+	
+				local cool
+	
+				for i,v in next, BestTable do
+					if me(wanted.Value, mul(v.config.Cost.Value,3)) then
+						cool = v
+					end
+				end
+	
+				return cool
+			end
+			
+			local currentmul
+			
+			task.defer(function()
+				while wait(0.1)  do
+					if toggle then
+						local part = getcost()
+						if part ~= currentmul and part then
+							local hum = game.Players.LocalPlayer.Character["Right Leg"]
+							pcall(function()
+								hum.CFrame = part.CFrame
+								currentmul = part
+							end)
+						end
+					end
+				end
+			end)
+			
+		end
+	end
+end;
+task.spawn(C_11);
+
+return G2L["1"], require;
