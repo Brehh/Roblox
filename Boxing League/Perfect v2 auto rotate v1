@@ -361,6 +361,36 @@ local function updateOpponentReferences()
     return false
 end
 
+
+local function getplayteam()
+    local player1 = game.Players:FindFirstChild(fight.E1.Value)
+    local player2 = game.Players:FindFirstChild(fight.E2.Value)
+    local playtab = {}
+    if player1 then
+        local stats = ReplicatedStorage.Stats:FindFirstChild(player1.Name)
+        if stats then
+            local check1 = stats.WHERE.ST.Value
+            local check2 = stats.WHERE.ID.Value
+            if check1 == 'PLAY' and check2 > 0 then
+                table.insert(playtab,player1)
+            end
+        end
+
+    end
+    if player2 then
+        local stats = ReplicatedStorage.Stats:FindFirstChild(player2.Name)
+        if stats then
+            local check1 = stats.WHERE.ST.Value
+            local check2 = stats.WHERE.ID.Value
+            if check1 == 'PLAY' and check2 > 0 then
+                table.insert(playtab,player2)
+            end
+        end
+    end
+    return playtab
+end
+
+
 local function forceRotation()
     -- Double-check if the character, root part, and target part still exist and are in the workspace
     if not fight.Value == 'FIGHT' or not mychar or not mychar:IsDescendantOf(Workspace) or not mychar:FindFirstChild('HumanoidRootPart') or not opponentCharacter or not opponentCharacter:IsDescendantOf(Workspace) or not opponentCharacter:FindFirstChild('HumanoidRootPart') then
@@ -386,68 +416,128 @@ end
 local connection
 connection = RunService.RenderStepped:Connect(forceRotation)
 
+
+local ContextActionService = game:GetService("ContextActionService")
+local ACTION_DISABLE_AS = "DisableMovementKeysAction" -- New action name for W release
+
+-- The function to sink general movement keys (A, S, T, etc.)
+local function sinkInput(actionName, inputState, inputObject)
+    if inputState == Enum.UserInputState.Begin then
+        print(tostring(inputObject.KeyCode) .. " key press blocked by ACTION_DISABLE_AS.")
+        return Enum.ContextActionResult.Sink
+    end
+    return Enum.ContextActionResult.Pass
+end
+
+
 print('WP - Starting Main Loop')
 
 -- Main Loop
 while wait() do -- task.wait() is preferred over wait()
     task.defer(function()
-        if updateOpponentReferences() and opponentAnimator and fight.Value == 'FIGHT' then
-                -- We have a valid opponent and animator, check their animations
-                local playingTracks = opponentAnimator:GetPlayingAnimationTracks()
-                local currentMoveName = nil
-                local opponentknock = game:GetService("ReplicatedStorage").Stats[opponentPlayer.Name].Knock.Value
+        if fight.Value == 'FIGHT' then
+            if updateOpponentReferences() and opponentAnimator then
+                    -- We have a valid opponent and animator, check their animations
+                    local playingTracks = opponentAnimator:GetPlayingAnimationTracks()
+                    local currentMoveName = nil
+                    local opponentknock = game:GetService("ReplicatedStorage").Stats[opponentPlayer.Name].Knock.Value
 
-
-                for i = #playingTracks, 1, -1 do -- Check in reverse, potentially newer tracks are added later? Not guaranteed.
-                    local track = playingTracks[i]
-                    local animId = track.Animation.AnimationId
-                    local foundMove2 = moveAnimationIds2[animId]
-                    if foundMove2 and opponentknock == 0 then
-                        game:GetService("ReplicatedStorage").Action.CharacterUse:FireServer("KiDisabled")
-                        break
+                    local omlsdak
+                    for i,v in next, playingTracks do
+                        local track = v
+                        local animId = track.Animation.AnimationId
+                        local foundMove2 = moveAnimationIds2[animId]
+                        if foundMove2 and opponentknock == 0 then
+                            keyrelease(0x20)
+                            ContextActionService:BindAction(
+                            ACTION_DISABLE_AS,      -- Name for disabling multiple keys
+                            sinkInput,              -- Function to sink presses
+                            false,
+                            Enum.KeyCode.Space
+                            )
+                            omlsdak = true
+                            break
+                        end
                     end
-                end
 
-                -- Iterate through currently playing tracks
-                for i = #playingTracks, 1, -1 do -- Check in reverse, potentially newer tracks are added later? Not guaranteed.
-                    local track = playingTracks[i]
-                    local animId = track.Animation.AnimationId
-                    local foundMove = moveAnimationIds[animId]
-                    if foundMove then
-                        currentMoveName = foundMove
-                        break -- Found a relevant move, use this one
+                    if not omlsdak then
+                        ContextActionService:UnbindAction(ACTION_DISABLE_AS)
                     end
-                end
 
+                    -- Iterate through currently playing tracks
+                    for i = #playingTracks, 1, -1 do -- Check in reverse, potentially newer tracks are added later? Not guaranteed.
+                        local track = playingTracks[i]
+                        local animId = track.Animation.AnimationId
+                        local foundMove = moveAnimationIds[animId]
+                        if foundMove then
+                            currentMoveName = foundMove
+                            break -- Found a relevant move, use this one
+                        end
+                    end
+
+                    
+
+                    
+
+                    -- Update the display only if the move has changed
+                    if currentMoveName ~= lastDisplayedMove then
+                        if currentMoveName then
+                            TextLabel.Text = currentMoveName
+                            Frame.Visible = true
+                            --print("Displaying move:", currentMoveName) -- Debug print
+                        else
+                            TextLabel.Text = ""
+                            Frame.Visible = false
+                            --print("Clearing move display") -- Debug print
+                        end
+                        lastDisplayedMove = currentMoveName
+                    end
                 
 
-                
-
-                -- Update the display only if the move has changed
-                if currentMoveName ~= lastDisplayedMove then
-                    if currentMoveName then
-                        TextLabel.Text = currentMoveName
-                        Frame.Visible = true
-                        --print("Displaying move:", currentMoveName) -- Debug print
-                    else
-                        TextLabel.Text = ""
-                        Frame.Visible = false
-                        --print("Clearing move display") -- Debug print
-                    end
-                    lastDisplayedMove = currentMoveName
+            else
+                -- Opponent not found or references invalid, ensure UI is hidden
+                if Frame.Visible then
+                    TextLabel.Text = ""
+                    Frame.Visible = false
+                    lastDisplayedMove = nil -- Reset last displayed move
+                    --print("Opponent lost, hiding display") -- Debug print
                 end
-            
-
-        else
-            -- Opponent not found or references invalid, ensure UI is hidden
-            if Frame.Visible then
-                TextLabel.Text = ""
-                Frame.Visible = false
-                lastDisplayedMove = nil -- Reset last displayed move
-                --print("Opponent lost, hiding display") -- Debug print
+                -- Optional: Add a small delay if opponent isn't found to prevent spamming checks too fast
+                -- task.wait(0.5) -- Uncomment if needed, but updateOpponentReferences should be fairly light
             end
-            -- Optional: Add a small delay if opponent isn't found to prevent spamming checks too fast
-            -- task.wait(0.5) -- Uncomment if needed, but updateOpponentReferences should be fairly light
+        elseif fight.Value:find('TEAM') then
+            local playtab = getplayteam()
+            if playtab and #playtab > 0 then
+                for i,v in next, playtab do
+                    local opponentHum= v.Character:FindFirstChildWhichIsA('Humanoid')
+                    local opponentAnimator2 = opponentHum:FindFirstChildWhichIsA('Animator')
+                    local playingTracks = opponentAnimator2:GetPlayingAnimationTracks()
+                    local opponentknock = game:GetService("ReplicatedStorage").Stats[v.Name].Knock.Value
+
+
+                    local omlsdak
+                    for a,b in next, playingTracks do
+                        local track = b
+                        local animId = track.Animation.AnimationId
+                        local foundMove2 = moveAnimationIds2[animId]
+                        if foundMove2 and opponentknock == 0 then
+                            keyrelease(0x20)
+                            ContextActionService:BindAction(
+                            ACTION_DISABLE_AS,      -- Name for disabling multiple keys
+                            sinkInput,              -- Function to sink presses
+                            false,
+                            Enum.KeyCode.Space
+                            )
+                            omlsdak = true
+                            break
+                        end
+                    end
+
+                    if not omlsdak then
+                        ContextActionService:UnbindAction(ACTION_DISABLE_AS)
+                    end
+                end
+            end
         end
     end)
 end
