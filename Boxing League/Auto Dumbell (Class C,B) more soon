@@ -3,12 +3,14 @@ repeat
 wait()
 until game:IsLoaded()
 
-local wantedClass = 'CC'
+local wantedClass = 'BB'
 local Lobby = 3738091713
 local checkclass = nil
 
 if wantedClass == 'CC' then
     checkclass = 3738115442
+elseif wantedClass == 'BB' then
+    checkclass = 4574912733
 end
 
 
@@ -133,7 +135,77 @@ elseif game.PlaceId == checkclass then
 
 
         testwalk()
+    elseif wantedClass == 'BB' then
+        print('Class B!!')
+        wait(3)
+        print('Start Walking!!')
+        local grab = game:GetService("Workspace").Machinery.DUMB1.RS.GridPart
+
+        local grabpos = grab.CFrame * CFrame.new(0, grab.Size.Y / 2, 0)
+        local mystats = game:GetService("ReplicatedStorage").Stats[game.Players.LocalPlayer.Name]
+        local where = mystats.WHERE.ST
+
+        local char = game.Players.LocalPlayer.Character
+        local hum = char:FindFirstChildWhichIsA("Humanoid")
+        local root = char:FindFirstChild("HumanoidRootPart")
+
+
+
+        function strupgrade()
+            local obj = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.Stats.E1.Choice
+            if obj.Visible == true then
+                local xddd = obj.AbsolutePosition + obj.AbsoluteSize / 2
+
+                vim:SendMouseButtonEvent(xddd.X,xddd.Y+50, 0, true, game, 1)
+                vim:SendMouseButtonEvent(xddd.X,xddd.Y+50, 0, false, game, 1)
+            else
+                return
+            end
+        end
+
+        function Equip()
+            repeat 
+                workspace.Machinery.DUMB1.RS.RemoteEvent:FireServer({"Interact"})
+                wait(0.5)
+            until where.Value:find('DUMB')
+        end
+
+        function walk(pos)
+            local check = nil
+            repeat
+                hum:MoveTo(pos)
+                check = hum.MoveToFinished:Wait()
+            until check == true
+        end
+
+
+
+        function testwalk()
+            walk(Vector3.new(22.1625, 23.9708, 146.56))
+            walk(Vector3.new(20.89670181274414, 24.969526290893555, 128.29530334472656))
+            walk(Vector3.new(5.44948673248291, 35.040252685546875, 116.8849105834961))
+            walk(Vector3.new(-94.91140747070312, 34.97213363647461, 118.5347900390625))
+            walk(grabpos.Position)
+            Equip()
+            print('Done Progess 1')
+            repeat 
+                game:GetService("ReplicatedStorage").UseItem:FireServer("Use")
+                strupgrade()
+                task.wait()
+            until game:GetService("Players").LocalPlayer.Public.uwu.Value >= 300
+            print('Done Progress 2')
+            wait(1)
+            game:GetService("ReplicatedStorage").UseItem:FireServer("Drop")
+            print('Done Progress 3')
+            print('All DONE!!!')
+            wait(3)
+            while true do
+                game:GetService('TeleportService'):Teleport(Lobby)
+                wait(3)
+            end
+        end
+
+
+        testwalk()
     end
 end
-
-
