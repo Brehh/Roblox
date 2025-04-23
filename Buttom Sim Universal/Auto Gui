@@ -7,7 +7,7 @@
  Y888P  ~Y8888P' Y888888P      888888D      Y88888P ~Y8888P' YP   YP  CONVERTER 
 ]=]
 
--- Instances: 17 | Scripts: 2 | Modules: 0 | Tags: 0
+-- Instances: 26 | Scripts: 2 | Modules: 0 | Tags: 0
 local G2L = {};
 
 -- StarterGui.ButtonSim
@@ -16,140 +16,147 @@ G2L["1"]["Name"] = [[ButtonSim]];
 G2L["1"]["ZIndexBehavior"] = Enum.ZIndexBehavior.Sibling;
 
 
--- StarterGui.ButtonSim.Main
-G2L["2"] = Instance.new("ScrollingFrame", G2L["1"]);
-G2L["2"]["Active"] = true;
+-- StarterGui.ButtonSim.Frame
+G2L["2"] = Instance.new("Frame", G2L["1"]);
 G2L["2"]["BorderSizePixel"] = 0;
 G2L["2"]["BackgroundColor3"] = Color3.fromRGB(0, 0, 0);
-G2L["2"]["Name"] = [[Main]];
-G2L["2"]["AutomaticCanvasSize"] = Enum.AutomaticSize.XY;
-G2L["2"]["Size"] = UDim2.new(0.181, 0, 0.508, 0);
-G2L["2"]["ScrollBarImageColor3"] = Color3.fromRGB(0, 0, 0);
-G2L["2"]["Position"] = UDim2.new(0.25666, 0, 0.27015, 0);
+G2L["2"]["Size"] = UDim2.new(0.181, 0, 0.77589, 0);
+G2L["2"]["Position"] = UDim2.new(0.63899, 0, 0.13497, 0);
 G2L["2"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-G2L["2"]["BackgroundTransparency"] = 0.6;
+G2L["2"]["BackgroundTransparency"] = 1;
 
 
--- StarterGui.ButtonSim.Main.AutoBuy
-G2L["3"] = Instance.new("TextButton", G2L["2"]);
-G2L["3"]["TextWrapped"] = true;
-G2L["3"]["BorderSizePixel"] = 3;
-G2L["3"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-G2L["3"]["TextSize"] = 38;
-G2L["3"]["BackgroundColor3"] = Color3.fromRGB(172, 0, 0);
-G2L["3"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
-G2L["3"]["Size"] = UDim2.new(0.78296, 0, 0.12758, 0);
-G2L["3"]["Name"] = [[AutoBuy]];
-G2L["3"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-G2L["3"]["Text"] = [[AutoBuy: Off]];
-G2L["3"]["Position"] = UDim2.new(0.10714, 0, 0.06038, 0);
-
-
--- StarterGui.ButtonSim.Main.AutoBuy.UICorner
-G2L["4"] = Instance.new("UICorner", G2L["3"]);
-G2L["4"]["CornerRadius"] = UDim.new(1, 0);
-
-
--- StarterGui.ButtonSim.Main.LocalScript
-G2L["5"] = Instance.new("LocalScript", G2L["2"]);
+-- StarterGui.ButtonSim.Frame.LocalScript
+G2L["3"] = Instance.new("LocalScript", G2L["2"]);
 
 
 
--- StarterGui.ButtonSim.Main.UIListLayout
-G2L["6"] = Instance.new("UIListLayout", G2L["2"]);
-G2L["6"]["HorizontalAlignment"] = Enum.HorizontalAlignment.Center;
-G2L["6"]["Padding"] = UDim.new(0.1, 0);
-G2L["6"]["SortOrder"] = Enum.SortOrder.LayoutOrder;
+-- StarterGui.ButtonSim.Frame.Main
+G2L["4"] = Instance.new("ScrollingFrame", G2L["2"]);
+G2L["4"]["Active"] = true;
+G2L["4"]["BorderSizePixel"] = 0;
+G2L["4"]["BackgroundColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["4"]["Name"] = [[Main]];
+G2L["4"]["AutomaticCanvasSize"] = Enum.AutomaticSize.XY;
+G2L["4"]["Size"] = UDim2.new(1, 0, 0.93663, 0);
+G2L["4"]["ScrollBarImageColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["4"]["Position"] = UDim2.new(0, 0, 0.06337, 0);
+G2L["4"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["4"]["BackgroundTransparency"] = 0.6;
 
 
--- StarterGui.ButtonSim.Main.UIPadding
-G2L["7"] = Instance.new("UIPadding", G2L["2"]);
-G2L["7"]["PaddingTop"] = UDim.new(0.02, 0);
+-- StarterGui.ButtonSim.Frame.Main.AutoBuy
+G2L["5"] = Instance.new("TextButton", G2L["4"]);
+G2L["5"]["TextWrapped"] = true;
+G2L["5"]["BorderSizePixel"] = 3;
+G2L["5"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["5"]["TextSize"] = 38;
+G2L["5"]["BackgroundColor3"] = Color3.fromRGB(173, 0, 0);
+G2L["5"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+G2L["5"]["Size"] = UDim2.new(0.78296, 0, 0.07077, 0);
+G2L["5"]["Name"] = [[AutoBuy]];
+G2L["5"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["5"]["Text"] = [[AutoBuy: Off]];
+G2L["5"]["Position"] = UDim2.new(0.10852, 0, 0.43431, 0);
 
 
--- StarterGui.ButtonSim.Main.Main
-G2L["8"] = Instance.new("Frame", G2L["2"]);
-G2L["8"]["Visible"] = false;
-G2L["8"]["BorderSizePixel"] = 0;
-G2L["8"]["BackgroundColor3"] = Color3.fromRGB(0, 0, 0);
-G2L["8"]["Size"] = UDim2.new(0.783, 0, 0.489, 0);
-G2L["8"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-G2L["8"]["Name"] = [[Main]];
-G2L["8"]["LayoutOrder"] = -999;
+-- StarterGui.ButtonSim.Frame.Main.AutoBuy.UICorner
+G2L["6"] = Instance.new("UICorner", G2L["5"]);
+G2L["6"]["CornerRadius"] = UDim.new(1, 0);
 
 
--- StarterGui.ButtonSim.Main.Main.Frame1
-G2L["9"] = Instance.new("Frame", G2L["8"]);
+-- StarterGui.ButtonSim.Frame.Main.UIListLayout
+G2L["7"] = Instance.new("UIListLayout", G2L["4"]);
+G2L["7"]["HorizontalAlignment"] = Enum.HorizontalAlignment.Center;
+G2L["7"]["Padding"] = UDim.new(0.05, 0);
+G2L["7"]["SortOrder"] = Enum.SortOrder.LayoutOrder;
+
+
+-- StarterGui.ButtonSim.Frame.Main.UIPadding
+G2L["8"] = Instance.new("UIPadding", G2L["4"]);
+G2L["8"]["PaddingTop"] = UDim.new(0.02, 0);
+
+
+-- StarterGui.ButtonSim.Frame.Main.Main
+G2L["9"] = Instance.new("Frame", G2L["4"]);
+G2L["9"]["Visible"] = false;
 G2L["9"]["BorderSizePixel"] = 0;
-G2L["9"]["BackgroundColor3"] = Color3.fromRGB(86, 171, 255);
-G2L["9"]["Size"] = UDim2.new(0.82222, 0, 0.83465, 0);
-G2L["9"]["Position"] = UDim2.new(0.08597, 0, 0.08, 0);
+G2L["9"]["BackgroundColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["9"]["Size"] = UDim2.new(0.783, 0, 0.30144, 0);
+G2L["9"]["Position"] = UDim2.new(0.1085, 0, 0.02467, 0);
 G2L["9"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-G2L["9"]["Name"] = [[Frame1]];
+G2L["9"]["Name"] = [[Main]];
+G2L["9"]["LayoutOrder"] = -999;
 
 
--- StarterGui.ButtonSim.Main.Main.Frame1.UICorner
-G2L["a"] = Instance.new("UICorner", G2L["9"]);
-G2L["a"]["CornerRadius"] = UDim.new(0.3, 0);
+-- StarterGui.ButtonSim.Frame.Main.Main.Frame1
+G2L["a"] = Instance.new("Frame", G2L["9"]);
+G2L["a"]["BorderSizePixel"] = 0;
+G2L["a"]["BackgroundColor3"] = Color3.fromRGB(87, 172, 255);
+G2L["a"]["Size"] = UDim2.new(0.82222, 0, 0.83465, 0);
+G2L["a"]["Position"] = UDim2.new(0.08597, 0, 0.08, 0);
+G2L["a"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["a"]["Name"] = [[Frame1]];
 
 
--- StarterGui.ButtonSim.Main.Main.Frame1.TextLabel
-G2L["b"] = Instance.new("TextLabel", G2L["9"]);
-G2L["b"]["TextWrapped"] = true;
-G2L["b"]["BorderSizePixel"] = 0;
-G2L["b"]["TextSize"] = 14;
-G2L["b"]["TextScaled"] = true;
-G2L["b"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-G2L["b"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
-G2L["b"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-G2L["b"]["BackgroundTransparency"] = 1;
-G2L["b"]["Size"] = UDim2.new(0.86997, 0, 0.2929, 0);
-G2L["b"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-G2L["b"]["Text"] = [[Cost: ???]];
-G2L["b"]["Position"] = UDim2.new(0.05975, 0, 0.15286, 0);
+-- StarterGui.ButtonSim.Frame.Main.Main.Frame1.UICorner
+G2L["b"] = Instance.new("UICorner", G2L["a"]);
+G2L["b"]["CornerRadius"] = UDim.new(0.3, 0);
 
 
--- StarterGui.ButtonSim.Main.Main.Frame1.TextButton
-G2L["c"] = Instance.new("TextButton", G2L["9"]);
+-- StarterGui.ButtonSim.Frame.Main.Main.Frame1.TextLabel
+G2L["c"] = Instance.new("TextLabel", G2L["a"]);
+G2L["c"]["TextWrapped"] = true;
 G2L["c"]["BorderSizePixel"] = 0;
-G2L["c"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
 G2L["c"]["TextSize"] = 14;
+G2L["c"]["TextScaled"] = true;
 G2L["c"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-G2L["c"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
-G2L["c"]["Size"] = UDim2.new(1, 0, 1, 0);
+G2L["c"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+G2L["c"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
 G2L["c"]["BackgroundTransparency"] = 1;
+G2L["c"]["Size"] = UDim2.new(0.78463, 0, 0.26417, 0);
 G2L["c"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-G2L["c"]["Text"] = [[]];
+G2L["c"]["Text"] = [[Cost: ???]];
+G2L["c"]["Position"] = UDim2.new(0.09816, 0, 0.20878, 0);
 
 
--- StarterGui.ButtonSim.Main.Main.Frame1.UIGradient
-G2L["d"] = Instance.new("UIGradient", G2L["9"]);
+-- StarterGui.ButtonSim.Frame.Main.Main.Frame1.TextButton
+G2L["d"] = Instance.new("TextButton", G2L["a"]);
+G2L["d"]["BorderSizePixel"] = 0;
+G2L["d"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["d"]["TextSize"] = 14;
+G2L["d"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["d"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+G2L["d"]["Size"] = UDim2.new(1, 0, 1, 0);
+G2L["d"]["BackgroundTransparency"] = 1;
+G2L["d"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["d"]["Text"] = [[]];
+
+
+-- StarterGui.ButtonSim.Frame.Main.Main.Frame1.UIGradient
+G2L["e"] = Instance.new("UIGradient", G2L["a"]);
 
 
 
--- StarterGui.ButtonSim.Main.Main.Frame1.TextLabel2
-G2L["e"] = Instance.new("TextLabel", G2L["9"]);
-G2L["e"]["TextWrapped"] = true;
-G2L["e"]["BorderSizePixel"] = 0;
-G2L["e"]["TextSize"] = 14;
-G2L["e"]["TextScaled"] = true;
-G2L["e"]["BackgroundColor3"] = Color3.fromRGB(0, 0, 0);
-G2L["e"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
-G2L["e"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-G2L["e"]["Size"] = UDim2.new(0.68648, 0, 0.1211, 0);
-G2L["e"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-G2L["e"]["Text"] = [[??? %]];
-G2L["e"]["Name"] = [[TextLabel2]];
-G2L["e"]["Position"] = UDim2.new(0.15363, 0, 0.83827, 0);
+-- StarterGui.ButtonSim.Frame.Main.Main.Frame1.TextLabel1
+G2L["f"] = Instance.new("TextLabel", G2L["a"]);
+G2L["f"]["TextWrapped"] = true;
+G2L["f"]["BorderSizePixel"] = 0;
+G2L["f"]["TextSize"] = 14;
+G2L["f"]["TextScaled"] = true;
+G2L["f"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["f"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+G2L["f"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["f"]["BackgroundTransparency"] = 1;
+G2L["f"]["Size"] = UDim2.new(0.78463, 0, 0.26417, 0);
+G2L["f"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["f"]["Text"] = [[Next: ???]];
+G2L["f"]["Name"] = [[TextLabel1]];
+G2L["f"]["Position"] = UDim2.new(0.09816, 0, 0.51635, 0);
 
 
--- StarterGui.ButtonSim.Main.Main.Frame1.TextLabel2.UICorner
-G2L["f"] = Instance.new("UICorner", G2L["e"]);
-G2L["f"]["CornerRadius"] = UDim.new(1, 0);
-
-
--- StarterGui.ButtonSim.Main.Main.Frame1.TextLabel1
-G2L["10"] = Instance.new("TextLabel", G2L["9"]);
+-- StarterGui.ButtonSim.Frame.Main.Main.Frame1.TextLabel0
+G2L["10"] = Instance.new("TextLabel", G2L["a"]);
 G2L["10"]["TextWrapped"] = true;
 G2L["10"]["BorderSizePixel"] = 0;
 G2L["10"]["TextSize"] = 14;
@@ -158,65 +165,113 @@ G2L["10"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
 G2L["10"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
 G2L["10"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
 G2L["10"]["BackgroundTransparency"] = 1;
-G2L["10"]["Size"] = UDim2.new(0.86997, 0, 0.2929, 0);
+G2L["10"]["Size"] = UDim2.new(0.86997, 0, 0.17082, 0);
 G2L["10"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-G2L["10"]["Text"] = [[Next: ???]];
-G2L["10"]["Name"] = [[TextLabel1]];
-G2L["10"]["Position"] = UDim2.new(0.05975, 0, 0.49388, 0);
+G2L["10"]["Text"] = [[Buy ???]];
+G2L["10"]["Name"] = [[TextLabel0]];
+G2L["10"]["Position"] = UDim2.new(0.05975, 0, 0.05, 0);
 
 
--- StarterGui.ButtonSim.LocalScript
-G2L["11"] = Instance.new("LocalScript", G2L["1"]);
+-- StarterGui.ButtonSim.Frame.Main.Main.Frame1.Frame
+G2L["11"] = Instance.new("Frame", G2L["a"]);
+G2L["11"]["BorderSizePixel"] = 0;
+G2L["11"]["BackgroundColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["11"]["Size"] = UDim2.new(0.686, 0, 0.121, 0);
+G2L["11"]["Position"] = UDim2.new(0.154, 0, 0.838, 0);
+G2L["11"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["11"]["BackgroundTransparency"] = 0.6;
+
+
+-- StarterGui.ButtonSim.Frame.Main.Main.Frame1.Frame.UICorner
+G2L["12"] = Instance.new("UICorner", G2L["11"]);
+G2L["12"]["CornerRadius"] = UDim.new(1, 0);
+
+
+-- StarterGui.ButtonSim.Frame.Main.Main.Frame1.Frame.TextLabel
+G2L["13"] = Instance.new("TextLabel", G2L["11"]);
+G2L["13"]["TextWrapped"] = true;
+G2L["13"]["BorderSizePixel"] = 0;
+G2L["13"]["TextSize"] = 14;
+G2L["13"]["TextScaled"] = true;
+G2L["13"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["13"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+G2L["13"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["13"]["Size"] = UDim2.new(0.2, 0, 1, 0);
+G2L["13"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["13"]["Text"] = [[]];
+
+
+-- StarterGui.ButtonSim.Frame.Main.Main.Frame1.Frame.TextLabel.UICorner
+G2L["14"] = Instance.new("UICorner", G2L["13"]);
+G2L["14"]["CornerRadius"] = UDim.new(1, 0);
+
+
+-- StarterGui.ButtonSim.Frame.Main.Main.Frame1.Frame.TextLabel2
+G2L["15"] = Instance.new("TextLabel", G2L["11"]);
+G2L["15"]["TextWrapped"] = true;
+G2L["15"]["BorderSizePixel"] = 0;
+G2L["15"]["TextSize"] = 14;
+G2L["15"]["TextScaled"] = true;
+G2L["15"]["BackgroundColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["15"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+G2L["15"]["TextColor3"] = Color3.fromRGB(171, 0, 0);
+G2L["15"]["BackgroundTransparency"] = 1;
+G2L["15"]["Size"] = UDim2.new(1, 0, 1, 0);
+G2L["15"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["15"]["Text"] = [[??? %]];
+G2L["15"]["Name"] = [[TextLabel2]];
+
+
+-- StarterGui.ButtonSim.Frame.Main.Main.Frame1.Frame.TextLabel2.UICorner
+G2L["16"] = Instance.new("UICorner", G2L["15"]);
+G2L["16"]["CornerRadius"] = UDim.new(1, 0);
+
+
+-- StarterGui.ButtonSim.Frame.Frame
+G2L["17"] = Instance.new("Frame", G2L["2"]);
+G2L["17"]["BorderSizePixel"] = 0;
+G2L["17"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["17"]["Size"] = UDim2.new(1, 0, 0.06337, 0);
+G2L["17"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+
+
+-- StarterGui.ButtonSim.Frame.Frame.TextLabel
+G2L["18"] = Instance.new("TextLabel", G2L["17"]);
+G2L["18"]["TextWrapped"] = true;
+G2L["18"]["BorderSizePixel"] = 0;
+G2L["18"]["TextSize"] = 14;
+G2L["18"]["TextScaled"] = true;
+G2L["18"]["BackgroundColor3"] = Color3.fromRGB(0, 86, 255);
+G2L["18"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+G2L["18"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["18"]["Size"] = UDim2.new(0.87418, 0, 1, 0);
+G2L["18"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["18"]["Text"] = [[Button Simulator Universal]];
+
+
+-- StarterGui.ButtonSim.Frame.Frame.TextButton
+G2L["19"] = Instance.new("TextButton", G2L["17"]);
+G2L["19"]["TextWrapped"] = true;
+G2L["19"]["BorderSizePixel"] = 0;
+G2L["19"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["19"]["TextSize"] = 14;
+G2L["19"]["TextScaled"] = true;
+G2L["19"]["BackgroundColor3"] = Color3.fromRGB(255, 0, 0);
+G2L["19"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+G2L["19"]["Size"] = UDim2.new(0.136, 0, 1, 0);
+G2L["19"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["19"]["Text"] = [[-]];
+G2L["19"]["Position"] = UDim2.new(0.86319, 0, 0, 0);
+
+
+-- StarterGui.ButtonSim.Frame.Frame.LocalScript
+G2L["1a"] = Instance.new("LocalScript", G2L["17"]);
 
 
 
--- StarterGui.ButtonSim.Main.LocalScript
-local function C_5()
-local script = G2L["5"];
-	local UserInputService = game:GetService("UserInputService")
-	
-	local gui = script.Parent
-	
-	local dragging
-	local dragInput
-	local dragStart
-	local startPos
-	
-	local function update(input)
-		local delta = input.Position - dragStart
-		gui.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-	end
-	
-	gui.InputBegan:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-			dragging = true
-			dragStart = input.Position
-			startPos = gui.Position
-	
-			input.Changed:Connect(function()
-				if input.UserInputState == Enum.UserInputState.End then
-					dragging = false
-				end
-			end)
-		end
-	end)
-	
-	gui.InputChanged:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-			dragInput = input
-		end
-	end)
-	
-	UserInputService.InputChanged:Connect(function(input)
-		if input == dragInput and dragging then
-			update(input)
-		end
-	end)
-end;
-task.spawn(C_5);
--- StarterGui.ButtonSim.LocalScript
-local function C_11()
-local script = G2L["11"];
+-- StarterGui.ButtonSim.Frame.LocalScript
+local function C_3()
+local script = G2L["3"];
 	local toggle = false
 	
 	local autobuy = script.Parent.Main.AutoBuy
@@ -230,10 +285,11 @@ local script = G2L["11"];
 	
 	local eter = require(game:GetService("ReplicatedStorage").Data.EternityNum)
 	local convert = eter.convert
-	local me = eter.me
+	local me = eter.meeq
 	local mul = eter.mul
 	local div = eter.div
 	local short = eter.short
+	local gt = eter.me
 	
 	local Stats = {
 		[1] = "Cash", 
@@ -253,9 +309,9 @@ local script = G2L["11"];
 	
 	
 	for i,v in next, Stats do
-		
+	
 		if i >= 3 then
-			
+	
 			local function getcost()
 	
 				local BestTable = {}
@@ -273,7 +329,7 @@ local script = G2L["11"];
 				end
 	
 				table.sort(BestTable,function(a,b)
-					return me(b.config.Cost.Value,a.config.Cost.Value)
+					return gt(b.config.Cost.Value,a.config.Cost.Value)
 				end)
 	
 				local cool
@@ -297,7 +353,7 @@ local script = G2L["11"];
 			end
 			local overhead = game.Players.LocalPlayer.Character.Head.OverheadUI
 			local overtext = overhead:FindFirstChild(v)
-			
+	
 			local MainFrame = script.Parent.Main.Main:Clone()
 			MainFrame.Parent = script.Parent.Main
 			MainFrame.Name = v
@@ -305,9 +361,10 @@ local script = G2L["11"];
 			MainFrame.Visible = false
 			MainFrame.Frame1.BackgroundColor3 = overtext.TextColor3
 			MainFrame.Frame1.UIGradient.Color = overtext.UIGradient.Color
-			
+			MainFrame.Frame1.TextLabel0.Text = 'Buy ' .. v
+	
 			local currentreb = nil
-			
+	
 			MainFrame.Frame1.TextButton.MouseButton1Click:Connect(function()
 				if i ~= 3 then
 					toggle = false
@@ -335,15 +392,22 @@ local script = G2L["11"];
 							local part2 = check[2]
 							local board2 = part2:FindFirstChildWhichIsA('BillboardGui')
 							local Cost2 = board2.Cost.Text
-							
+	
 							local BuyValue = Stats[i-1]
 							BuyValue = game:GetService("Players").LocalPlayer.Stats[BuyValue]
-							
+	
 							MainFrame.Frame1.TextLabel1.Text = 'Next: ' .. Cost2
-							MainFrame.Frame1.TextLabel2.Text = short(mul(div(BuyValue.Value,part2.config.Cost.Value),100)) .. '%'
+							MainFrame.Frame1.Frame.TextLabel2.Text = short(mul(div(BuyValue.Value,part2.config.Cost.Value),100)) .. '%'
+							if me(mul(div(BuyValue.Value,part2.config.Cost.Value),100) ,  1) and me(100,  mul(div(BuyValue.Value,part2.config.Cost.Value),100)) then
+								MainFrame.Frame1.Frame.TextLabel.Size = UDim2.new(tonumber(short(mul(div(BuyValue.Value,part2.config.Cost.Value),100)))/100, 0, 1, 0)
+							elseif not me(mul(div(BuyValue.Value,part2.config.Cost.Value),100) ,  1) then
+								MainFrame.Frame1.Frame.TextLabel.Size = UDim2.new(0,0,1,0) 
+							elseif not me(100,  mul(div(BuyValue.Value,part2.config.Cost.Value),100)) then
+								MainFrame.Frame1.Frame.TextLabel.Size = UDim2.new(1,0,1,0)  
+							end
 						else
 							MainFrame.Frame1.TextLabel1.Text = 'Next: Max'
-							MainFrame.Frame1.TextLabel2.Visible = false
+							MainFrame.Frame1.Frame.Visible = false
 						end
 					else
 						MainFrame.Visible = false
@@ -369,7 +433,7 @@ local script = G2L["11"];
 				end
 	
 				table.sort(BestTable,function(a,b)
-					return me(b.config.Cost.Value,a.config.Cost.Value)
+					return gt(b.config.Cost.Value,a.config.Cost.Value)
 				end)
 	
 				local cool
@@ -382,11 +446,11 @@ local script = G2L["11"];
 	
 				return cool
 			end
-			
+	
 			local currentmul
-			
+	
 			task.defer(function()
-				while wait(0.1)  do
+				while wait(0.02)  do
 					if toggle then
 						local part = getcost()
 						if part ~= currentmul and part then
@@ -396,13 +460,74 @@ local script = G2L["11"];
 								currentmul = part
 							end)
 						end
+					else
+						currentmul = nil
 					end
 				end
 			end)
-			
+	
 		end
 	end
 end;
-task.spawn(C_11);
+task.spawn(C_3);
+-- StarterGui.ButtonSim.Frame.Frame.LocalScript
+local function C_1a()
+local script = G2L["1a"];
+	local UserInputService = game:GetService("UserInputService")
+	
+	local gui = script.Parent
+	local gui2 = script.Parent.Parent
+	
+	
+	local dragging
+	local dragInput
+	local dragStart
+	local startPos
+	
+	local function update(input)
+		local delta = input.Position - dragStart
+		gui2.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+	end
+	
+	gui.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			dragging = true
+			dragStart = input.Position
+			startPos = gui2.Position
+	
+			input.Changed:Connect(function()
+				if input.UserInputState == Enum.UserInputState.End then
+					dragging = false
+				end
+			end)
+		end
+	end)
+	
+	gui.InputChanged:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+			dragInput = input
+		end
+	end)
+	
+	UserInputService.InputChanged:Connect(function(input)
+		if input == dragInput and dragging then
+			update(input)
+		end
+	end)
+	
+	local button = gui.TextButton
+	
+	button.MouseButton1Click:Connect(function()
+		local realgui = gui.Parent.Main
+		if realgui.Visible == true then
+			realgui.Visible = false
+			gui.TextButton.Text = "+"
+		else
+			realgui.Visible = true
+			gui.TextButton.Text = "-"
+		end
+	end)
+end;
+task.spawn(C_1a);
 
 return G2L["1"], require;
