@@ -429,6 +429,36 @@ local function sinkInput(actionName, inputState, inputObject)
     return Enum.ContextActionResult.Pass
 end
 
+local UserInputService = game:GetService("UserInputService")
+
+local function isShiftLockActive()
+	return UserInputService.MouseBehavior == Enum.MouseBehavior.LockCenter
+end
+
+local mt = getrawmetatable(game)
+    local oldNamecall = mt.__namecall
+    setreadonly(mt, false)
+
+    mt.__namecall = newcclosure(function(self, ...)
+        -- Capture the method and arguments
+        local method = getnamecallmethod()
+        local args = {...}
+        
+        -- Ensure it's the InvokeServer method and the correct RemoteFunction
+        if method == "FireServer" then
+            if not isShiftLockActive() then
+                if self.Name == "SpecialUse" then
+                    if args[1] == "Right" or args[1] == "Left" then
+                        return nil
+                    end
+                end
+            end
+        end
+        return oldNamecall(self, unpack(args))
+    end)
+
+    -- Set the metatable back to readonly
+    setreadonly(mt, true)
 
 print('WP - Starting Main Loop')
 
