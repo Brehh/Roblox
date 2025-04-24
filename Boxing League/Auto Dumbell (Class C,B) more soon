@@ -32,46 +32,26 @@ if game.PlaceId == Lobby then
     print("Lobby!")
     repeat
         wait()
-    until game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild('Loader')
-    wait()
-    repeat
-        wait()
     until not game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild('Loader')
-    print("Done Loading!")
-    wait(1)
-    space()
-    wait(0.5)
-    space()
-
-    wait(1.5)
-
-    local L1 = game:GetService("Players").LocalPlayer.PlayerGui.MenuLeague.League.List.L1
-    local xddd = L1.AbsolutePosition + L1.AbsoluteSize / 2
-
-    vim:SendMouseButtonEvent(xddd.X,xddd.Y+50, 0, true, game, 1)
-    vim:SendMouseButtonEvent(xddd.X,xddd.Y+50, 0, false, game, 1)
-    wait(1)
-
-    local Class = game:GetService("Players").LocalPlayer.PlayerGui.MenuLeague.League.Show.L1.Frame:FindFirstChild(wantedClass)
-    local class2 = Class.AbsolutePosition + Class.AbsoluteSize / 2
-
-    vim:SendMouseButtonEvent(class2.X,class2.Y+50, 0, true, game, 1)
-    vim:SendMouseButtonEvent(class2.X,class2.Y+50, 0, false, game, 1)
-    wait()
-
-    vim:SendMouseButtonEvent(class2.X,class2.Y+50, 0, true, game, 1)
-    vim:SendMouseButtonEvent(class2.X,class2.Y+50, 0, false, game, 1)
+    game:GetService("Players").LocalPlayer.PlayerGui:WaitForChild('MenuLeague')
+    game:GetService("Players").LocalPlayer.PlayerGui.MenuLeague:WaitForChild('League')
+     game:GetService("Players").LocalPlayer.PlayerGui.MenuLeague.League:WaitForChild('CHOO')
+    game:GetService("Players").LocalPlayer.PlayerGui.MenuLeague.League.CHOO.Value = tostring(checkclass)
+     print("Done Loading!")
+    while true and wait() do
+        wait(3)
+        game:GetService("Players").LocalPlayer.PlayerGui.MenuLeague.League.CHOO.Value = ''
+        wait()
+        game:GetService("Players").LocalPlayer.PlayerGui.MenuLeague.League.CHOO.Value = tostring(checkclass)
+    end
 
 elseif game.PlaceId == checkclass then
     if wantedClass == 'CC' then
         print('Class C!!')
         repeat
-        wait()
-        until game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild('Loader')
-        wait()
-        repeat
             wait()
         until not game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild('Loader')
+        wait(3)
         print('Start Walking!!')
         local targetPart = game:GetService("Workspace").LOADED.Lobby.Vroom.L
         local grab = game:GetService("Workspace").Machinery.DUMB1.RS.GridPart
