@@ -32,6 +32,10 @@ if game.PlaceId == Lobby then
     print("Lobby!")
     repeat
         wait()
+    until game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild('Loader')
+    wait()
+    repeat
+        wait()
     until not game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild('Loader')
     print("Done Loading!")
     wait(1)
@@ -61,7 +65,13 @@ if game.PlaceId == Lobby then
 elseif game.PlaceId == checkclass then
     if wantedClass == 'CC' then
         print('Class C!!')
-        wait(3)
+        repeat
+        wait()
+        until game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild('Loader')
+        wait()
+        repeat
+            wait()
+        until not game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild('Loader')
         print('Start Walking!!')
         local targetPart = game:GetService("Workspace").LOADED.Lobby.Vroom.L
         local grab = game:GetService("Workspace").Machinery.DUMB1.RS.GridPart
@@ -137,7 +147,13 @@ elseif game.PlaceId == checkclass then
         testwalk()
     elseif wantedClass == 'BB' then
         print('Class B!!')
-        wait(3)
+        repeat
+        wait()
+        until game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild('Loader')
+        wait()
+        repeat
+            wait()
+        until not game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild('Loader')
         print('Start Walking!!')
         local grab = game:GetService("Workspace").Machinery.DUMB1.RS.GridPart
 
