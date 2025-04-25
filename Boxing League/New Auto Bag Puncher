@@ -31,20 +31,7 @@ local camera = workspace.CurrentCamera
 
 
 function click()
-    if not camera then
-       warn("Camera not found!")
-       return
-    end
-  local screenSize = camera.ViewportSize
-
-  local centerX = math.floor(screenSize.X / 2)
-  local centerY = math.floor(screenSize.Y / 2)
-
-  vim:SendMouseButtonEvent(centerX, centerY, 0, true, game, 1)
-
-  task.wait()
-
-  vim:SendMouseButtonEvent(centerX, centerY, 0, false, game, 1)
+    game:GetService("ReplicatedStorage").Action.GymUse:FireServer("CL")
 end
 
 function uppercut()
