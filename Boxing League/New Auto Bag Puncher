@@ -3,13 +3,35 @@
 local vim = game:GetService('VirtualInputManager')
 
 
+for i, v in pairs(game.Players.LocalPlayer.PlayerGui.MainGui.Stats:GetChildren()) do
+   if v.Name:sub(1,1) == "E" and v.Name ~= 'E0' then
+	if v.Choice.Visible then
+                wait(0.5)
+                for c, d in pairs(getconnections(v.Choice.MouseButton1Click)) do
+                    local mouseButton1ClickFunction = d.Function
+                    mouseButton1ClickFunction(v:FindFirstChildOfClass("LocalScript"))
+                end
+        end
+       v.Choice:GetPropertyChangedSignal("Visible"):Connect(function()
+            if v.Choice.Visible then
+                wait(0.5)
+                for c, d in pairs(getconnections(v.Choice.MouseButton1Click)) do
+                    local mouseButton1ClickFunction = d.Function
+                    mouseButton1ClickFunction(v:FindFirstChildOfClass("LocalScript"))
+                end
+            end
+        end)
+    end
+end
+
+
 local mystats = game:GetService("ReplicatedStorage").Stats[game.Players.LocalPlayer.Name]
 local where = mystats.WHERE.ST
 
 function click()
-    vim:SendMouseButtonEvent(0,0, 0, true, game, 1)
+    vim:SendMouseButtonEvent(1000,500, 0, true, game, 1)
     task.wait()
-    vim:SendMouseButtonEvent(0,0, 0, false, game, 1)
+    vim:SendMouseButtonEvent(1000,500, 0, false, game, 1)
 end
 
 function uppercut()
@@ -18,17 +40,6 @@ function uppercut()
     vim:SendKeyEvent(false, Enum.KeyCode['Space'], false, game)
 end
 
-
-function pressdexupgrade()
-    
-    local obj = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.Stats.E3.Choice
-    if obj.Visible == true then
-        local xddd = obj.AbsolutePosition + obj.AbsoluteSize / 2
-
-        vim:SendMouseButtonEvent(xddd.X,xddd.Y+50, 0, true, game, 1)
-        vim:SendMouseButtonEvent(xddd.X,xddd.Y+50, 0, false, game, 1)
-    end
-end
 
 function isNumber(x)
 	return tonumber(x) ~= nil
@@ -101,7 +112,6 @@ while where.Value:find('BOX') and _G.a do
                     mainmin = min
                 else
                     click()
-                    pressdexupgrade()
                 end
             end
         elseif not waiting then
