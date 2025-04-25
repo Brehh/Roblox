@@ -27,11 +27,24 @@ end
 
 local mystats = game:GetService("ReplicatedStorage").Stats[game.Players.LocalPlayer.Name]
 local where = mystats.WHERE.ST
+local camera = workspace.CurrentCamera
+
 
 function click()
-    vim:SendMouseButtonEvent(1000,500, 0, true, game, 1)
-    task.wait()
-    vim:SendMouseButtonEvent(1000,500, 0, false, game, 1)
+    if not camera then
+       warn("Camera not found!")
+       return
+    end
+  local screenSize = camera.ViewportSize
+
+  local centerX = math.floor(screenSize.X / 2)
+  local centerY = math.floor(screenSize.Y / 2)
+
+  vim:SendMouseButtonEvent(centerX, centerY, 0, true, game, 1)
+
+  task.wait()
+
+  vim:SendMouseButtonEvent(centerX, centerY, 0, false, game, 1)
 end
 
 function uppercut()
