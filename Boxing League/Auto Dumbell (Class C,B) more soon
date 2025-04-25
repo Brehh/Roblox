@@ -69,15 +69,24 @@ elseif game.PlaceId == checkclass then
 
 
 
-        function strupgrade()
-            local obj = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.Stats.E1.Choice
-            if obj.Visible == true then
-                local xddd = obj.AbsolutePosition + obj.AbsoluteSize / 2
-
-                vim:SendMouseButtonEvent(xddd.X,xddd.Y+50, 0, true, game, 1)
-                vim:SendMouseButtonEvent(xddd.X,xddd.Y+50, 0, false, game, 1)
-            else
-                return
+        for i, v in pairs(game.Players.LocalPlayer.PlayerGui.MainGui.Stats:GetChildren()) do
+           if v.Name:sub(1,1) == "E" and v.Name ~= 'E0' then
+        	if v.Choice.Visible then
+                        wait(0.5)
+                        for c, d in pairs(getconnections(v.Choice.MouseButton1Click)) do
+                            local mouseButton1ClickFunction = d.Function
+                            mouseButton1ClickFunction(v:FindFirstChildOfClass("LocalScript"))
+                        end
+                end
+               v.Choice:GetPropertyChangedSignal("Visible"):Connect(function()
+                    if v.Choice.Visible then
+                        wait(0.5)
+                        for c, d in pairs(getconnections(v.Choice.MouseButton1Click)) do
+                            local mouseButton1ClickFunction = d.Function
+                            mouseButton1ClickFunction(v:FindFirstChildOfClass("LocalScript"))
+                        end
+                    end
+                end)
             end
         end
 
@@ -108,7 +117,6 @@ elseif game.PlaceId == checkclass then
             task.defer(walk,bgrab1.Position)
             repeat 
                 game:GetService("ReplicatedStorage").UseItem:FireServer("Use")
-                strupgrade()
                 task.wait()
             until game:GetService("Players").LocalPlayer.Public.uwu.Value >= 300
             print('Done Progress 2')
@@ -147,15 +155,24 @@ elseif game.PlaceId == checkclass then
 
 
 
-        function strupgrade()
-            local obj = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.Stats.E1.Choice
-            if obj.Visible == true then
-                local xddd = obj.AbsolutePosition + obj.AbsoluteSize / 2
-
-                vim:SendMouseButtonEvent(xddd.X,xddd.Y+50, 0, true, game, 1)
-                vim:SendMouseButtonEvent(xddd.X,xddd.Y+50, 0, false, game, 1)
-            else
-                return
+        for i, v in pairs(game.Players.LocalPlayer.PlayerGui.MainGui.Stats:GetChildren()) do
+           if v.Name:sub(1,1) == "E" and v.Name ~= 'E0' then
+        	if v.Choice.Visible then
+                        wait(0.5)
+                        for c, d in pairs(getconnections(v.Choice.MouseButton1Click)) do
+                            local mouseButton1ClickFunction = d.Function
+                            mouseButton1ClickFunction(v:FindFirstChildOfClass("LocalScript"))
+                        end
+                end
+               v.Choice:GetPropertyChangedSignal("Visible"):Connect(function()
+                    if v.Choice.Visible then
+                        wait(0.5)
+                        for c, d in pairs(getconnections(v.Choice.MouseButton1Click)) do
+                            local mouseButton1ClickFunction = d.Function
+                            mouseButton1ClickFunction(v:FindFirstChildOfClass("LocalScript"))
+                        end
+                    end
+                end)
             end
         end
 
@@ -186,7 +203,6 @@ elseif game.PlaceId == checkclass then
             print('Done Progess 1')
             repeat 
                 game:GetService("ReplicatedStorage").UseItem:FireServer("Use")
-                strupgrade()
                 task.wait()
             until game:GetService("Players").LocalPlayer.Public.uwu.Value >= 300
             print('Done Progress 2')
