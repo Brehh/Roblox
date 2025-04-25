@@ -1,0 +1,342 @@
+local lettle = {}
+local lettle2 = {}
+local every = 12
+
+local vim = game:GetService('VirtualInputManager')
+
+function getpos(obj)
+    local xddd = obj.AbsolutePosition + obj.AbsoluteSize / 2
+
+    return {xddd.X,xddd.Y+50}
+end
+
+function clickAndDrag(startX, startY, endX, endY)
+    -- 1. Press the left mouse button down at the starting point
+    vim:SendMouseButtonEvent(startX, startY, 0, true, game, 1)
+    task.wait() -- Short pause to ensure the press registers
+
+    -- 2. Move the mouse to the ending point (while the button is held down)
+    --    SendMouseMoveEvent(x, y, gameProcessedEvent, inputCount)
+    vim:SendMouseMoveEvent(endX, endY, game, 1)
+    task.wait(0.5) -- Short pause to ensure the move registers
+
+    -- 3. Release the left mouse button at the ending point
+    vim:SendMouseButtonEvent(endX, endY, 0, false, game, 1)
+end
+
+local gui = game:GetService("Players").LocalPlayer.PlayerGui.ScreenGui.PuzzleGui.PuzzlePanel.Grid
+for i,v in next, gui:GetChildren() do
+    if v:IsA('ImageLabel') and v.Visible == true then
+        table.insert(lettle,v)
+    end
+end
+
+for i,v in next, lettle do
+    local check = (i-1)//every + 1
+        if not lettle2[check] then
+            lettle2[check] = {}
+        end
+        table.insert(lettle2[check], {v,check})
+end
+
+
+
+function checkfirst(wanted)
+    local wowtable = {}
+    for i,v in next, lettle2 do
+        for a,b in next,v do
+            if b[1].Letter.Text == wanted:sub(1,1) then
+                table.insert(wowtable,{b[1],a,b[2]})
+            end
+        end
+    end
+
+    table.sort(wowtable,function(a,b)
+        return tonumber(a[1].Name) < tonumber(b[1].Name)
+    end)
+    return wowtable
+end
+
+local wo = 'VANILLA'
+
+print('----------------------------------------------------------------------')
+print(wo)
+for i,v in next,checkfirst(wo) do
+    local row = v[3]
+    local colum = v[2]
+    local current = v[1]
+
+    local function checkdown(rows,colums,wow)
+        if lettle2[rows] and lettle2[row][colums +1] then
+            if lettle2[rows][colums +1][1].Letter.Text == wo:sub(wow,wow) then
+                return {rows,colums +1,lettle2[rows][colums +1][1].Letter}
+            end
+        end
+    end
+    local function checkup(rows,colums,wow)
+        if lettle2[rows] and lettle2[rows][colums -1] then
+            if lettle2[rows][colums -1][1].Letter.Text == wo:sub(wow,wow) then
+                return {rows,colums -1,lettle2[rows][colums -1][1].Letter}
+            end
+        end
+    end
+    local function checkright(rows,colums,wow)
+        if lettle2[rows+1] and lettle2[rows+1][colums] then
+            if lettle2[rows+1][colums][1].Letter.Text == wo:sub(wow,wow) then
+                return {rows+1,colums,lettle2[rows+1][colums][1].Letter}
+            end
+        end
+    end
+    local function checkleft(rows,colums,wow)
+        if lettle2[rows-1] and lettle2[rows-1][colums] then
+            if lettle2[rows-1][colums][1].Letter.Text == wo:sub(wow,wow) then
+                return {rows-1,colums,lettle2[rows-1][colums][1].Letter}
+            end
+        end
+    end
+
+    local function leftdownrightup(rows,colums,wow)
+        if lettle2[rows+1] and lettle2[rows+1][colums+1] then
+            if lettle2[rows+1][colums+1][1].Letter.Text == wo:sub(wow,wow) then
+                return {rows+1,colums +1,lettle2[rows+1][colums+1][1].Letter}
+            end
+        end
+    end
+
+    local function rightdownleftup(rows,colums,wow)
+        if lettle2[rows-1] and lettle2[rows-1][colums+1] then
+            if lettle2[rows-1][colums+1][1].Letter.Text == wo:sub(wow,wow) then
+                return {rows-1,colums +1,lettle2[rows-1][colums+1][1].Letter}
+            end
+        end
+    end
+
+    local function leftuprightdown(rows,colums,wow)
+        if lettle2[rows+1] and lettle2[rows+1][colums-1] then
+            if lettle2[rows+1][colums-1][1].Letter.Text == wo:sub(wow,wow) then
+                return {rows+1,colums-1,lettle2[rows+1][colums-1][1].Letter}
+            end
+        end
+    end
+
+    local function rightupleftdown(rows,colums,wow)
+        if lettle2[rows-1] and lettle2[rows-1][colums-1] then
+            if lettle2[rows-1][colums-1][1].Letter.Text == wo:sub(wow,wow) then
+                return {rows-1,colums-1,lettle2[rows-1][colums-1][1].Letter}
+            end
+        end
+    end
+
+
+    if checkdown(row,colum,2) then
+        local row2 = row
+        local col2 = colum
+        
+        local cur1 = checkdown(row,colum,2)
+        local check = true
+        local fun = checkdown
+        local pos1 = getpos(current)
+        local pos2 
+        local row = cur1[1]
+        local colum = cur1[2]
+        for i = 3,wo:len() do
+            if fun(row,colum, i) then
+                local cur2 = fun(row,colum,i)
+                row = cur2[1]
+                colum = cur2[2]
+                pos2 = getpos(cur2[3])
+            else
+                check = false
+            end
+        end
+        if check then
+            print('บนลงล่าง')
+            print('แถว ' .. row2, 'ตัวที่ ' .. col2, 'ถึง ', 'แถว ' .. row, 'ตัวที่ ' .. colum)
+            clickAndDrag(pos1[1],pos1[2],pos2[1],pos2[2])
+        end
+    end
+    if checkup(row,colum,2) then
+        local row2 = row
+        local col2 = colum
+        local cur1 = checkup(row,colum,2)
+        local check = true
+        local fun = checkup
+        local pos1 = getpos(current)
+        local pos2 
+        local row = cur1[1]
+        local colum = cur1[2]
+        for i = 3,wo:len() do
+            if fun(row,colum, i) then
+                local cur2 = fun(row,colum,i)
+                row = cur2[1]
+                colum = cur2[2]
+                pos2 = getpos(cur2[3])
+            else
+                check = false
+            end
+        end
+        if check then
+            print('ล่างขึ้นบน')
+            print('แถว ' .. row2, 'ตัวที่ ' .. col2, 'ถึง ', 'แถว ' .. row, 'ตัวที่ ' .. colum)
+            clickAndDrag(pos1[1],pos1[2],pos2[1],pos2[2])
+        end
+    end
+    if checkright(row,colum,2) then
+        local row2 = row
+        local col2 = colum
+        local cur1 = checkright(row,colum,2)
+        local check = true
+        local fun = checkright
+        local pos1 = getpos(current)
+        local pos2 
+        local row = cur1[1]
+        local colum = cur1[2]
+        for i = 3,wo:len() do
+            if fun(row,colum, i) then
+                local cur2 = fun(row,colum,i)
+                row = cur2[1]
+                colum = cur2[2]
+                pos2 = getpos(cur2[3])
+            else
+                check = false
+            end
+        end
+        if check then
+            print('ซ้ายไปชวา')
+            print('แถว ' .. row2, 'ตัวที่ ' .. col2, 'ถึง ', 'แถว ' .. row, 'ตัวที่ ' .. colum)
+            clickAndDrag(pos1[1],pos1[2],pos2[1],pos2[2]) 
+        end
+    end
+    if checkleft(row,colum,2) then
+        local row2 = row
+        local col2 = colum
+        local cur1 = checkleft(row,colum,2)
+        local check = true
+        local fun = checkleft
+        local pos1 = getpos(current)
+        local pos2 
+        local row = cur1[1]
+        local colum = cur1[2]
+        for i = 3,wo:len() do
+            if fun(row,colum, i) then
+                local cur2 = fun(row,colum,i)
+                row = cur2[1]
+                colum = cur2[2]
+                pos2 = getpos(cur2[3])
+            else
+                check = false
+            end
+        end
+        if check then
+            print('ขวาไปซ้าย')
+            print('แถว ' .. row2, 'ตัวที่ ' .. col2, 'ถึง ', 'แถว ' .. row, 'ตัวที่ ' .. colum)
+            clickAndDrag(pos1[1],pos1[2],pos2[1],pos2[2])
+        end
+    end
+    if leftdownrightup(row,colum,2) then
+        local row2 = row
+        local col2 = colum
+        local cur1 = leftdownrightup(row,colum,2)
+        local check = true
+        local fun = leftdownrightup
+        local pos1 = getpos(current)
+        local pos2 
+        local row = cur1[1]
+        local colum = cur1[2]
+        for i = 3,wo:len() do
+            if fun(row,colum, i) then
+                local cur2 = fun(row,colum,i)
+                row = cur2[1]
+                colum = cur2[2]
+                pos2 = getpos(cur2[3])
+            else
+                check = false
+            end
+        end
+        if check then
+            print('ซ้ายล่างขึ้นไปขวาบน')
+            print('แถว ' .. row2, 'ตัวที่ ' .. col2, 'ถึง ', 'แถว ' .. row, 'ตัวที่ ' .. colum)
+            clickAndDrag(pos1[1],pos1[2],pos2[1],pos2[2])
+        end
+    end
+    if rightdownleftup(row,colum,2) then
+        local row2 = row
+        local col2 = colum
+        local cur1 = rightdownleftup(row,colum,2)
+        local check = true
+        local fun = rightdownleftup
+        local pos1 = getpos(current)
+        local pos2 
+        local row = cur1[1]
+        local colum = cur1[2]
+        for i = 3,wo:len() do
+            if fun(row,colum, i) then
+                local cur2 = fun(row,colum,i)
+                row = cur2[1]
+                colum = cur2[2]
+                pos2 = getpos(cur2[3])
+            else
+                check = false
+            end
+        end
+        if check then
+            print('ขวาล่างขึ้นไปซ้ายบน')
+            print('แถว ' .. row2, 'ตัวที่ ' .. col2, 'ถึง ', 'แถว ' .. row, 'ตัวที่ ' .. colum)
+            clickAndDrag(pos1[1],pos1[2],pos2[1],pos2[2])
+        end
+    end
+    if leftuprightdown(row,colum,2) then
+        local row2 = row
+        local col2 = colum
+        local cur1 = leftuprightdown(row,colum,2)
+        local check = true
+        local fun = leftuprightdown
+        local pos1 = getpos(current)
+        local pos2 
+        local row = cur1[1]
+        local colum = cur1[2]
+        for i = 3,wo:len() do
+            if fun(row,colum, i) then
+                local cur2 = fun(row,colum,i)
+                row = cur2[1]
+                colum = cur2[2]
+                pos2 = getpos(cur2[3])
+            else
+                check = false
+            end
+        end
+        if check then
+            print('ซายบนลงไปขวาล่าง')
+            print('แถว ' .. row2, 'ตัวที่ ' .. col2, 'ถึง ', 'แถว ' .. row, 'ตัวที่ ' .. colum)
+            clickAndDrag(pos1[1],pos1[2],pos2[1],pos2[2])
+        end
+    end
+    if rightupleftdown(row,colum,2) then
+        local row2 = row
+        local col2 = colum
+        local cur1 = rightupleftdown(row,colum,2)
+        local check = true
+        local fun = rightupleftdown
+        local pos1 = getpos(current)
+        local pos2 
+        local row = cur1[1]
+        local colum = cur1[2]
+        for i = 3,wo:len() do
+            if fun(row,colum, i) then
+                local cur2 = fun(row,colum,i)
+                row = cur2[1]
+                colum = cur2[2]
+                pos2 = getpos(cur2[3])
+            else
+                check = false
+            end
+        end
+        if check then
+            print('ขวาบนขึ้นไปซ้ายล่าง')
+            print('แถว ' .. row2, 'ตัวที่ ' .. col2, 'ถึง ', 'แถว ' .. row, 'ตัวที่ ' .. colum)
+            clickAndDrag(pos1[1],pos1[2],pos2[1],pos2[2])
+        end
+    end
+    
+end
+
