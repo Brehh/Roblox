@@ -320,7 +320,11 @@ local script = G2L["3"];
 	
 					for a,b in next, wow do
 						if a:find(v.Name) then
-							table.insert(BestTable,{a,b})
+                            local costuse = b.StatRequired
+                            local Button = b.Button.Name
+                            if costuse ~= Button then
+							    table.insert(BestTable,{a,b})
+                            end
 						end
 					end
 	
@@ -332,8 +336,9 @@ local script = G2L["3"];
 					for a,b in next, BestTable do
 						local price = b[2].Price
 						local costuse = b[2].StatRequired
+                        local Button = b[2].Button
+
 						if me(MyStats[costuse].Value,price) then
-							local Button = b[2].Button
 							local realprice = Button.Touch.BBG.Price.Text
                             local Area = b[2].Area.Name
 							check = {b[1],realprice,Button.Touch,a,Area}
