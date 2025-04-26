@@ -1,6 +1,5 @@
 print('WORK')
 
-
 game.Players.LocalPlayer.PlayerGui.PermGui.Stats.Stats.sse.wa.Value = false
 
 local folder
@@ -67,6 +66,7 @@ function getplayer(mode)
     if mode == 1 then
         _G.mode = 2  
         for i,v in next, game.Players:GetChildren() do
+            v.Parent = workspace
             if v ~= game.Players.LocalPlayer and v.Name ~= fight.ALLY.Value and v.Name ~= fight.E1.Value and v.Name ~= fight.E2.Value then
                 v.Character.Parent = folder
             elseif v ~= game.Players.LocalPlayer then
