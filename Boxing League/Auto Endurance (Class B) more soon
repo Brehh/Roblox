@@ -236,7 +236,7 @@ elseif game.PlaceId == checkclass then
                             task.wait()
                         until game:GetService("Players").LocalPlayer.Public.uwu.Value >= 300
                         print('Done Progress 2')
-                        workspace.Machinery[where].RemoteEvent:FireServer({"Interact"})
+                        workspace.Machinery[where.Value].RemoteEvent:FireServer({"Interact"})
                         wait(1)
                         print('Done Progress 3')
                         print('All DONE!!!')
