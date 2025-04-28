@@ -1,0 +1,311 @@
+
+repeat 
+wait()
+until game:IsLoaded()
+
+local wantedClass = 'BB'
+local Lobby = 3738091713
+local checkclass = nil
+
+if wantedClass == 'CC' then
+    checkclass = 3738115442
+elseif wantedClass == 'BB' then
+    checkclass = 4574912733
+end
+
+
+local vim = game:GetService('VirtualInputManager')
+
+function click()
+    vim:SendMouseButtonEvent(0,0, 0, true, game, 1)
+    task.wait()
+    vim:SendMouseButtonEvent(0,0, 0, false, game, 1)
+end
+
+function space()
+    vim:SendKeyEvent(true, Enum.KeyCode['Space'], false, game)
+    task.wait()
+    vim:SendKeyEvent(false, Enum.KeyCode['Space'], false, game)
+end
+
+if game.PlaceId == Lobby then
+    print("Lobby!")
+    repeat
+        wait()
+    until not game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild('Loader')
+    game:GetService("Players").LocalPlayer.PlayerGui:WaitForChild('MenuLeague')
+    game:GetService("Players").LocalPlayer.PlayerGui.MenuLeague:WaitForChild('League')
+     game:GetService("Players").LocalPlayer.PlayerGui.MenuLeague.League:WaitForChild('CHOO')
+    game:GetService("Players").LocalPlayer.PlayerGui.MenuLeague.League.CHOO.Value = tostring(checkclass)
+     print("Done Loading!")
+    while true and wait() do
+        wait(3)
+        game:GetService("Players").LocalPlayer.PlayerGui.MenuLeague.League.CHOO.Value = ''
+        wait()
+        game:GetService("Players").LocalPlayer.PlayerGui.MenuLeague.League.CHOO.Value = tostring(checkclass)
+    end
+
+elseif game.PlaceId == checkclass then
+    if wantedClass == 'CC' then
+        print('Class C!!')
+        repeat
+            wait()
+        until not game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild('Loader')
+        wait(3)
+        print('Start Walking!!')
+        local targetPart = game:GetService("Workspace").LOADED.Lobby.Vroom.L
+        local grab = game:GetService("Workspace").Machinery.DUMB1.RS.GridPart
+
+        local targetPosition = targetPart.CFrame * CFrame.new(0, 0, targetPart.Size.Z / 2)
+        local targetPosition2 = targetPart.CFrame * CFrame.new(0, 0, -targetPart.Size.Z / 2)
+        local bgrab1 = CFrame.new(322.2228088378906, 120.35760498046875, 261.16400146484375)
+        local grabpos = grab.CFrame * CFrame.new(0, grab.Size.Y / 2, 0)
+        local mystats = game:GetService("ReplicatedStorage").Stats[game.Players.LocalPlayer.Name]
+        local where = mystats.WHERE.ST
+
+        local char = game.Players.LocalPlayer.Character
+        local hum = char:FindFirstChildWhichIsA("Humanoid")
+        local root = char:FindFirstChild("HumanoidRootPart")
+
+
+
+        for i, v in pairs(game.Players.LocalPlayer.PlayerGui.MainGui.Stats:GetChildren()) do
+           if v.Name:sub(1,1) == "E" and v.Name ~= 'E0' then
+        	if v.Choice.Visible then
+                        wait(0.5)
+                        for c, d in pairs(getconnections(v.Choice.MouseButton1Click)) do
+                            local mouseButton1ClickFunction = d.Function
+                            mouseButton1ClickFunction(v:FindFirstChildOfClass("LocalScript"))
+                        end
+                end
+               v.Choice:GetPropertyChangedSignal("Visible"):Connect(function()
+                    if v.Choice.Visible then
+                        wait(0.5)
+                        for c, d in pairs(getconnections(v.Choice.MouseButton1Click)) do
+                            local mouseButton1ClickFunction = d.Function
+                            mouseButton1ClickFunction(v:FindFirstChildOfClass("LocalScript"))
+                        end
+                    end
+                end)
+            end
+        end
+
+        function Equip()
+            repeat 
+                workspace.Machinery.DUMB1.RS.RemoteEvent:FireServer({"Interact"})
+                wait(0.5)
+            until where.Value:find('DUMB')
+        end
+
+        function walk(pos)
+            local check = nil
+            repeat
+                hum:MoveTo(pos)
+                check = hum.MoveToFinished:Wait()
+            until check == true
+        end
+
+
+
+        function testwalk()
+            walk(targetPosition.Position)
+            walk(targetPosition2.Position)
+            walk(bgrab1.Position)
+            walk(grabpos.Position)
+            Equip()
+            print('Done Progess 1')
+            task.defer(walk,bgrab1.Position)
+            repeat 
+                game:GetService("ReplicatedStorage").UseItem:FireServer("Use")
+                task.wait()
+            until game:GetService("Players").LocalPlayer.Public.uwu.Value >= 300
+            print('Done Progress 2')
+            wait(1)
+            game:GetService("ReplicatedStorage").UseItem:FireServer("Drop")
+            print('Done Progress 3')
+            print('All DONE!!!')
+            wait(3)
+            while true do
+                game:GetService('TeleportService'):Teleport(Lobby)
+                wait(3)
+            end
+        end
+
+
+        testwalk()
+    elseif wantedClass == 'BB' then
+        print('Class B!!')
+        repeat
+        wait()
+        until game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild('Loader')
+        wait()
+        repeat
+            wait()
+        until not game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild('Loader')
+        print('Start Walking!!')
+
+        for i, v in pairs(game.Players.LocalPlayer.PlayerGui.MainGui.Stats:GetChildren()) do
+           if v.Name:sub(1,1) == "E" and v.Name ~= 'E0' then
+        	if v.Choice.Visible then
+                        wait(0.5)
+                        for c, d in pairs(getconnections(v.Choice.MouseButton1Click)) do
+                            local mouseButton1ClickFunction = d.Function
+                            mouseButton1ClickFunction(v:FindFirstChildOfClass("LocalScript"))
+                        end
+                end
+               v.Choice:GetPropertyChangedSignal("Visible"):Connect(function()
+                    if v.Choice.Visible then
+                        wait(0.5)
+                        for c, d in pairs(getconnections(v.Choice.MouseButton1Click)) do
+                            local mouseButton1ClickFunction = d.Function
+                            mouseButton1ClickFunction(v:FindFirstChildOfClass("LocalScript"))
+                        end
+                    end
+                end)
+            end
+        end
+
+
+        function getpush()
+            for i,v in next, game:GetService("Workspace").Machinery:GetChildren() do
+                if v.Name:find('PUSH') then
+                    if v.Status.USE.Value == 0 then
+                        return v
+                    end
+                end
+            end
+            return nil
+        end
+
+        
+
+
+        local mystats = game:GetService("ReplicatedStorage").Stats[game.Players.LocalPlayer.Name]
+        local where = mystats.WHERE.ST
+        local char = game.Players.LocalPlayer.Character
+        local hum = char:FindFirstChildWhichIsA("Humanoid")
+        local root = char:FindFirstChild("HumanoidRootPart")
+
+        function walk(pos)
+            local check = nil
+            repeat
+                hum:MoveTo(pos)
+                check = hum.MoveToFinished:Wait()
+            until check == true
+        end
+
+        local where = mystats.WHERE.ST
+
+
+        local grab = game:GetService("Workspace").Machinery.DUMB1.RS.GridPart
+
+        local grabpos = grab.CFrame * CFrame.new(0, grab.Size.Y / 2, 0)
+
+        function Equip()
+            repeat 
+                workspace.Machinery.DUMB1.RS.RemoteEvent:FireServer({"Interact"})
+                wait(0.5)
+            until where.Value:find('DUMB')
+        end
+
+
+        
+
+        function Equip2(wowxd)
+            repeat 
+                wowxd.RemoteEvent:FireServer({"Interact"})
+                wait(0.5)
+            until where.Value:find('PUSH') or not getpush()
+        end
+
+
+
+        function testwalk()
+            walk(Vector3.new(22.1625, 23.9708, 146.56))
+            walk(Vector3.new(20.89670181274414, 24.969526290893555, 128.29530334472656))
+            walk(Vector3.new(5.44948673248291, 35.040252685546875, 116.8849105834961))
+            walk(Vector3.new(-94.91140747070312, 34.97213363647461, 118.5347900390625))
+            if getpush() then
+                local push = getpush().GridPart
+                local pushpos = push.CFrame * CFrame.new(0, push.Size.Y / 2, 0)
+                walk(pushpos.Position)
+                if getpush() then
+                    Equip2(getpush())
+                    if where.Value:find('PUSH') then
+                        repeat 
+                            task.wait()
+                        until game:GetService("Players").LocalPlayer.Public.uwu.Value >= 300
+                        print('Done Progress 2')
+                        workspace.Machinery[where].RemoteEvent:FireServer({"Interact"})
+                        wait(1)
+                        print('Done Progress 3')
+                        print('All DONE!!!')
+                        wait(3)
+                        while true do
+                            game:GetService('TeleportService'):Teleport(Lobby)
+                            wait(3)
+                        end
+                    else
+                        walk(grabpos.Position)
+                        Equip()
+                        print('Done Progess 1')
+                        repeat 
+                            game:GetService("ReplicatedStorage").UseItem:FireServer("Use")
+                            task.wait()
+                        until game:GetService("Players").LocalPlayer.Public.uwu.Value >= 300
+                        print('Done Progress 2')
+                        wait(1)
+                        game:GetService("ReplicatedStorage").UseItem:FireServer("Drop")
+                        print('Done Progress 3')
+                        print('All DONE!!!')
+                        wait(3)
+                        while true do
+                            game:GetService('TeleportService'):Teleport(Lobby)
+                            wait(3)
+                        end
+                    end
+                else
+                    walk(grabpos.Position)
+                    Equip()
+                    print('Done Progess 1')
+                    repeat 
+                        game:GetService("ReplicatedStorage").UseItem:FireServer("Use")
+                        task.wait()
+                    until game:GetService("Players").LocalPlayer.Public.uwu.Value >= 300
+                    print('Done Progress 2')
+                    wait(1)
+                    game:GetService("ReplicatedStorage").UseItem:FireServer("Drop")
+                    print('Done Progress 3')
+                    print('All DONE!!!')
+                    wait(3)
+                    while true do
+                        game:GetService('TeleportService'):Teleport(Lobby)
+                        wait(3)
+                    end
+                end
+            else
+                walk(grabpos.Position)
+                Equip()
+                print('Done Progess 1')
+                repeat 
+                    game:GetService("ReplicatedStorage").UseItem:FireServer("Use")
+                    task.wait()
+                until game:GetService("Players").LocalPlayer.Public.uwu.Value >= 300
+                print('Done Progress 2')
+                wait(1)
+                game:GetService("ReplicatedStorage").UseItem:FireServer("Drop")
+                print('Done Progress 3')
+                print('All DONE!!!')
+                wait(3)
+                while true do
+                    game:GetService('TeleportService'):Teleport(Lobby)
+                    wait(3)
+                end
+            end
+            
+        end
+
+
+        testwalk()
+    end
+end
