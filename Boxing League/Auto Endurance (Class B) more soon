@@ -143,10 +143,7 @@ elseif game.PlaceId == checkclass then
         testwalk()
     elseif wantedClass == 'BB' then
         print('Class B!!')
-        repeat
-        wait()
-        until game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild('Loader')
-        wait()
+        wait(3)
         repeat
             wait()
         until not game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild('Loader')
