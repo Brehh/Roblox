@@ -28,6 +28,14 @@ function space()
     vim:SendKeyEvent(false, Enum.KeyCode['Space'], false, game)
 end
 
+task.defer(function()
+    wait(600)
+    while true do
+        game:GetService('TeleportService'):Teleport(Lobby)
+        wait(3)
+    end
+end)
+
 if game.PlaceId == Lobby then
     print("Lobby!")
     repeat
