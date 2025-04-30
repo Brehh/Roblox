@@ -30,9 +30,7 @@ end
 
 if game.PlaceId == Lobby then
     print("Lobby!")
-    repeat
-        wait()
-    until not game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild('Loader')
+    wait(3)
     game:GetService("Players").LocalPlayer.PlayerGui:WaitForChild('MenuLeague')
     game:GetService("Players").LocalPlayer.PlayerGui.MenuLeague:WaitForChild('League')
      game:GetService("Players").LocalPlayer.PlayerGui.MenuLeague.League:WaitForChild('CHOO')
