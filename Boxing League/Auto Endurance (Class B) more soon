@@ -54,9 +54,6 @@ if game.PlaceId == Lobby then
 elseif game.PlaceId == checkclass then
     if wantedClass == 'CC' then
         print('Class C!!')
-        repeat
-            wait()
-        until not game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild('Loader')
         wait(3)
         print('Start Walking!!')
         local targetPart = game:GetService("Workspace").LOADED.Lobby.Vroom.L
@@ -142,9 +139,6 @@ elseif game.PlaceId == checkclass then
     elseif wantedClass == 'BB' then
         print('Class B!!')
         wait(3)
-        repeat
-            wait()
-        until not game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild('Loader')
         print('Start Walking!!')
 
         for i, v in pairs(game.Players.LocalPlayer.PlayerGui.MainGui.Stats:GetChildren()) do
