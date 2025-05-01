@@ -166,7 +166,7 @@ elseif game.PlaceId == checkclass then
         function getpush()
             for i,v in next, game:GetService("Workspace").Machinery:GetChildren() do
                 if v.Name:find('PUSH') then
-                    if v.Status.USE.Value == 0 then
+                    if v.Status.USE.Value == 0 and (not(game.Players:FindFirstChild(v.Status.Who.Value)) or v.Status.Who.Value == game.Players.LocalPlayer.Name) then
                         return v
                     end
                 end
