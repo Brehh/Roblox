@@ -24,15 +24,11 @@ while _G.on and task.wait() do
         if high.FillColor == Color3.fromRGB(204, 204, 204) then 
             continue 
         elseif high.FillColor == Color3.fromRGB(204, 0, 0) then
-            if high.FillTransparency > 0.9 then continue end
+            if high.FillTransparency > 0.85 then continue end
             repeat task.wait() 
-            until high.FillTransparency > 0.9 or not high or not high.Parent
+            until high.FillTransparency > 0.85 or not high or not high.Parent
             if (myRoot.Position - root.Position).Magnitude < 10 then
                 game:GetService("ReplicatedStorage").Remotes.PerformDodge:FireServer("LeftDodge")
-                task.defer(function()
-                    wait(0.3)
-                    game:GetService("ReplicatedStorage").Remotes.PerformBlock:FireServer(true)
-                end)
             end
         else
             if high.FillTransparency > 0.75 then continue end
@@ -40,10 +36,6 @@ while _G.on and task.wait() do
             until high.FillTransparency > 0.75 or not high or not high.Parent
             if (myRoot.Position - root.Position).Magnitude < 10 then
                 game:GetService("ReplicatedStorage").Remotes.PerformDodge:FireServer("LeftDodge")
-                task.defer(function()
-                    wait(0.3)
-                    game:GetService("ReplicatedStorage").Remotes.PerformBlock:FireServer(true)
-                end)
             end
         end
         
