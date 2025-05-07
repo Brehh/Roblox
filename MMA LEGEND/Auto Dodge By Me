@@ -56,7 +56,6 @@ while _G.on and task.wait() do
                     wowcheck = true
                     game:GetService("ReplicatedStorage").Remotes.PerformBlock:FireServer(false)
                     game:GetService("ReplicatedStorage").Remotes.PerformAttack:FireServer()
-					game:GetService("ReplicatedStorage").Remotes.PerformDodge:FireServer("BackDodge")
                 end
             until high.FillTransparency > 0.75 or not high or not high.Parent
             if (myRoot.Position - root.Position).Magnitude < 12 and not wowcheck then
