@@ -27,7 +27,7 @@ while _G.on and task.wait() do
             if high.FillTransparency > 0.9 then continue end
             repeat task.wait() 
             until high.FillTransparency > 0.9 or not high or not high.Parent
-            if (myRoot.Position - root.Position).Magnitude < 16 then
+            if (myRoot.Position - root.Position).Magnitude < 15 then
                 game:GetService("ReplicatedStorage").Remotes.PerformDodge:FireServer("LeftDodge")
             end
         else
