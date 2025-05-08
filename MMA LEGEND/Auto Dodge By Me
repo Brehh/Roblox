@@ -39,7 +39,7 @@ while _G.on and task.wait() do
                 continue
             end
             repeat task.wait() 
-                if not real:GetAttribute('CombatState'):find('Attacking') then
+                if not real:GetAttribute('CombatState'):find('Attacking') and character:GetAttribute("CanAttack") == true then
                     wowcheck = true
                     game:GetService("ReplicatedStorage").Remotes.PerformBlock:FireServer(false)
                     game:GetService("ReplicatedStorage").Remotes.PerformAttack:FireServer()
@@ -52,7 +52,7 @@ while _G.on and task.wait() do
             local wowcheck = false
             if high.FillTransparency > 0.7 then continue end
             repeat task.wait()
-                if not real:GetAttribute('CombatState'):find('Attacking') then
+                if not real:GetAttribute('CombatState'):find('Attacking') and character:GetAttribute("CanAttack") == true then
                     wowcheck = true
                     game:GetService("ReplicatedStorage").Remotes.PerformBlock:FireServer(false)
                     game:GetService("ReplicatedStorage").Remotes.PerformAttack:FireServer()
