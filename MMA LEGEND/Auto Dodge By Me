@@ -1,5 +1,5 @@
 _G.on = true
-_G.distance = 8.25
+_G.distance = 0.825
 local me = game.Players.LocalPlayer
 local character = me.Character
 local target = character.Target
@@ -16,52 +16,61 @@ local save = {}
 
 while _G.on and task.wait() do
     if target.Value then
-        local real = target.Value
-        local root = real.HumanoidRootPart
-        local myRoot = game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-        if not (root and myRoot) then continue end
-        local high = real:FindFirstChild('Highlight')
-        if not high then continue end
-        if save[high] then continue end
-        save[high] = true
-        task.delay(3, function()
-            save[high] = nil
+        task.defer(function()
+            local real = target.Value
+            local root = real.HumanoidRootPart
+            local myRoot = game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            if not (root and myRoot) then return end
+            local high = real:FindFirstChild('Highlight')
+            if not high then return end
+            if save[high] then return end
+            save[high] = true
+            task.delay(3, function()
+                save[high] = nil
+            end)
+            if high.FillColor == Color3.fromRGB(204, 204, 204) then 
+                return 
+            elseif high.FillColor == Color3.fromRGB(204, 0, 0) then
+                local wowcheck = false
+                if (myRoot.Position - root.Position).Magnitude < 12 and character:GetAttribute("CanAttack") == true and character:GetAttribute("BlockStamina") == 100 then
+                    game:GetService("ReplicatedStorage").Remotes.PerformBlock:FireServer(false)
+                    game:GetService("ReplicatedStorage").Remotes.PerformAttack:FireServer()
+                    game:GetService("ReplicatedStorage").Remotes.PerformDodge:FireServer("LeftDodge")
+                    return
+                end
+                repeat task.wait() 
+                    if not real:GetAttribute('CombatState'):find('Attacking') and character:GetAttribute("CanAttack") == true then
+                        wowcheck = true
+                        game:GetService("ReplicatedStorage").Remotes.PerformBlock:FireServer(false)
+                        game:GetService("ReplicatedStorage").Remotes.PerformAttack:FireServer()
+                    end
+                until (high.FillTransparency < 1 and high.FillTransparency > _G.distance) or (not high) or (not high.Parent) or wowcheck
+                if (myRoot.Position - root.Position).Magnitude < 15 and not wowcheck then
+                    game:GetService("ReplicatedStorage").Remotes.PerformDodge:FireServer("LeftDodge")
+                end
+            else
+                local wowcheck = false
+                repeat task.wait()
+                    if not real:GetAttribute('CombatState'):find('Attacking') and character:GetAttribute("CanAttack") == true then
+                        wowcheck = true
+                    game:GetService("ReplicatedStorage").Remotes.PerformBlock:FireServer(false)
+                    game:GetService("ReplicatedStorage").Remotes.PerformAttack:FireServer()
+                    end
+                until high.FillTransparency > 0.75 or not high or not high.Parent
+                if (myRoot.Position - root.Position).Magnitude < 12 and not wowcheck then
+                    game:GetService("ReplicatedStorage").Remotes.PerformDodge:FireServer("LeftDodge")
+                end
+            end
         end)
-        if high.FillColor == Color3.fromRGB(204, 204, 204) then 
-            continue 
-        elseif high.FillColor == Color3.fromRGB(204, 0, 0) then
-            local wowcheck = false
-            if high.FillTransparency > _G.distance - 0.25 then continue end
-            if (myRoot.Position - root.Position).Magnitude < 12 and character:GetAttribute("CanAttack") == true then
-                game:GetService("ReplicatedStorage").Remotes.PerformBlock:FireServer(false)
-                game:GetService("ReplicatedStorage").Remotes.PerformAttack:FireServer()
-				game:GetService("ReplicatedStorage").Remotes.PerformDodge:FireServer("BackDodge")
-                continue
-            end
-            repeat task.wait() 
-                if not real:GetAttribute('CombatState'):find('Attacking') and character:GetAttribute("CanAttack") == true then
-                    wowcheck = true
-                    game:GetService("ReplicatedStorage").Remotes.PerformBlock:FireServer(false)
+        task.defer(function()
+            local real = target.Value
+            if character:GetAttribute('CombatState') == 'Attacking' then
+                if real:GetAttribute('CombatState'):find('Dodging') then
+                    game:GetService("ReplicatedStorage").Remotes.PerformFeint:FireServer()
                     game:GetService("ReplicatedStorage").Remotes.PerformAttack:FireServer()
                 end
-            until high.FillTransparency > _G.distance or not high or not high.Parent or wowcheck
-            if (myRoot.Position - root.Position).Magnitude < 15 and not wowcheck then
-                game:GetService("ReplicatedStorage").Remotes.PerformDodge:FireServer("LeftDodge")
             end
-        else
-            local wowcheck = false
-            if high.FillTransparency > 0.7 then continue end
-            repeat task.wait()
-                if not real:GetAttribute('CombatState'):find('Attacking') and character:GetAttribute("CanAttack") == true then
-                    wowcheck = true
-                    game:GetService("ReplicatedStorage").Remotes.PerformBlock:FireServer(false)
-                    game:GetService("ReplicatedStorage").Remotes.PerformAttack:FireServer()
-                end
-            until high.FillTransparency > 0.75 or not high or not high.Parent
-            if (myRoot.Position - root.Position).Magnitude < 12 and not wowcheck then
-                game:GetService("ReplicatedStorage").Remotes.PerformDodge:FireServer("LeftDodge")
-            end
-        end
+        end)
     else
         table.clear(save)
     end
