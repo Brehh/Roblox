@@ -1,6 +1,7 @@
 print('WORK')
 
 game.Players.LocalPlayer.PlayerGui.PermGui.Stats.Stats.sse.wa.Value = false
+game:GetService("ReplicatedStorage").UITrada.SY:Destroy()
 
 local folder
 
