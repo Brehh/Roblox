@@ -3,7 +3,7 @@ _G.distance = 0.825
 local me = game.Players.LocalPlayer
 local character = me.Character
 local target = character.Target
-
+local rc = false
 print(_G.on)
 me.CharacterAdded:Connect(function(c) 
     character = c
@@ -64,10 +64,21 @@ while _G.on and task.wait() do
         end)
         task.defer(function()
             local real = target.Value
+            local root = real.HumanoidRootPart
+            local myRoot = game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            if not (root and myRoot) then return end
+
             if character:GetAttribute('CombatState') == 'Attacking' then
-                if real:GetAttribute('CombatState'):find('Dodging') then
+                if real:GetAttribute('CombatState'):find('Dodging') and not rc then
+                    rc = true
                     game:GetService("ReplicatedStorage").Remotes.PerformFeint:FireServer()
-                    game:GetService("ReplicatedStorage").Remotes.PerformAttack:FireServer()
+                    wait(0.1)
+                    if (myRoot.Position - root.Position).Magnitude < 10 then
+                        game:GetService("ReplicatedStorage").Remotes.PerformAttack:FireServer()
+                    end
+                    task.delay(0.5,function()
+                        rc = false
+                    end)
                 end
             end
         end)
