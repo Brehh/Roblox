@@ -1,0 +1,127 @@
+_G.on = true
+_G.distance = 0.825
+local me = game.Players.LocalPlayer
+local character = me.Character
+local target = character.Target
+local rc = false
+print(_G.on)
+me.CharacterAdded:Connect(function(c) 
+    character = c
+    target = c:WaitForChild("Target",3)
+end)
+
+local save = {}
+local newtab = {}
+local check = {}
+
+
+while _G.on and task.wait() do
+    if target.Value then
+        if (next(newtab) == nil) then
+            local wow1 = target.Value:GetAttribute('Style')
+            local wow2 = require(game:GetService("ReplicatedStorage").GameConfiguration.Styles[wow1])
+            for i,v in next,wow2 do
+                if i == 'Animations' then
+                    for a,b in next, v do
+                        newtab[b.Id] = a
+                    end
+                end
+            end
+            print(next(newtab))
+        end
+        task.defer(function()
+            local real = target.Value
+            local root = real.HumanoidRootPart
+            local myRoot = game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            local mehum = real:FindFirstChild("Humanoid")
+            local meanim = mehum:FindFirstChildWhichIsA("Animator")
+            if not (root and myRoot and mehum and meanim) then return end
+            local playingTracks = meanim:GetPlayingAnimationTracks()
+            for i,v in next, playingTracks do
+                task.defer(function()
+                    local track = v
+                    local animId = track.Animation.AnimationId
+                    if newtab[animId] and newtab[animId]:find('Attack') and not check[v] and track.IsPlaying then
+                        check[v] = true
+                        local bruh = false
+                        print(newtab[animId],track.Length - track.TimePosition)
+                        local ti
+                        if newtab[animId]:find('Heavy') then
+                            ti = 1
+                        else
+                            ti = 0.725
+                        end
+                        repeat
+                        task.wait()
+                        if not real:GetAttribute('CombatState'):find('Attacking') then
+                            bruh = true
+                            check[track] = nil
+                        end
+                        until (track.Length - track.TimePosition) < ti or not track.IsPlaying or bruh == true
+                        print(newtab[animId],track.Length - track.TimePosition)
+                        if not bruh and (myRoot.Position - root.Position).Magnitude < 14 then
+                            game:GetService("ReplicatedStorage").Remotes.PerformDodge:FireServer("LeftDodge")
+                        end
+                        local stoppedConnection
+                        stoppedConnection = track.Stopped:Connect(function()
+                            check[track] = nil -- Clear the flag for this track
+                            if stoppedConnection then
+                                stoppedConnection:Disconnect() -- Disconnect this event listener
+                            end
+                        end)
+                    elseif newtab[animId] and newtab[animId]:find('Ability') and not check[v] and track.IsPlaying then
+                        check[v] = true
+                        game:GetService("ReplicatedStorage").Remotes.PerformDodge:FireServer("BackDodge")
+                        local stoppedConnection
+                        stoppedConnection = track.Stopped:Connect(function()
+                            check[track] = nil -- Clear the flag for this track
+                            if stoppedConnection then
+                                stoppedConnection:Disconnect() -- Disconnect this event listener
+                            end
+                        end)
+                    elseif newtab[animId] and newtab[animId]:find('Ultimate') and not check[v] and track.IsPlaying then
+                        check[v] = true
+                        print(newtab[animId],track.Length - track.TimePosition)
+                        local ti = 1
+                        repeat
+                        task.wait()
+                        until (track.Length - track.TimePosition) < ti or not track.IsPlaying
+                        print(newtab[animId],track.Length - track.TimePosition)
+                        game:GetService("ReplicatedStorage").Remotes.PerformDodge:FireServer("LeftDodge")
+                        local stoppedConnection
+                        stoppedConnection = track.Stopped:Connect(function()
+                            check[track] = nil -- Clear the flag for this track
+                            if stoppedConnection then
+                                stoppedConnection:Disconnect() -- Disconnect this event listener
+                            end
+                        end)
+                    end
+                end)
+            end
+        end)
+        task.defer(function()
+            local real = target.Value
+            local root = real.HumanoidRootPart
+            local myRoot = game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            if not (root and myRoot) then return end
+
+            if character:GetAttribute('CombatState') == 'Attacking' then
+                if real:GetAttribute('CombatState'):find('Dodging') and not rc then
+                    rc = true
+                    game:GetService("ReplicatedStorage").Remotes.PerformFeint:FireServer()
+                    wait(0.1)
+                    if (myRoot.Position - root.Position).Magnitude < 10 then
+                        game:GetService("ReplicatedStorage").Remotes.PerformAttack:FireServer()
+                    end
+                    task.delay(0.5,function()
+                        rc = false
+                    end)
+                end
+            end
+        end)
+    else
+        table.clear(save)
+        table.clear(check)
+        table.clear(newtab)
+    end
+end
