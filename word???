@@ -1,0 +1,172 @@
+
+
+local vim = game:GetService('VirtualInputManager')
+
+function getpos(obj)
+    local xddd = obj.AbsolutePosition + obj.AbsoluteSize / 2
+
+    return {xddd.X,xddd.Y+50}
+end
+
+
+print('-----------------------------------------------------')
+local HttpService = game:GetService("HttpService")
+local wordListUrl = game:HttpGet("https://gist.githubusercontent.com/deostroll/7693b6f3d48b44a89ee5f57bf750bd32/raw/426f564cf73b4c87d2b2c46ccded8a5b98658ce1/dictionary.txt")
+local wordList = {}
+local dictionaryLoaded = false
+
+-- SECTION 1: Load Word Dictionary from URL
+local function loadDictionary()
+    local lines = wordListUrl:split("\n") -- Split by newline
+    for _, line in ipairs(lines) do
+        local word = line:match("^%s*(.-)%s*$"):upper() -- Trim whitespace and convert to lower
+        if #word > 0 then
+            wordList[word] = true
+        end
+    end
+    dictionaryLoaded = true
+end
+
+-- SECTION 2: Function to Parse Input String
+local function parseInput(inputStr)
+	local letters = {}
+	local cleanedInput = inputStr:upper():gsub("%s+", "")
+	for i = 1, #cleanedInput do
+		table.insert(letters, cleanedInput:sub(i,i))
+	end
+	return letters
+end
+
+-- SECTION 3: Function to Generate Permutations and Combinations
+local function findPossibleWords(letters)
+	if not dictionaryLoaded then
+		warn("Dictionary not loaded yet. Please wait or check for errors.")
+		return {}
+	end
+
+	local foundWords = {}
+	local uniqueWords = {}
+
+	local function generatePermutations(currentPermutation, remainingLetters)
+		if #currentPermutation > 0 then
+			local wordToCheck = table.concat(currentPermutation)
+			if wordList[wordToCheck] and not uniqueWords[wordToCheck] then
+				table.insert(foundWords, wordToCheck)
+				uniqueWords[wordToCheck] = true
+			end
+		end
+
+		if #remainingLetters == 0 then
+			return
+		end
+
+		for i = 1, #remainingLetters do
+			local newPermutation = {}
+			-- CORRECTED LINE:
+			for _, char_in_perm in ipairs(currentPermutation) do -- Iterate over existing permutation
+				table.insert(newPermutation, char_in_perm)
+			end
+			table.insert(newPermutation, remainingLetters[i]) -- Add the new letter
+
+			local newRemaining = {}
+			for j = 1, #remainingLetters do
+				if i ~= j then
+					table.insert(newRemaining, remainingLetters[j])
+				end
+			end
+			generatePermutations(newPermutation, newRemaining)
+		end
+	end
+
+	local function generateSubsetsAndPermutations(allLetters)
+		local numLetters = #allLetters
+		for i = 1, (2^numLetters) - 1 do
+			local currentSubset = {}
+			for j = 0, numLetters - 1 do
+				if math.floor(i / (2^j)) % 2 == 1 then
+					table.insert(currentSubset, allLetters[j+1])
+				end
+			end
+			if #currentSubset > 0 then
+				generatePermutations({}, currentSubset)
+			end
+		end
+	end
+
+	generateSubsetsAndPermutations(letters)
+	return foundWords
+end
+
+local word = ''
+local save = {}
+
+for i,v in next,game:GetService("Players").LocalPlayer.PlayerGui.GameGui.WordGui.Frame:GetChildren() do
+    if v:IsA('TextButton') and v:FindFirstChild('TextLabel') and #v.TextLabel.Text > 0 and v.Visible == true then
+        print(i,v,v.TextLabel.Text)
+        save[v.TextLabel.Text:upper()] = v
+        if #word > 0 then
+            word = word .. ' ' .. v.TextLabel.Text
+        else
+            word = word .. v.TextLabel.Text
+        end
+    end
+end
+-- SECTION 4: Main Execution
+local function main()
+	-- Load the dictionary first
+	loadDictionary()
+
+	-- Wait for the dictionary to be loaded (simple wait, can be improved with events)
+	while not dictionaryLoaded do
+		task.wait(0.1)
+	end
+
+	local inputString = word -- Your input letters here
+	print("Input letters:", inputString)
+
+	local lettersArray = parseInput(inputString)
+	if #lettersArray == 0 then
+		print("No valid letters provided in the input.")
+		return
+	end
+
+	print("Parsed letters:", table.concat(lettersArray, ", "))
+
+	local possibleWords = findPossibleWords(lettersArray)
+	if #possibleWords > 0 then
+        table.sort(possibleWords, function(a, b)
+			return #a > #b -- Sorts by length, longest first
+		end)
+		print("Possible words found:")
+		-- CORRECTED LINE:
+		for _, word in ipairs(possibleWords) do 
+            if #word > 1 then
+			    print("- " .. word)
+                for i,v in next,word:split('') do
+                    if game:GetService("Players").LocalPlayer.PlayerGui.GameGui.WordGui.Frame.Position.Y.Offset > 0 then
+                        print('END')
+                        break
+                    end
+                    local opos = getpos(save[v])
+                    if i == 1 then
+                        vim:SendMouseButtonEvent(opos[1], opos[2], 0, true, game, 1)
+                        task.wait(0.15)
+                    elseif i >1 and i < #word then
+                        vim:SendMouseMoveEvent(opos[1], opos[2], game, 1)
+                        task.wait(0.15)
+                    elseif i == #word then
+                        vim:SendMouseButtonEvent(opos[1], opos[2], 0, true, game, 1)
+                        task.wait(0.2)
+                        vim:SendMouseButtonEvent(opos[1], opos[2], 0, false, game, 1)
+                        task.wait(1)
+                    end
+                end
+            end
+		end
+	else
+		print("No words could be formed from the input letters using the current dictionary.")
+	end
+end
+
+-- Run the main function
+main()
