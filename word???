@@ -155,7 +155,7 @@ local function main()
                 print('END')
                 break
             end
-            if #word > 1 then
+            if #word > 3 then
 			    print("- " .. word)
                 for i,v in next,word:split('') do
                     if game:GetService("Players").LocalPlayer.PlayerGui.GameGui.WordGui.Frame.Position.Y.Offset ~= -10 then
