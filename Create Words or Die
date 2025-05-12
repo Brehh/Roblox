@@ -155,7 +155,7 @@ local function main()
                 print('END')
                 break
             end
-            if #word > 3 then
+            if #word > 1 then
 			    print("- " .. word)
                 for i,v in next,word:split('') do
                     if game:GetService("Players").LocalPlayer.PlayerGui.GameGui.WordGui.Frame.Position.Y.Offset ~= -10 then
@@ -177,13 +177,13 @@ local function main()
                     end
                     if i == 1 then
                         vim:SendMouseButtonEvent(opos[1], opos[2], 0, true, game, 1)
-                        task.wait(0.05)
+                        task.wait(0.02)
                     elseif i >1 and i < #word then
                         vim:SendMouseMoveEvent(opos[1], opos[2], game, 1)
-                        task.wait(0.05)
+                        task.wait(0.02)
                     elseif i == #word then
                         vim:SendMouseButtonEvent(opos[1], opos[2], 0, true, game, 1)
-                        task.wait(0.1)
+                        task.wait(0.02)
                         vim:SendMouseButtonEvent(opos[1], opos[2], 0, false, game, 1)
                         task.wait(1)
                     end
@@ -203,12 +203,12 @@ local function main()
 	end
 end
 
--- Run the main function
-while task.wait(0.5) do
+while task.wait(0.1) do
     if game.Players.LocalPlayer:GetAttribute('IsAlive') == true then
         repeat
         task.wait()
         until game:GetService("Players").LocalPlayer.PlayerGui.GameGui.WordGui.Frame.Position.Y.Offset == - 10
+        wait(1)
         main()
     end
 end
