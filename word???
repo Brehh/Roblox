@@ -99,11 +99,19 @@ end
 
 local word = ''
 local save = {}
+local same = {}
 
 for i,v in next,game:GetService("Players").LocalPlayer.PlayerGui.GameGui.WordGui.Frame:GetChildren() do
     if v:IsA('TextButton') and v:FindFirstChild('TextLabel') and #v.TextLabel.Text > 0 and v.Visible == true then
         print(i,v,v.TextLabel.Text)
-        save[v.TextLabel.Text:upper()] = v
+        if not same[v.TextLabel.Text:upper()] then
+            save[v.TextLabel.Text:upper()] = {v}
+            same[v.TextLabel.Text:upper()] = 1
+        else
+            local omgyes = same[v.TextLabel.Text:upper()]
+            save[v.TextLabel.Text:upper() .. omgyes] = {v}
+            same[v.TextLabel.Text:upper()] += 1
+        end
         if #word > 0 then
             word = word .. ' ' .. v.TextLabel.Text
         else
@@ -147,20 +155,35 @@ local function main()
                         print('END')
                         break
                     end
-                    local opos = getpos(save[v])
+                    local opos;
+                    if save[v][2] then
+                        for a,b in next, save do
+                            if a:find(v) and not b[2] then
+                                opos = getpos(b[1])
+                                b[2] = true
+                                break
+                            end
+                        end
+                    else
+                        opos = getpos(save[v][1])
+                        save[v][2] = true
+                    end
                     if i == 1 then
                         vim:SendMouseButtonEvent(opos[1], opos[2], 0, true, game, 1)
-                        task.wait(0.15)
+                        task.wait(0.05)
                     elseif i >1 and i < #word then
                         vim:SendMouseMoveEvent(opos[1], opos[2], game, 1)
-                        task.wait(0.15)
+                        task.wait(0.05)
                     elseif i == #word then
                         vim:SendMouseButtonEvent(opos[1], opos[2], 0, true, game, 1)
-                        task.wait(0.2)
+                        task.wait(0.1)
                         vim:SendMouseButtonEvent(opos[1], opos[2], 0, false, game, 1)
                         task.wait(1)
                     end
                 end
+            end
+            for j,k in next,save do
+                k[2] = nil
             end
 		end
 	else
