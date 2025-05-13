@@ -1,0 +1,34 @@
+while task.wait(0.1) do
+    if game:GetService("Players").LocalPlayer.PlayerGui.Main.RoundUI.ButtonsHolder.Visible then
+        local word = ''
+        local needed = ''
+        local ohwow = {}
+
+        for i,v in next,game:GetService("Workspace").Game.ScriptingProperties.Round.Board.Frames.Gameplay.LetterHolder:GetChildren() do
+            if v:IsA('Frame') then
+                word = word .. v.Letter.Text
+                if v.Letter.TextTransparency == 0 then
+                    needed = needed .. '_'
+                else
+                    needed = needed .. v.Letter.Text
+                    if ohwow[v.Letter.Text] then
+                        ohwow[v.Letter.Text] += 1
+                    else
+                        ohwow[v.Letter.Text] = 1
+                    end
+                end
+            end
+        end
+
+        print(word)
+        print(needed)
+
+        for i,v in next,ohwow do
+            print(v,i)
+            break
+        end
+        repeat
+            task.wait()
+        until not game:GetService("Players").LocalPlayer.PlayerGui.Main.RoundUI.ButtonsHolder.Visible
+    end
+end
