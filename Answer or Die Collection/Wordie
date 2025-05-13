@@ -1,0 +1,133 @@
+local normal = game:GetService("Players").LocalPlayer.PlayerGui.MainUI.Game.InputArea
+local one = game:GetService("Players").LocalPlayer.PlayerGui.MainUI.Game["1v1"].InputArea
+local hardcore = game:GetService("Players").LocalPlayer.PlayerGui.MainUI.Game.HardcoreMode.InputArea
+local time = game:GetService("Players").LocalPlayer.PlayerGui.MainUI.Game.TimedMode.InputArea
+local theme = game:GetService("Players").StnagBurn.PlayerGui.MainUI.Game.ThemedMode
+local row = normal.Rows
+
+local warns = {}
+local trues = {}
+local notab = {}
+local only = {}
+local maybe = {}
+
+
+
+for i,v in next,row:GetChildren() do
+    local checksame = {}
+    for j,k in next,v:GetChildren() do
+        local letter = k.TextArea.Text
+        local pos = k.Name:split('Letter')[2]
+        if #letter == 1 then
+            if not  checksame[letter] then
+                checksame[letter] = {1,0}
+            else
+                checksame[letter][1] += 1
+            end
+            if k.BackgroundColor3 == Color3.fromRGB(165, 140, 28) then
+                checksame[letter][1] -= 1
+                checksame[letter][2] += 1
+                
+                if not warns[letter] then
+                    warns[letter] = {pos}
+                else
+                    table.insert(warns[letter],pos)
+                end
+            elseif k.BackgroundColor3 == Color3.fromRGB(49, 161, 52) then
+                checksame[letter][1] -= 1
+                checksame[letter][2] += 1
+                
+                if not trues[letter] then
+                    trues[letter] = {pos}
+                else
+                    table.insert(trues[letter],pos)
+                end
+            end
+        end
+    end
+    for i,v in next,checksame do
+        if v[2] >= 1 and v[1] >= 1 then
+            print('Only',v[2],i)
+            only[i] = v[2]
+        elseif v[2] >= 1 then
+            print('MaybeMorethan',v[2],i)
+            if not maybe[i] then
+                maybe[i] = v[2]
+            elseif maybe[i] < v[2] then
+                maybe[i] = v[2]
+            end
+        end
+    end
+end
+
+
+local wordList = {}
+
+for i,v in next,game:GetService("ReplicatedStorage").Data.en:GetDescendants() do
+    if v:IsA('ModuleScript') then
+        local wow = require(v).wordList
+        for j,k in next, wow do
+            wordList[k] = true
+        end
+    end
+end
+
+
+for i,v in next,game:GetService("Players").LocalPlayer.PlayerGui.MainUI.Game.enKeyboard:GetChildren() do
+    if v.BackgroundColor3 == Color3.fromRGB(49, 49, 52) then
+        notab[v:FindFirstChild('Text').Text] = true
+        print(v:FindFirstChild('Text').Text)
+    end
+end
+
+print('------------------------------------')
+for i,v in next, wordList do
+    if #i == 5 then
+        local check = false
+        for j,k in next,notab  do
+            if i:find(j) and not (warns[j] or trues[j])  then
+                check = true
+                break
+            end
+        end
+        for j,k in next,warns do
+            if not (i:find(j)) or check then
+                check = true
+                break
+            end
+            for s,x in next,k do
+                if not (i:sub(x,x) ~= j) or check then
+                    check = true
+                    break
+                end
+            end
+        end
+        for j,k in next,trues do
+            if not (i:find(j)) or check then
+                check = true
+                break
+            end
+            for s,x in next,k do
+                if not (i:sub(x,x) == j) or check then
+                    check = true
+                    break
+                end
+            end
+        end
+        for j,k in next,only do
+            if not (select(2, string.gsub(i, j, "")) == k) or check then
+                check = true
+                break
+            end
+        end
+        for j,k in next,maybe do
+            if not (select(2, string.gsub(i, j, "")) >= k) or check then
+                check = true
+                break
+            end
+        end
+        if not check then
+            print(i)
+        end
+    end 
+end
