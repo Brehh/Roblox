@@ -1,0 +1,66 @@
+
+print('Start')
+
+local vim = game:GetService('VirtualInputManager')
+
+function getpos(obj)
+    local xddd = obj.AbsolutePosition + obj.AbsoluteSize / 2
+
+    return {xddd.X,xddd.Y+50}
+end
+
+local HttpService = game:GetService("HttpService")
+
+local oh = game:HttpGet('https://raw.githubusercontent.com/Tezumie/Emoji-Catalog/main/data/merged_emoji_data.json')
+
+local a = HttpService:JSONDecode(oh) 
+local emojilist = {}
+
+for i,v in next,a do
+    emojilist[v["native"]] = v["description"]
+end
+
+print('---------------------------')
+local xd = game:GetService("Players").LocalPlayer.PlayerGui.GameGui.EmojiGui.Frame
+local main = xd.EmojiFrame
+
+function getem()
+
+    local ohtab = {}
+
+    for i,v in next, main:GetChildren() do
+        if v:IsA('Frame') then
+            local text = v.Button.EmojiText.Text
+            local o = emojilist[text]
+            if o then
+                table.insert(ohtab,{v,v.Name,o,#o})
+            end
+        end
+    end
+
+    table.sort(ohtab,function(a,b)
+        return a[4] > b[4]
+    end)
+
+    local selected = ohtab[1]
+    local ins = selected[1]
+    local pos = getpos(ins)
+
+    vim:SendMouseButtonEvent(pos[1],pos[2], 0, true, game, 1)
+    vim:SendMouseButtonEvent(pos[1],pos[2], 0, false, game, 1)
+    print(unpack(selected))
+    repeat
+        task.wait()
+    until xd.Position.Y.Offset ~= -15
+end
+
+while task.wait(0.1) do
+    if game.Players.LocalPlayer:GetAttribute('IsAlive') == true then
+        repeat
+        task.wait()
+        until xd.Position.Y.Offset == - 15
+        wait(1)
+        getem()
+    end
+end
+
