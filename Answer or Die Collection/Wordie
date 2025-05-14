@@ -3,7 +3,22 @@ local one = game:GetService("Players").LocalPlayer.PlayerGui.MainUI.Game["1v1"].
 local hardcore = game:GetService("Players").LocalPlayer.PlayerGui.MainUI.Game.HardcoreMode.InputArea
 local time = game:GetService("Players").LocalPlayer.PlayerGui.MainUI.Game.TimedMode.InputArea
 local theme = game:GetService("Players").StnagBurn.PlayerGui.MainUI.Game.ThemedMode
-local row = normal.Rows
+
+local oml = {}
+
+oml[normal] = normal.Parent.Visible
+oml[one] = one.Parent.Visible
+oml[hardcore] = hardcore.Parent.Visible
+oml[time] = time.Parent.Visible
+oml[theme] = theme.Parent.Visible
+
+local row;
+for i,v in next, oml do
+    if i.Visible == true and v == true then
+        row = i.Rows
+    end
+end
+
 
 local warns = {}
 local trues = {}
