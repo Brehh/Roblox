@@ -1,5 +1,5 @@
 print('WORK')
-
+_G.Grab = true
 game.Players.LocalPlayer.PlayerGui.PermGui.Stats.Stats.sse.wa.Value = false
 game:GetService("ReplicatedStorage").UITrada.SY:Destroy()
 
@@ -436,32 +436,47 @@ local function isShiftLockActive()
 	return UserInputService.MouseBehavior == Enum.MouseBehavior.LockCenter
 end
 
-local mt = getrawmetatable(game)
-    local oldNamecall = mt.__namecall
-    setreadonly(mt, false)
+print('WP - Starting Main Loop')
 
-    mt.__namecall = newcclosure(function(self, ...)
-        -- Capture the method and arguments
-        local method = getnamecallmethod()
-        local args = {...}
-        
-        -- Ensure it's the InvokeServer method and the correct RemoteFunction
-        if method == "FireServer" then
-            if not isShiftLockActive() then
-                if self.Name == "SpecialUse" then
-                    if args[1] == "Right" or args[1] == "Left" then
-                        return nil
-                    end
-                end
+
+local UserInputService = game:GetService("UserInputService")
+
+local isSpacebarDown = false
+
+-- Function to handle key down events
+local function onInputBegan(input, gameProcessedEvent)
+    if not gameProcessedEvent then -- Ensure the game didn't already handle the input
+        if input.KeyCode == Enum.KeyCode.Space then
+            isSpacebarDown = true
+            if (fight.Value == 'FIGHT' or fight.Value:find('TEAM')) then
+                wait(0.05)
+                game:GetService("ReplicatedStorage").Action.CharacterUse:FireServer('KiDisabled')
+                game:GetService("ReplicatedStorage").Action.CharacterUse:FireServer('KiDisabled')
+                print("Spacebar pressed down")
             end
         end
-        return oldNamecall(self, unpack(args))
-    end)
+    end
+end
 
-    -- Set the metatable back to readonly
-    setreadonly(mt, true)
+-- Function to handle key up events
+local function onInputEnded(input, gameProcessedEvent)
+    if input.KeyCode == Enum.KeyCode.Space then
+        isSpacebarDown = false
+    end
+end
 
-print('WP - Starting Main Loop')
+-- Connect the input events to our functions
+UserInputService.InputBegan:Connect(onInputBegan)
+UserInputService.InputEnded:Connect(onInputEnded)
+
+-- You can check the state of isSpacebarDown in your game loop or other logic
+game:GetService("RunService").Heartbeat:Connect(function()
+    if isSpacebarDown and (fight.Value == 'FIGHT' or fight.Value:find('TEAM')) then
+        game:GetService("ReplicatedStorage").Action.CharacterUse:FireServer('KiEnabled')
+    end
+end)
+
+
 
 -- Main Loop
 while wait() do -- task.wait() is preferred over wait()
@@ -478,7 +493,7 @@ while wait() do -- task.wait() is preferred over wait()
                         local track = v
                         local animId = track.Animation.AnimationId
                         local foundMove2 = moveAnimationIds2[animId]
-                        if foundMove2 and opponentknock == 0 then
+                        if foundMove2 and opponentknock == 0 and _G.Grab then
                             keyrelease(0x20)
                             ContextActionService:BindAction(
                             ACTION_DISABLE_AS,      -- Name for disabling multiple keys
