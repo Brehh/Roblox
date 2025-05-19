@@ -558,7 +558,8 @@ while wait() do -- task.wait() is preferred over wait()
                             ACTION_DISABLE_AS,      -- Name for disabling multiple keys
                             sinkInput,              -- Function to sink presses
                             false,
-                            Enum.KeyCode.Space
+                            Enum.KeyCode.Space,
+                            Enum.KeyCode.R
                             )
                             omlsdak = true
                             break
