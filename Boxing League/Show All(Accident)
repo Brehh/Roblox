@@ -1,0 +1,12 @@
+local folder
+
+if not game:GetService("ReplicatedStorage"):FindFirstChild('Player') then
+    folder = Instance.new('Folder',game:GetService("ReplicatedStorage"))
+    folder.Name = 'Player'
+else
+    folder = game:GetService("ReplicatedStorage"):FindFirstChild('Player')
+end
+
+for i,v in next, game.Players:GetChildren() do
+    v.Character.Parent = workspace
+end
