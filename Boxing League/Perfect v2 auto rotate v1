@@ -1,6 +1,5 @@
 print('WORK')
 _G.Grab = true
-_G.FGuard = true
 game.Players.LocalPlayer.PlayerGui.PermGui.Stats.Stats.sse.wa.Value = false
 game:GetService("ReplicatedStorage").UITrada.SY:Destroy()
 
@@ -449,7 +448,10 @@ local function onInputBegan(input, gameProcessedEvent)
     if not gameProcessedEvent then -- Ensure the game didn't already handle the input
         if input.KeyCode == Enum.KeyCode.Space then
             isSpacebarDown = true
-            if (fight.Value == 'FIGHT' or fight.Value:find('TEAM')) and _G.FGuard then
+            if (fight.Value == 'FIGHT' or fight.Value:find('TEAM')) then
+                repeat
+                task.wait()
+                until game:GetService("ReplicatedStorage").Stats[l_plr.Name].Charge.Value == 0
                 wait(0.05)
                 game:GetService("ReplicatedStorage").Action.CharacterUse:FireServer('KiDisabled')
                 game:GetService("ReplicatedStorage").Action.CharacterUse:FireServer('KiDisabled')
@@ -472,7 +474,7 @@ UserInputService.InputEnded:Connect(onInputEnded)
 
 -- You can check the state of isSpacebarDown in your game loop or other logic
 game:GetService("RunService").Heartbeat:Connect(function()
-    if isSpacebarDown and (fight.Value == 'FIGHT' or fight.Value:find('TEAM')) and _G.FGuard then
+    if isSpacebarDown and (fight.Value == 'FIGHT' or fight.Value:find('TEAM')) then
         game:GetService("ReplicatedStorage").Action.CharacterUse:FireServer('KiEnabled')
     end
 end)
