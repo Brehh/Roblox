@@ -1,7 +1,12 @@
 print('WORK')
 _G.Grab = true
+local Level = false
+
 game.Players.LocalPlayer.PlayerGui.PermGui.Stats.Stats.sse.wa.Value = false
-game:GetService("ReplicatedStorage").UITrada.SY:Destroy()
+
+if Level then
+    game:GetService("ReplicatedStorage").UITrada.SY:Destroy()
+end
 
 local folder
 
@@ -177,14 +182,6 @@ end)
     end)
 end
 
-bruh:GetPropertyChangedSignal("Value"):Connect(function()
- if bruh.Value == -2 then
-  while bruh.Value == -2 do
-   game:GetService("ReplicatedStorage").UseItem:FireServer("Use")
-   task.wait()
-  end
- end
-end)
 
 print('YES')
 local PlayerGui = game:GetService("Players").LocalPlayer.PlayerGui
@@ -455,7 +452,26 @@ local function onInputBegan(input, gameProcessedEvent)
                 wait(0.05)
                 game:GetService("ReplicatedStorage").Action.CharacterUse:FireServer('KiDisabled')
                 game:GetService("ReplicatedStorage").Action.CharacterUse:FireServer('KiDisabled')
-                print("Spacebar pressed down")
+                repeat
+                    task.wait()
+                until (t.Value) or (not isSpacebarDown)
+                while isSpacebarDown do
+                    repeat
+                    task.wait()
+                    until (not t.Value) or (not isSpacebarDown)
+                    repeat
+                    task.wait()
+                    until game:GetService("ReplicatedStorage").Stats[l_plr.Name].Charge.Value == 0
+                    if isSpacebarDown then
+                        wait(0.05)
+                        game:GetService("ReplicatedStorage").Action.CharacterUse:FireServer('KiDisabled')
+                        game:GetService("ReplicatedStorage").Action.CharacterUse:FireServer('KiDisabled')
+                    end
+                    repeat
+                        task.wait()
+                    until (t.Value) or (not isSpacebarDown)
+                    task.wait()
+                end
             end
         end
     end
