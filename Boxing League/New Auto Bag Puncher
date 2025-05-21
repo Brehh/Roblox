@@ -96,7 +96,7 @@ local mainmin = 0
 
 _G.a = true
 
-while where.Value:find('BOX') and _G.a do
+while _G.a do
     if where.Value:find('BOX') then
         local box = game:GetService("Workspace").Machinery[where.Value]
         local min = getdoing(box)
@@ -121,5 +121,5 @@ while where.Value:find('BOX') and _G.a do
             uppercut()
         end
     end
-    task.wait()
+    wait()
 end
