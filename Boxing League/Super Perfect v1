@@ -2,6 +2,7 @@ print('WORK')
 _G.Grab = true
 local LockLevel = false
 local IsClickable = true
+local ISBlock = true
 game.Players.LocalPlayer.PlayerGui.PermGui.Stats.Stats.sse.wa.Value = false
 
 if LockLevel then
@@ -539,6 +540,10 @@ local mt = getrawmetatable(game)
                 else
                     keyrelease(0x20)
                 end
+            elseif self.Name == 'CharacterUse' and ISBlock == false then
+                if args[1] == 'KiDisabled' then
+                    args[1] = 'KiEnabled'
+                end
             end
         end
         return oldNamecall(self, unpack(args))
@@ -564,6 +569,7 @@ while wait() do -- task.wait() is preferred over wait()
                             if ct.Value ~= CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1) then
                                 wait(0.05)
                                 if (Charge.Value ~= 0 and Charge.Value ~=2 and Charge.Value ~= 4 and Charge.Value ~= 9 and Charge.Value ~= 20) then
+                                    ISBlock = false
                                     keypress(0x20)
                                     ContextActionService:BindAction(
                                     ACTIONHAHA2,      -- Name for disabling multiple keys
@@ -582,6 +588,7 @@ while wait() do -- task.wait() is preferred over wait()
                                     IsClickable = true
                                 end
                             else
+                                ISBlock = true
                                 ContextActionService:UnbindAction(ACTIONHAHA2)
                                 IsClickable = true
                             end
