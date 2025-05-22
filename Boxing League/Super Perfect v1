@@ -423,6 +423,7 @@ local ContextActionService = game:GetService("ContextActionService")
 local ACTION_DISABLE_AS = "DisableMovementKeysAction" -- New action name for W release
 local ACTIONHAHA = 'NoNoNo'
 local ACTIONHAHA2 = 'NoNoNo2'
+local ACTIONSPACE = 'SpaceDude'
 
 -- The function to sink general movement keys (A, S, T, etc.)
 local function sinkInput(actionName, inputState, inputObject)
@@ -430,6 +431,18 @@ local function sinkInput(actionName, inputState, inputObject)
         print(tostring(inputObject.KeyCode) .. " key press blocked by ACTION_DISABLE_AS.")
         return Enum.ContextActionResult.Sink
     end
+    return Enum.ContextActionResult.Pass
+end
+
+local function handleSpacebarInput(actionName, inputState, inputObject)
+    if inputObject.KeyCode == Enum.KeyCode.Space then
+        if inputState == Enum.UserInputState.End then
+            -- When Spacebar is released (End state)
+            print("Spacebar released event detected.")
+            return Enum.ContextActionResult.Sink
+        end
+    end
+    -- For other key codes or input states, just pass them through
     return Enum.ContextActionResult.Pass
 end
 
@@ -451,11 +464,11 @@ local function onInputBegan(input, gameProcessedEvent)
     if not gameProcessedEvent then -- Ensure the game didn't already handle the input
         if input.KeyCode == Enum.KeyCode.Space then
             isSpacebarDown = true
-            if (fight.Value == 'FIGHT' or fight.Value:find('TEAM')) then
+            if (fight.Value == 'FIGHT' or fight.Value:find('TEAM')) and not (t.Value) then
                 repeat
                 task.wait()
                 until game:GetService("ReplicatedStorage").Stats[l_plr.Name].Charge.Value == 0
-                wait(0.05)
+                wait(0.03)
                 game:GetService("ReplicatedStorage").Action.CharacterUse:FireServer('KiDisabled')
                 game:GetService("ReplicatedStorage").Action.CharacterUse:FireServer('KiDisabled')
                 repeat
@@ -469,7 +482,7 @@ local function onInputBegan(input, gameProcessedEvent)
                     task.wait()
                     until game:GetService("ReplicatedStorage").Stats[l_plr.Name].Charge.Value == 0
                     if isSpacebarDown then
-                        wait(0.05)
+                        wait(0.03)
                         game:GetService("ReplicatedStorage").Action.CharacterUse:FireServer('KiDisabled')
                         game:GetService("ReplicatedStorage").Action.CharacterUse:FireServer('KiDisabled')
                     end
@@ -540,10 +553,6 @@ local mt = getrawmetatable(game)
                 else
                     keyrelease(0x20)
                 end
-            elseif self.Name == 'CharacterUse' and ISBlock == false then
-                if args[1] == 'KiDisabled' then
-                    args[1] = 'KiEnabled'
-                end
             end
         end
         return oldNamecall(self, unpack(args))
@@ -566,11 +575,16 @@ while wait() do -- task.wait() is preferred over wait()
                     local ct = game:GetService("ReplicatedStorage").Stats[opponentPlayer.Name].CT
                     if not omgchargecon then
                         omgchargecon =  ct:GetPropertyChangedSignal("Value"):Connect(function()
-                            if ct.Value ~= CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1) then
-                                wait(0.05)
+                            if ct.Value ~= CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1) and opponentknock == 0 then
+                                wait(0.01)
                                 if (Charge.Value ~= 0 and Charge.Value ~=2 and Charge.Value ~= 4 and Charge.Value ~= 9 and Charge.Value ~= 20) then
-                                    ISBlock = false
                                     keypress(0x20)
+                                    ContextActionService:BindAction(
+                                        ACTIONSPACE, -- Unique name for this action
+                                        handleSpacebarInput,           -- The function to call
+                                        false,                         -- Don't create a UI button
+                                        Enum.KeyCode.Space             -- The key we are binding
+                                    )
                                     ContextActionService:BindAction(
                                     ACTIONHAHA2,      -- Name for disabling multiple keys
                                     sinkInput,              -- Function to sink presses
@@ -585,10 +599,11 @@ while wait() do -- task.wait() is preferred over wait()
                                     IsClickable = false
                                 else
                                     ContextActionService:UnbindAction(ACTIONHAHA2)
+                                    ContextActionService:UnbindAction(ACTIONSPACE)
                                     IsClickable = true
                                 end
                             else
-                                ISBlock = true
+                                ContextActionService:UnbindAction(ACTIONSPACE)
                                 ContextActionService:UnbindAction(ACTIONHAHA2)
                                 IsClickable = true
                             end
@@ -699,6 +714,7 @@ while wait() do -- task.wait() is preferred over wait()
             if omgchargecon then
                 omgchargecon:Disconnect()
                 omgchargecon = nil
+                ContextActionService:UnbindAction(ACTIONSPACE)
             end
         end
     end)
