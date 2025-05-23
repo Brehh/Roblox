@@ -1,0 +1,1 @@
+game:GetService("Players").AmISuprisedYou.PlayerGui.MainGui.Menu.SlideInFrame.DojoFrame.Admin.Visible = true
