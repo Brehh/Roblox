@@ -1,4 +1,4 @@
-game:GetService("Players").AmISuprisedYou.PlayerGui.MainGui.Menu.SlideInFrame.DojoFrame.Admin.Visible = true
+game:GetService("Players").LocalPlayer.PlayerGui.MainGui.Menu.SlideInFrame.DojoFrame.Admin.Visible = true
 
 for i,v in next,game:GetService("Workspace").grasslands:GetChildren() do
     if v:FindFirstChildWhichIsA('Humanoid') then
