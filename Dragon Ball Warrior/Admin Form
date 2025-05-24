@@ -1,1 +1,20 @@
 game:GetService("Players").AmISuprisedYou.PlayerGui.MainGui.Menu.SlideInFrame.DojoFrame.Admin.Visible = true
+
+for i,v in next,game:GetService("Workspace").grasslands:GetChildren() do
+    if v:FindFirstChildWhichIsA('Humanoid') then
+        local ohTable1 = {
+            ["Humanoid"] = game.Players.LocalPlayer.Character[('Humanoid')],
+            ["Head"] =  nil,
+            ["UpperTorso"] = nil,
+            ["HumanoidRootPart"] = v.PrimaryPart,
+            ["Character"] = v
+        }
+        local ohInstance2 = nil
+        local ohInstance3 = nil
+        local ohInstance4 = nil
+        local ohBoolean5 = true
+
+        game:GetService("ReplicatedStorage").Events.CharacterSpawn:InvokeServer(ohTable1, ohInstance2, ohInstance3, ohInstance4, ohBoolean5)
+        break
+    end
+end
