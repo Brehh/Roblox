@@ -1,0 +1,12 @@
+_G.on = true
+while _G.on and wait() do
+
+
+    local v8 = require(workspace.Src.C)
+    local v35 = v8.Gen(game.Players.LocalPlayer)
+
+
+
+    game:GetService("ReplicatedStorage").WorkoutHandler_TriggerWorkoutGain:FireServer(v35)
+    game:GetService("ReplicatedStorage").FightHandler_playerClicEvent:FireServer()
+end
