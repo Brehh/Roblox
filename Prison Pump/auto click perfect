@@ -1,0 +1,9 @@
+_G.toggle = true
+local vim = game:GetService('VirtualInputManager')
+while _G.toggle and task.wait() do
+    if game.Players.LocalPlayer:GetAttribute('IsWorkingOut') == true and game:GetService("Players").LocalPlayer.PlayerGui.WorkoutOverlay.BG.Holder.Content.FillBG.Fill.ClientComponent_ProgressBar.CurrentValue.Value >= 1 then
+        vim:SendMouseButtonEvent(0,0, 0, true, game, 1)
+        vim:SendMouseButtonEvent(0,0, 0, false, game, 1)
+        wait(0.5)
+    end
+end
