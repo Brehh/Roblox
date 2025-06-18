@@ -1,0 +1,44 @@
+print("YEAA")
+
+task.defer(function()
+    while task.wait() do
+        local plot = game:GetService("Workspace")["\230\137\128\230\156\137\229\129\156\232\189\166\229\156\186"][game.Players.LocalPlayer.UserId]
+        local lock = plot["\233\151\168\231\166\129\230\140\137\233\146\174"]
+        local head = game.Players.LocalPlayer.Character.HumanoidRootPart
+        local collect = plot["\230\148\182\233\155\134\229\140\186"]
+
+        if lock.Attachment["\233\148\129\229\174\154"].Frame["\233\148\129\229\174\154\229\186\149\229\186\167"].Visible then
+            firetouchinterest(head,lock,0)
+            firetouchinterest(head,lock,1)
+        end
+    end
+end)
+
+task.defer(function()
+    while task.wait(0.2) do
+        for i,v in ipairs(game:GetService("Workspace"):GetDescendants()) do
+            if v.ClassName == "ProximityPrompt" then
+                v.HoldDuration = 0
+                if v.Parent.Parent:GetAttribute('Owner') and v.Parent.Parent:GetAttribute('Owner') == game.Players.LocalPlayer.UserId then
+                    v.MaxActivationDistance = 15
+                else
+                    v.MaxActivationDistance = 50
+                end
+            end
+        end
+    end
+end)
+
+task.defer(function()
+    while task.wait(0.1) do
+        if game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:GetAttribute('StealPlayer') ~= 0 then
+            local plot = game:GetService("Workspace")["\230\137\128\230\156\137\229\129\156\232\189\166\229\156\186"][game.Players.LocalPlayer.UserId]
+            local lock = plot["\233\151\168\231\166\129\230\140\137\233\146\174"]
+            local head = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local collect = plot["\230\148\182\233\155\134\229\140\186"]
+
+            firetouchinterest(head,collect,0)
+            firetouchinterest(head,collect,1)
+        end
+    end
+end)
