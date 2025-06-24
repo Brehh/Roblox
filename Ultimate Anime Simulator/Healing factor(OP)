@@ -1,0 +1,10 @@
+    while task.wait(0.1) do
+    local wow = game:GetService("Workspace").FollowModels['FollowModels_' .. game.Players.LocalPlayer.UserId]
+
+    for i,v in next,wow:GetChildren() do
+        local ohString1 = "SetFollowMaxHp1"
+        local ohInstance2 = v
+
+        game:GetService("ReplicatedStorage").RemoteEvents.MonsterRemote:FireServer(ohString1, ohInstance2)
+    end
+end
