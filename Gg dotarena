@@ -1,0 +1,74 @@
+local slot1 = '120,324,639,716,460'
+
+gg.searchNumber(slot1, gg.TYPE_QWORD)
+
+function filterAddressesByLastDigit(addresses_table, target_digit)
+    local filtered_results = {}
+    local target_digit_upper = string.upper(target_digit)
+
+    for i, v in ipairs(addresses_table) do
+        local address = string.format("%X", tostring(v.address))
+        if type(address) == "string" and #address > 0 then
+            -- Get the last character of the address string
+            local last_char = string.sub(address, -1)
+            -- Compare it (case-insensitively) with the target digit
+            if string.upper(last_char) == target_digit_upper then
+                table.insert(filtered_results, v)
+            end
+        end
+    end
+    return filtered_results
+end
+local checklol = gg.choice({'For Checking','For Hack!'})
+-- --- Example Usage (for demonstration within a Game Guardian context) ---
+-- In a real Game Guardian script, you would typically get your addresses
+-- directly from GG.getResults() or similar functions after a scan.
+
+-- Simulate some addresses (replace with actual GG results in your script)
+
+local actual_scan_results = gg.getResults(gg.getResultsCount()) -- Create an empty table
+
+
+-- Display original results (optional, for debugging)
+gg.toast("Original scan results count: " .. #actual_scan_results)
+-- For a large number of results, avoid printing all to toast.
+-- For demonstration, let's print a few.
+-- for i, addr in ipairs(my_scan_results) do
+--     gg.toast("Original: " .. addr)
+-- end
+
+-- Filter the addresses to keep only those ending with 'C'
+local filtered_addresses = filterAddressesByLastDigit(actual_scan_results, 'C')
+
+-- Display the filtered results
+if #filtered_addresses > 0 then
+    gg.toast("Filtered results (ending with 'C'): " .. #filtered_addresses .. " found.")
+    local word = ''
+    for i, addr in ipairs(filtered_addresses) do
+        gg.toast("Filtered: " .. string.format("%X", tostring(addr.address)))
+        word = word .. '\n' .. string.format("%X", tostring(addr.address))
+    end
+    gg.alert(word)
+    local t = {}
+    gg.clearResults()
+    for i, result_item in ipairs(filtered_addresses) do
+        local addhaha = result_item.address + 0x24
+        local check = {}
+        check[1] = {}
+        check[1].address = addhaha
+        check[1].flags = gg.TYPE_FLOAT
+        check[2] = {}
+        check[2].address = addhaha + 0x04
+        check[2].flags = gg.TYPE_FLOAT
+        local getval = gg.getValues(check)[1]
+        if getval.value and getval.value ~= 0 then
+            table.insert(t,check[1])
+            if checklol == 2 then
+                table.insert(t,check[2])
+            end
+        end
+    end
+    gg.addListItems(t)
+else
+    gg.toast("No addresses found ending with 'C'.")
+end
