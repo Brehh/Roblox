@@ -182,7 +182,8 @@ if #filtered_addresses > 0 then
                                 newv3.address = value.address+0x04
                                 newv3.flags = gg.TYPE_FLOAT
                                 if checklol2 == 1 then
-                                    newv3.value = gg.getValues({new                              else
+                                    newv3.value = gg.getValues({newv3})[1].value * 30
+                                else
                                     newv3.value = gg.getValues({newv3})[1].value
                                 end
                                 gg.setValues({newv2})
@@ -224,4 +225,5 @@ if #filtered_addresses > 0 then
 else
     gg.toast("No addresses found ending with 'C'.")
 end
+
 
