@@ -126,7 +126,7 @@ if #filtered_addresses > 0 then
                         elseif newv_value == 1 then
                             local newv2 = {}
                             newv2.name = 'Enemy'
-                            newv2.address = value.address
+                            newv2.address = value.address-0x04
                             newv2.flags = value.flags
                             if checklol2 == 2 then
                                 newv2.value = 0
@@ -193,7 +193,7 @@ if #filtered_addresses > 0 then
                     elseif newv_value == 1 then
                         local newv2 = {}
                         newv2.name = 'Enemy'
-                        newv2.address = value.address
+                        newv2.address = value.address-0x04
                         newv2.flags = value.flags
                         if checklol2 == 2 then
                             newv2.value = 0
@@ -206,7 +206,7 @@ if #filtered_addresses > 0 then
                 else
                     local newv2 = {}
                     newv2.name = 'Enemy'
-                    newv2.address = value.address
+                    newv2.address = value.address-0x04
                     newv2.flags = value.flags
                     if checklol2 == 2 then
                         newv2.value = 0
