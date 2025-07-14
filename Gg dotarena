@@ -55,14 +55,11 @@ if #filtered_addresses > 0 then
     local t = {}
     gg.clearResults()
     for i, result_item in ipairs(filtered_addresses) do
-        local addhaha = result_item.address + 0x24
+        local addhaha = result_item.address + 0x28
         local check = {}
         check[1] = {}
         check[1].address = addhaha
         check[1].flags = gg.TYPE_FLOAT
-        check[2] = {}
-        check[2].address = addhaha + 0x04
-        check[2].flags = gg.TYPE_FLOAT
         local getval = gg.getValues(check)[1]
         local check2 = {}
         check2.address = addhaha
@@ -98,8 +95,8 @@ if #filtered_addresses > 0 then
                     local address1 = string.format("%X", tostring(v.address))
                     local last_char = string.sub(address1, -1)
                     if last_char == '4' then
-                        local newv = v
-                        newv.address = newv.address + 0x04
+                        local newv = {}
+                        newv.address = v.address + 0x04
                         newv.flags = gg.TYPE_BYTE
                         newv.name = 'ByteKung'
                         local newv_value = gg.getValues({newv})[1].value
@@ -116,7 +113,7 @@ if #filtered_addresses > 0 then
                             
                             
                             local newv3 = {}
-                            newv3.address = value.address+0x04
+                            newv3.address = value.address-0x04
                             newv3.flags = gg.TYPE_FLOAT
                             if checklol2 == 1 then
                                 newv3.value = gg.getValues({newv3})[1].value * 30
@@ -165,8 +162,8 @@ if #filtered_addresses > 0 then
                             wanted_wow = v
                         end
                     end
-                    local newv = wanted_wow
-                    newv.address = newv.address + 0x04
+                    local newv = {}
+                    newv.address = wanted_wow.address + 0x04
                     newv.flags = gg.TYPE_BYTE
                     newv.name = 'ByteKung'
                     local newv_value = gg.getValues({newv})[1].value
@@ -183,7 +180,7 @@ if #filtered_addresses > 0 then
                         
                         
                         local newv3 = {}
-                        newv3.address = value.address+0x04
+                        newv3.address = value.address-0x04
                         newv3.flags = gg.TYPE_FLOAT
                         if checklol2 == 1 then
                             newv3.value = gg.getValues({newv3})[1].value * 30
