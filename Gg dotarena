@@ -133,6 +133,9 @@ if #filtered_addresses > 0 then
                             else
                                 newv2.value = gg.getValues({newv2})[1].value
                             end
+                            local out1 = {}
+                            out1.address = value.address
+                            gg.removeListItems({out1})
                             gg.setValues({newv2})
                             gg.addListItems({newv2})
                         end
@@ -200,6 +203,9 @@ if #filtered_addresses > 0 then
                         else
                             newv2.value = gg.getValues({newv2})[1].value
                         end
+                        local out1 = {}
+                        out1.address = value.address
+                        gg.removeListItems({out1})
                         gg.setValues({newv2})
                         gg.addListItems({newv2})
                     end
@@ -213,6 +219,9 @@ if #filtered_addresses > 0 then
                     else
                         newv2.value = gg.getValues({newv2})[1].value
                     end
+                    local out1 = {}
+                    out1.address = value.address
+                    gg.removeListItems({out1})
                     gg.setValues({newv2})
                     gg.addListItems({newv2})
                 end
