@@ -21,7 +21,8 @@ function filterAddressesByLastDigit(addresses_table, target_digit)
     end
     return filtered_results
 end
-local checklol = gg.choice({'For Checking','For Hack!'})
+local checklol = 1
+local checklol2 = gg.choice({'Health*30 Heroes','Kills Enemies','DId nothing'})
 -- --- Example Usage (for demonstration within a Game Guardian context) ---
 -- In a real Game Guardian script, you would typically get your addresses
 -- directly from GG.getResults() or similar functions after a scan.
@@ -63,7 +64,7 @@ if #filtered_addresses > 0 then
         check[2].address = addhaha + 0x04
         check[2].flags = gg.TYPE_FLOAT
         local getval = gg.getValues(check)[1]
-        if getval.value and getval.value ~= 0 then
+        if getval.value and getval.value > 1 then
             table.insert(t,check[1])
             if checklol == 2 then
                 table.insert(t,check[2])
@@ -72,22 +73,87 @@ if #filtered_addresses > 0 then
     end
     gg.addListItems(t)
     if checklol == 1 then
-    	gg.clearResults()
-    	gg.searchNumber(slot2, gg.TYPE_DWORD)
-        actual_scan_results = gg.getResults(gg.getResultsCount()) 
-        filtered_addresses = filterAddressesByLastDigit(actual_scan_results, '4')
-        gg.clearResults()
-        t = {}
-        for i, result_item in ipairs(filtered_addresses) do
-        		local addhaha = result_item.address+0x04
-      		  local check = {}
-     		   check[1] = {}
-     		   check[1].address = addhaha
-       		 check[1].flags = gg.TYPE_BYTE
-        	    table.insert(t,check[1])
-    	end
-        gg.addListItems(t)
+        for index,value in next,t do
+            local wowadd = value.address
+            local max_address;
+            if index ~= #t then
+                local max2 = t[index+1].address
+                print(max2 - wowadd)
+                if (max2 - wowadd) < 0x3000 then
+                    max_address = max2
+                else
+                    max_address = wowadd + 0x3000
+                end
+            else
+                max_address = wowadd + 0x3000
+            end
+            gg.clearResults()
+            gg.searchNumber(slot2, gg.TYPE_DWORD,false, gg.SIGN_EQUAL, wowadd, max_address)
+            if gg.getResultsCount() > 0 then
+                for i,v in next, gg.getResults(gg.getResultsCount()) do
+                    local address1 = string.format("%X", tostring(v.address))
+                    local last_char = string.sub(address1, -1)
+                    if last_char == '4' then
+                        local newv = v
+                        newv.address = newv.address + 0x04
+                        newv.flags = gg.TYPE_BYTE
+                        newv.name = 'ByteKung'
+                        local newv_value = gg.getValues({newv})[1].value
+                        if newv_value == 0 then
+                            local newv2 = {}
+                            newv2.name = 'MySide'
+                            newv2.address = value.address
+                            newv2.flags = value.flags
+                            if checklol2 == 1 then
+                                newv2.value = gg.getValues({newv2})[1].value * 30
+                            else
+                                newv2.value = gg.getValues({newv2})[1].value
+                            end
+                            
+                            
+                            local newv3 = {}
+                            newv3.address = value.address+0x04
+                            newv3.flags = gg.TYPE_FLOAT
+                            if checklol2 == 1 then
+                                newv3.value = gg.getValues({newv3})[1].value * 30
+                            else
+                                newv3.value = gg.getValues({newv3})[1].value
+                            end
+                            gg.setValues({newv2})
+                            gg.addListItems({newv2})
+                            gg.setValues({newv3})
+                        elseif newv_value == 1 then
+                            local newv2 = {}
+                            newv2.name = 'Enemy'
+                            newv2.address = value.address
+                            newv2.flags = value.flags
+                            if checklol2 == 2 then
+                                newv2.value = 0
+                            else
+                                newv2.value = gg.getValues({newv2})[1].value
+                            end
+                            gg.setValues({newv2})
+                            gg.addListItems({newv2})
+                        end
+                        break
+                    end
+                end
+            else
+                local newv2 = {}
+                newv2.name = 'Enemy'
+                newv2.address = value.address
+                newv2.flags = value.flags
+                if checklol2 == 2 then
+                    newv2.value = 0
+                else
+                    newv2.value = gg.getValues({newv2})[1].value
+                end
+                gg.setValues({newv2})
+                gg.addListItems({newv2})
+            end
+        end
     end
+    gg.clearResults()
 else
     gg.toast("No addresses found ending with 'C'.")
 end
