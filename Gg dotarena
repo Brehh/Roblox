@@ -1,5 +1,7 @@
 local slot1 = '120,324,639,716,460'
-
+local slot2 = '1,148,846,080'
+gg.clearList()
+gg.clearResults()
 gg.searchNumber(slot1, gg.TYPE_QWORD)
 
 function filterAddressesByLastDigit(addresses_table, target_digit)
@@ -69,6 +71,23 @@ if #filtered_addresses > 0 then
         end
     end
     gg.addListItems(t)
+    if checklol == 1 then
+    	gg.clearResults()
+    	gg.searchNumber(slot2, gg.TYPE_DWORD)
+        actual_scan_results = gg.getResults(gg.getResultsCount()) 
+        filtered_addresses = filterAddressesByLastDigit(actual_scan_results, '4')
+        gg.clearResults()
+        t = {}
+        for i, result_item in ipairs(filtered_addresses) do
+        		local addhaha = result_item.address+0x04
+      		  local check = {}
+     		   check[1] = {}
+     		   check[1].address = addhaha
+       		 check[1].flags = gg.TYPE_BYTE
+        	    table.insert(t,check[1])
+    	end
+        gg.addListItems(t)
+    end
 else
     gg.toast("No addresses found ending with 'C'.")
 end
