@@ -68,7 +68,7 @@ if #filtered_addresses > 0 then
         check2.address = addhaha
         check2.flags = gg.TYPE_BYTE
         local getval2 = gg.getValues({check2})[1].value
-        if getval.value and getval.value ~= 0 and getval2 == 0 then
+        if getval.value and getval.value > 0 and getval2 == 0 then
             table.insert(t,check[1])
             if checklol == 2 then
                 table.insert(t,check[2])
@@ -225,5 +225,3 @@ if #filtered_addresses > 0 then
 else
     gg.toast("No addresses found ending with 'C'.")
 end
-
-
