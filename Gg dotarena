@@ -207,58 +207,59 @@ if #filtered_addresses > 0 then
                         if last_char == '4' then
                             wanted_wow = v
                             if table.find(saved_use,wanted_wow.address) then goto continue2 end
-                    local newv = {}
-                    newv.address = wanted_wow.address + 0x04
-                    newv.flags = gg.TYPE_BYTE
-                    newv.name = 'ByteKung'
-                    local newv_value = gg.getValues({newv})[1].value
-                    if newv_value == 0 then
-                        local newv2 = {}
-                        newv2.name = 'MySide'
-                        newv2.address = value.address
-                        newv2.flags = value.flags
-                        if checklol2 == 1 then
-                            newv2.value = gg.getValues({newv2})[1].value * 30
-                        else
-                            newv2.value = gg.getValues({newv2})[1].value
+                            local newv = {}
+                            newv.address = wanted_wow.address + 0x04
+                            newv.flags = gg.TYPE_BYTE
+                            newv.name = 'ByteKung'
+                            local newv_value = gg.getValues({newv})[1].value
+                            if newv_value == 0 then
+                                local newv2 = {}
+                                newv2.name = 'MySide'
+                                newv2.address = value.address
+                                newv2.flags = value.flags
+                                if checklol2 == 1 then
+                                    newv2.value = gg.getValues({newv2})[1].value * 30
+                                else
+                                    newv2.value = gg.getValues({newv2})[1].value
+                                end
+                                
+                                
+                                local newv3 = {}
+                                newv3.address = value.address-0x04
+                                newv3.flags = gg.TYPE_FLOAT
+                                if checklol2 == 1 then
+                                    newv3.value = gg.getValues({newv3})[1].value * 30
+                                else
+                                    newv3.value = gg.getValues({newv3})[1].value
+                                end
+                                gg.setValues({newv2})
+                                gg.addListItems({newv2})
+                                gg.setValues({newv3})
+                            elseif newv_value == 1 then
+                                local newv2 = {}
+                                newv2.name = 'Enemy'
+                                newv2.address = value.address-0x04
+                                newv2.flags = value.flags
+                                if checklol2 == 2 then
+                                    newv2.value = 0
+                                else
+                                    newv2.value = gg.getValues({newv2})[1].value
+                                end
+                                local out1 = {}
+                                out1.address = value.address
+                                gg.removeListItems({out1})
+                                gg.setValues({newv2})
+                                gg.addListItems({newv2})
+                            else
+                                goto continue2
+                            end
+                            super = true
+                            table.insert(saved_use,wanted_wow.address)
+                            break
+                            ::continue2::
                         end
-                        
-                        
-                        local newv3 = {}
-                        newv3.address = value.address-0x04
-                        newv3.flags = gg.TYPE_FLOAT
-                        if checklol2 == 1 then
-                            newv3.value = gg.getValues({newv3})[1].value * 30
-                        else
-                            newv3.value = gg.getValues({newv3})[1].value
-                        end
-                        gg.setValues({newv2})
-                        gg.addListItems({newv2})
-                        gg.setValues({newv3})
-                    elseif newv_value == 1 then
-                        local newv2 = {}
-                        newv2.name = 'Enemy'
-                        newv2.address = value.address-0x04
-                        newv2.flags = value.flags
-                        if checklol2 == 2 then
-                            newv2.value = 0
-                        else
-                            newv2.value = gg.getValues({newv2})[1].value
-                        end
-                        local out1 = {}
-                        out1.address = value.address
-                        gg.removeListItems({out1})
-                        gg.setValues({newv2})
-                        gg.addListItems({newv2})
-                    else
-                    	goto continue2
                     end
-                    super = true
-                    table.insert(saved_use,wanted_wow.address)
-                    break
-                    ::continue2::
-                        end
-                    end
+                    
                 end
                 if not super then
                     local newv2 = {}
