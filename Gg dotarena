@@ -1,3 +1,4 @@
+local slot0 = '7,018,094,836,473,397,248'
 local slot1 = '120,324,639,716,460'
 local slot2 = '1,148,846,080'
 gg.clearList()
@@ -80,10 +81,10 @@ if #filtered_addresses > 0 then
             if index ~= #t then
                 local max2 = t[index+1].address
                 print(max2 - wowadd)
-                if (max2 - wowadd) < 0x3000 then
+                if (max2 - wowadd) < 0x10000 then
                     max_address = max2
                 else
-                    max_address = wowadd + 0x3000
+                    max_address = wowadd + 0x10000
                 end
             else
                 max_address = wowadd + 0x3000
