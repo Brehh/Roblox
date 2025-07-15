@@ -100,7 +100,11 @@ if #filtered_addresses > 0 then
         check2.address = addhaha
         check2.flags = gg.TYPE_BYTE
         local getval2 = gg.getValues({check2})[1].value
-        if getval.value and getval.value > 1 and getval2 == 0 then
+        local check3 = {}
+        check3.address = addhaha-0x04
+        check3.flags = gg.TYPE_DWORD
+        local getval3 = gg.getValues({check3})[1].value
+        if getval.value and getval.value > 1 and getval2 == 0 and getval3 > 1000000000 then
             table.insert(t,check[1])
             if checklol == 2 then
                 table.insert(t,check[2])
