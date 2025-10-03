@@ -1,0 +1,93 @@
+_G.on = true
+
+local cur = nil
+local style = {}
+
+for i,v in next,    game:GetService("ReplicatedStorage").Modules.Styles:GetDescendants() do
+    if v:isA('ModuleScript') then
+        style[v.Name] = v
+    end
+end
+while _G.on do
+    local opp = game:GetService("Workspace").States[game.Players.LocalPlayer.Name].Occupied.LockedOn.Value
+    if opp then
+        local oppdata = game:GetService("Workspace").States[opp.Name].PlayerData
+        local oppstyle = require(style[oppdata.Style.Value])
+        local opphum = opp:FindFirstChildWhichIsA('Humanoid')
+        local oppanim = opphum:FindFirstChildWhichIsA("Animator")
+        local playingTracks = oppanim:GetPlayingAnimationTracks()
+        local check = {}
+        for i,v in next, oppstyle.Combos do
+            local j = v[1]
+            local bruh = j.TrailInfo.TargetPart
+            local uh = nil
+            if bruh == 'RightHand' then
+                uh = 'Left'
+            else
+                uh = 'Right'
+            end
+            check[j.AnimId] = {j.MoveDelay,uh,bruh}
+        end
+        local heavy = oppstyle.HeavyAttacks.DefaultPunchInfo.MoveDelay
+        for i,v in next, oppstyle.HeavyAttacks do
+            if type(i) == 'number' then
+                local bruh = v.TrailInfo.TargetPart
+                local uh = nil
+                if bruh == 'RightHand' then
+                    uh = 'Left'
+                else
+                    uh = 'Right'
+                end
+                check[v.AnimId] = {heavy,uh,bruh}
+            end
+        end
+        local ulti = oppstyle.UltimateInfo.DefaultPunchInfo.MoveDelay
+        for i,v in next, oppstyle.UltimateInfo do
+            if type(i) == 'number' then
+                local bruh = v.TrailInfo.TargetPart
+                local uh = nil
+                if bruh == 'RightHand' then
+                    uh = 'Left'
+                else
+                    uh = 'Right'
+                end
+                check[v.AnimId] = {ulti,uh,bruh}
+            end
+        end
+        for i = #playingTracks, 1, -1 do
+            local track = playingTracks[i]
+            local animId = track.Animation.AnimationId
+            animId = tonumber(animId:match("%d+"))
+            if check[animId] then
+                if track ~= cur and track.Name == 'Server' then
+                    print('-----------------------------')
+                    print(track.Name,animId,check[animId][3])
+                    cur = track
+                    task.delay(check[animId][1]+0.1, function()
+                        if cur == track then
+                            local Event = game:GetService("ReplicatedStorage").RemoteEvents.TryDash
+                            Event:FireServer(
+                                {
+                                    {
+                                        Vector3.new(0.999771296978, -3.0624850211325e-08, 0.021386858075857),
+                                        check[animId][2],
+                                        0.072535037994385
+                                    },
+                                    opp,
+                                    35000,
+                                    true,
+                                    false,
+                                    false
+                                }
+                            )
+                        end
+                    end)
+                end
+                break
+            end
+        end
+    end
+
+
+    task.wait()
+end
