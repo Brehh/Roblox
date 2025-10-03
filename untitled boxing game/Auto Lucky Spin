@@ -1,0 +1,15 @@
+_G.on = true
+while _G.on do
+    local player = game:GetService("Workspace").States[game.Players.LocalPlayer.Name]
+    local data = player.PlayerData
+    local style = require(game:GetService("ReplicatedStorage").Modules.Styles[data.Style.Value])
+    local Event = game:GetService("ReplicatedStorage").BridgeNet2.dataRemoteEvent
+    local Rarity = style.Rarity
+    local shiny = style.Shiny
+    print(style.ShortName,Rarity,shiny)
+    if shiny == true then
+        break
+    end
+    require(game:GetService("ReplicatedFirst"):WaitForChild("BridgeNet2")).ReferenceBridge('TryLuckySpin'):Fire()
+    wait(0.5)
+end
