@@ -123,7 +123,7 @@ while _G.on do
                                 pressKey('W')
                                 pressKey(check[animId][3])
                                 if check[animId][1] > 0.2 then
-                                    wait(0.05)
+                                    wait(0.075)
                                 end
                                 if track == cur then
                                     local Event = game:GetService("ReplicatedStorage").RemoteEvents.TryDash
