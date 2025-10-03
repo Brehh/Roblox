@@ -117,29 +117,31 @@ while _G.on do
                         cur = track
                         task.delay(check[animId][1], function()
                             local distance = (myRoot.Position - oppRoot.Position).Magnitude
-                            if cur == track and  distance <= 8.5 and stamina >= 30 then
+                            if track == cur and  distance <= 8 and stamina >= 30 then
                                 releaseKey('W')
                                 releaseKey(check[animId][3])
                                 pressKey('W')
                                 pressKey(check[animId][3])
                                 if check[animId][1] > 0.2 then
-                                    wait(0.1)
+                                    wait(0.05)
                                 end
-                                local Event = game:GetService("ReplicatedStorage").RemoteEvents.TryDash
-                                Event:FireServer(
-                                    {
+                                if track == cur then
+                                    local Event = game:GetService("ReplicatedStorage").RemoteEvents.TryDash
+                                    Event:FireServer(
                                         {
-                                            Vector3.new(0.999771296978, -3.0624850211325e-08, 0.021386858075857),
-                                            check[animId][2],
-                                            0.072535037994385
-                                        },
-                                        opp,
-                                        35000,
-                                        true,
-                                        false,
-                                        false
-                                    }
-                                )
+                                            {
+                                                Vector3.new(0.999771296978, -3.0624850211325e-08, 0.021386858075857),
+                                                check[animId][2],
+                                                0
+                                            },
+                                            opp,
+                                            35000,
+                                            true,
+                                            false,
+                                            false
+                                        }
+                                    )
+                                end
                                 wait(0.2)
                                 releaseKey('W')
                                 wait(0.3)
