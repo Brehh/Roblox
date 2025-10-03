@@ -1,0 +1,158 @@
+_G.on = true
+
+local cur = nil
+local style = {}
+
+for i,v in next, game:GetService("ReplicatedStorage").Modules.Styles:GetDescendants() do
+    if v:isA('ModuleScript') then
+        style[v.Name] = v
+    end
+end
+print('Work')
+local utf8 = {
+	["A"] = 0x41,
+	["B"] = 0x42,
+	["C"] = 0x43,
+	["D"] = 0x44,
+	["E"] = 0x45,
+	["F"] = 0x46,
+	["G"] = 0x47,
+	["H"] = 0x48,
+	["I"] = 0x49,
+	["J"] = 0x4A,
+	["K"] = 0x4B,
+	["L"] = 0x4C,
+	["M"] = 0x4D,
+	["N"] = 0x4E,
+	["O"] = 0x4F,
+	["P"] = 0x50,
+	["Q"] = 0x51,
+	["R"] = 0x52,
+	["S"] = 0x53,
+	["T"] = 0x54,
+	["U"] = 0x55,
+	["V"] = 0x56,
+	["W"] = 0x57,
+	["X"] = 0x58,
+	["Y"] = 0x59,
+	["Z"] = 0x5A,
+	["Space"] = 0x20,
+}
+
+function pressKey(key)
+	key = string.upper(key)
+	keypress(utf8[key])
+end
+
+function releaseKey(key)
+    key = string.upper(key)
+	keyrelease(utf8[key])
+end
+
+
+while _G.on do
+    local opp = game:GetService("Workspace").States[game.Players.LocalPlayer.Name].Occupied.LockedOn.Value
+    local stamina = game:GetService("Workspace").States[game.Players.LocalPlayer.Name].CharacterData.Stamina.Value
+    if opp then
+        local myRoot = game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+        local oppRoot = opp:FindFirstChild("HumanoidRootPart")
+        if oppRoot and myRoot then
+            local oppdata = game:GetService("Workspace").States[opp.Name].PlayerData
+            local oppstyle = require(style[oppdata.Style.Value])
+            local opphum = opp:FindFirstChildWhichIsA('Humanoid')
+            local oppanim = opphum:FindFirstChildWhichIsA("Animator")
+            local playingTracks = oppanim:GetPlayingAnimationTracks()
+            local check = {}
+            for i,v in next, oppstyle.Combos do
+                local j = v[1]
+                local bruh = j.TrailInfo.TargetPart
+                local uh = nil
+                local cool = 'A'
+                if bruh == 'RightHand' then
+                    uh = 'Left'
+                else
+                    uh = 'Right'
+                    cool = 'D'
+                end
+                check[j.AnimId] = {j.MoveDelay,uh,cool}
+            end
+            local heavy = oppstyle.HeavyAttacks.DefaultPunchInfo.MoveDelay
+            for i,v in next, oppstyle.HeavyAttacks do
+                if type(i) == 'number' then
+                    local bruh = v.TrailInfo.TargetPart
+                    local uh = nil
+                    local cool = 'A'
+                    if bruh == 'RightHand' then
+                        uh = 'Left'
+                    else
+                        uh = 'Right'
+                        cool = 'D'
+                    end
+                    check[v.AnimId] = {heavy,uh,cool}
+                end
+            end
+            local ulti = oppstyle.UltimateInfo.DefaultPunchInfo.MoveDelay
+            for i,v in next, oppstyle.UltimateInfo do
+                if type(i) == 'number' then
+                    local bruh = v.TrailInfo.TargetPart
+                    local uh = nil
+                    local cool = 'A'
+                    if bruh == 'RightHand' then
+                        uh = 'Left'
+                    else
+                        uh = 'Right'
+                        cool = 'D'
+                    end
+                    check[v.AnimId] = {ulti,uh,cool}
+                end
+            end
+            for i = #playingTracks, 1, -1 do
+                local track = playingTracks[i]
+                local animId = track.Animation.AnimationId
+                animId = tonumber(animId:match("%d+"))
+                if check[animId] then
+                    if track ~= cur and track.Name == 'Server' then
+                        print('-----------------------------')
+                        print(track.Name,animId,check[animId][3])
+                        cur = track
+                        task.delay(check[animId][1], function()
+                            local distance = (myRoot.Position - oppRoot.Position).Magnitude
+                            if cur == track and  distance <= 8.5 and stamina >= 30 then
+                                releaseKey('W')
+                                releaseKey(check[animId][3])
+                                pressKey('W')
+                                pressKey(check[animId][3])
+                                if check[animId][1] > 0.2 then
+                                    wait(0.1)
+                                end
+                                local Event = game:GetService("ReplicatedStorage").RemoteEvents.TryDash
+                                Event:FireServer(
+                                    {
+                                        {
+                                            Vector3.new(0.999771296978, -3.0624850211325e-08, 0.021386858075857),
+                                            check[animId][2],
+                                            0.072535037994385
+                                        },
+                                        opp,
+                                        35000,
+                                        true,
+                                        false,
+                                        false
+                                    }
+                                )
+                                wait(0.2)
+                                releaseKey('W')
+                                wait(0.3)
+                                releaseKey(check[animId][3])
+                            end
+                        end)
+                    end
+                    break
+                end
+            end
+        end
+    end
+
+
+    task.wait()
+end
