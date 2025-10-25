@@ -1,0 +1,40 @@
+_G.on = false
+
+_G.stats_list = {'Sand','Wood','Rock','Fire','Water'}
+
+_G.limiter = 0
+local main = game:GetService("Workspace").Buttons.Main
+local stats = game:GetService("Players").LocalPlayer.Stats
+
+local eter = require(game:GetService("ReplicatedStorage").ImportantStuff.EternityNum)
+local convert = eter.convert
+local me = eter.meeq
+local mul = eter.mul
+local div = eter.div
+local short = eter.short
+local gt = eter.me
+local mybody = game.Players.LocalPlayer.Character.PrimaryPart
+
+while true do
+    if _G.on then
+        for i,v in next, _G.stats_list do
+            if i > _G.limiter then
+                if _G.stats_list[i+1] then
+                    local model = game:GetService("Workspace").Buttons.Main[v..'B'][v]
+                    local having = stats[_G.stats_list[i+1]].Value
+                    local needed = model.config.cost.Value
+                    if me(having,needed) then
+                        model.part.CanCollide = false
+                        while me(having,needed) do
+                            mybody.CFrame = model.part.CFrame
+                            wait()
+                            having = stats[_G.stats_list[i+1]].Value
+                            needed = model.config.cost.Value
+                        end
+                    end
+                end
+            end
+        end
+    end
+    wait()
+end
