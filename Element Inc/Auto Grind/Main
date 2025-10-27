@@ -28,7 +28,6 @@ while true do
                     local needed = model.config.cost.Value
                     local rnow = stats[v].Value
                     if me(having,needed) then
-                        model.part.CanCollide = false
                         while not gt(stats[v].Value,rnow) do
                             mybody.CFrame = model.WorldPivot
                             wait()
