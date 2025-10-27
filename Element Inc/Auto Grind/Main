@@ -1,3 +1,6 @@
+print('yeah')
+
+
 _G.on = false
 
 _G.stats_list = {'Sand','Wood','Rock','Fire','Water'}
@@ -23,13 +26,12 @@ while true do
                     local model = game:GetService("Workspace").Buttons.Main[v..'B'][v]
                     local having = stats[_G.stats_list[i+1]].Value
                     local needed = model.config.cost.Value
+                    local rnow = stats[v].Value
                     if me(having,needed) then
                         model.part.CanCollide = false
-                        while me(having,needed) do
-                            mybody.CFrame = model.part.CFrame
+                        while not gt(stats[v].Value,rnow) do
+                            mybody.CFrame = model.WorldPivot
                             wait()
-                            having = stats[_G.stats_list[i+1]].Value
-                            needed = model.config.cost.Value
                         end
                     end
                 end
