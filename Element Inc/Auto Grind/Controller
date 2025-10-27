@@ -1,3 +1,3 @@
-_G.stats_list = {'Copper','Coal','Iron','Lava','Clay','Snow'}--,'Sand','Wood','Rock','Fire','Water','Dirt','Air'
+_G.stats_list = {'Cobalt','Gold','Copper','Coal','Iron','Lava','Clay'}--,'Snow','Sand','Wood','Rock','Fire','Water','Dirt','Air'
 _G.on = true
-_G.limiter = 5
+_G.limiter = 6
