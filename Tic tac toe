@@ -376,7 +376,8 @@ end
 
 _G.on = true
 local current
-while _G.on and wait() do
+while wait() do
+    if not _G.on then continue end
     local side = game.Players.LocalPlayer.Character:FindFirstChildWhichIsA('Tool')
     if not side then continue end
     local position = game.Players.LocalPlayer:GetAttribute('jogo')
