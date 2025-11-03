@@ -1,0 +1,388 @@
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+local Window = Rayfield:CreateWindow({
+   Name = "Dugeon Simulator 2",
+   Icon = 0, -- Icon in Topbar. Can use Lucide Icons (string) or Roblox Image (number). 0 to use no icon (default).
+   LoadingTitle = "Dugeon Simulator 2 Hacking...",
+   LoadingSubtitle = "by ???",
+   ShowText = "Modded", -- for mobile users to unhide rayfield, change if you'd like
+   Theme = "Default", -- Check https://docs.sirius.menu/rayfield/configuration/themes
+
+   ToggleUIKeybind = "K", -- The keybind to toggle the UI visibility (string like "K" or Enum.KeyCode)
+
+   DisableRayfieldPrompts = false,
+   DisableBuildWarnings = false, -- Prevents Rayfield from warning when the script has a version mismatch with the interface
+
+   ConfigurationSaving = {
+      Enabled = true,
+      FolderName = nil, -- Create a custom folder for your hub/game
+      FileName = "Big Hub"
+   },
+
+   Discord = {
+      Enabled = false, -- Prompt the user to join your Discord server if their executor supports it
+      Invite = "noinvitelink", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ ABCD would be ABCD
+      RememberJoins = true -- Set this to false to make them join the discord every time they load it up
+   },
+
+   KeySystem = false, -- Set this to true to use our key system
+   KeySettings = {
+      Title = "Untitled",
+      Subtitle = "Key System",
+      Note = "No method of obtaining the key is provided", -- Use this to tell the user how to get a key
+      FileName = "Key", -- It is recommended to use something unique as other scripts using Rayfield may overwrite your key file
+      SaveKey = true, -- The user's key will be saved, but if you change the key, they will be unable to use your script
+      GrabKeyFromSite = false, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
+      Key = {"Hello"} -- List of keys that will be accepted by the system, can be RAW file links (pastebin, github etc) or simple strings ("hello","key22")
+   }
+})
+
+local eter = require(game:GetService("ReplicatedStorage").EternityNum)
+local convert = eter.convert
+local me = eter.meeq
+local mul = eter.mul
+local div = eter.div
+local short = eter.short
+local gt = eter.me
+local player = game:GetService("Players").LocalPlayer
+local training = game:GetService("Workspace").Game.TrainingZones
+local mobs = game:GetService("Workspace").Game.Mobs
+if game:GetService("ReplicatedStorage"):FindFirstChild('_ClientCheese') then
+    game:GetService("ReplicatedStorage")._ClientCheese:Destroy()
+end
+
+function getdamage()
+    local saved = {}
+    for i,v in next,training:GetChildren() do
+        if v.Name == 'Damage' then
+            local stats = player.Stats
+            local config = v.config
+            local button = v.botton
+            local have = stats.Dmg.Value
+            local need = config.cost.Value
+            local give = config.amount.Value
+            if me(have,need) then
+                if v:FindFirstChildWhichIsA('Model') then
+                    v:FindFirstChildWhichIsA('Model'):Destroy()
+                end
+                saved[#saved+1] = {give,button}
+            end
+        end
+    end
+    table.sort(saved,function(a,b)
+        return gt(a[1],b[1])
+    end)
+    return saved[1][2]
+end
+
+function gethp()
+    local saved = {}
+    for i,v in next,training:GetChildren() do
+        if v.Name == 'Health' then
+            local stats = player.Stats
+            local config = v.config
+            local button = v.botton
+            local have = stats.Hp.Value
+            local need = config.cost.Value
+            local give = config.amount.Value
+            if me(have,need) then
+                if v:FindFirstChildWhichIsA('Model') then
+                    v:FindFirstChildWhichIsA('Model'):Destroy()
+                end
+                saved[#saved+1] = {give,button}
+            end
+        end
+    end
+    table.sort(saved,function(a,b)
+        return gt(a[1],b[1])
+    end)
+    return saved[1][2]
+end
+
+function getallmob()
+    local saved = {}
+    for _,main in next, mobs:GetChildren() do
+        for _,mob in next, main:GetChildren() do
+            local stats = player.Stats
+            local config = mob.config
+            local button = mob.Colide
+            local curhp = stats.CurrentHp.Value
+            local mydmg = stats.Dmg.Value
+            local mobhp = config.HpReq.Value
+            local mobdmg = config.DmgReq.Value
+            local give = config.amount2.Value
+            if gt(curhp,mobdmg) and me(mydmg,mobhp) then
+                if not saved[main.Name] then
+                    saved[main.Name] = {}
+                end
+                table.insert(saved[main.Name],{give,button})
+            end
+        end
+        if saved[main.Name] then
+            table.sort(saved[main.Name],function(a,b)
+                return gt(a[1],b[1])
+            end)
+        end
+    end
+    return saved
+end
+
+function getmain(saved)
+    local save2 = {}
+    table.foreach(saved, function(i,v) 
+        table.insert(save2,i)
+    end)
+    return save2
+end
+
+function fightwanted(saved,main)
+    if saved[main] then
+        local best = saved[main][1][2]
+        return best
+    end
+end
+
+function unanchor(prim)
+    prim.Anchored = false
+end
+
+function anchor(prim)
+    prim.Anchored = true
+end
+
+
+function tpplayer(part)
+    if part then
+        local char = player.Character
+        local prim = char.PrimaryPart
+        local foot = char.LeftFoot
+        if not _G.current then _G.current = prim.CFrame end
+        if _G.part ~= part then
+            _G.part = part
+            unanchor(prim)
+            foot.CFrame = part.CFrame
+            wait(0.1)
+            anchor(prim)
+        end
+    else
+        done()
+    end
+end
+
+function done()
+    local char = player.Character
+    local prim = char.PrimaryPart
+    if _G.current then
+        prim.CFrame = _G.current
+        _G.current = nil
+        _G.part = nil
+        unanchor(prim)
+    end
+end
+
+
+
+
+
+local hp_toggle,dmg_toggle,gd_toggle,start = false
+local allmain = getmain(getallmob())
+local teleportpart = {}
+local tp = nil
+for i,v in next,game:GetService("Workspace")["Teleport Parts"]:GetChildren() do
+    table.insert(teleportpart,v.Name)
+end
+
+
+
+
+
+
+
+
+
+
+
+local Auto_Stats = Window:CreateTab("Auto Grind", 4483362458) -- Title, Image
+local Auto_Farm = Window:CreateTab("Auto Farm", 4483362458) -- Title, Image
+local Others = Window:CreateTab("Others", 4483362458) -- Title, Image
+
+TpToWorld = Others:CreateDropdown({
+   Name = "Pick World",
+   Options = teleportpart,
+   CurrentOption = {"Option 1"},
+   MultipleOptions = false,
+   Flag = "PickWorld2", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Options)
+        tp = game:GetService("Workspace")["Teleport Parts"][Options[1]]
+   end,
+})
+
+Confirmtp = Others:CreateButton({
+   Name = "Teleport",
+   Callback = function()
+        local char = player.Character
+        local prim = char.LeftFoot
+        prim.CFrame = tp.CFrame
+   end,
+})
+
+DoubleSpeed = Others:CreateButton({
+   Name = "Double Speed",
+   Callback = function()
+        local char = player.Character
+        local prim = char.Humanoid
+        prim.WalkSpeed *= 2
+   end,
+})
+
+GetLastSecret = Others:CreateButton({
+   Name = "Get Highest Secret",
+   Callback = function()
+        local saved = {}
+        local secrets = game:GetService("Workspace").Game.Secrets
+        for i,v in next,secrets:GetChildren() do
+            local model = v:GetChildren()[1]
+            if model then
+                local config = model.config
+                local button = model.part
+                local cost = config.cost.Value
+                local stats = player.Stats
+                local level = stats.Level.Value
+                if me(level,cost) then
+                    table.insert(saved,{cost,button})
+                end
+            end
+        end
+        table.sort(saved,function(a,b)
+            return gt(a[1],b[1])
+        end)
+        local part = saved[1][2]
+        local char = player.Character
+        local prim = char.PrimaryPart
+        firetouchinterest(prim,part,0)
+        firetouchinterest(prim,part,1)
+   end,
+})
+
+GetAllSecret = Others:CreateButton({
+   Name = "Get All Secret",
+   Callback = function()
+        local secrets = game:GetService("Workspace").Game.Secrets
+        for i,v in next,secrets:GetChildren() do
+            local model = v:GetChildren()[1]
+            if model then
+                local config = model.config
+                local button = model.part
+                local cost = config.cost.Value
+                local stats = player.Stats
+                local level = stats.Level.Value
+                local char = player.Character
+                local prim = char.PrimaryPart
+                if me(level,cost) then
+                    local part = button
+                    firetouchinterest(prim,part,0)
+                    firetouchinterest(prim,part,1)
+                    wait(0.1)
+                end
+            end
+        end
+   end,
+})
+
+
+Auto_Dmg = Auto_Stats:CreateToggle({
+   Name = "Auto Best Damage",
+   CurrentValue = false,
+   Flag = "Dmg", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+        if Value then
+            dmg_toggle = true
+            Auto_Hp:Set(false)
+            Auto_Hit:Set(false)
+        else
+            dmg_toggle = false
+        end
+   end,
+})
+
+Auto_Hp = Auto_Stats:CreateToggle({
+   Name = "Auto Best Health",
+   CurrentValue = false,
+   Flag = "Hp", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+        if Value then
+            hp_toggle = true
+            Auto_Dmg:Set(false)
+            Auto_Hit:Set(false)
+        else
+            hp_toggle = false
+        end
+   end,
+})
+
+PickWorld = Auto_Farm:CreateDropdown({
+   Name = "Pick World",
+   Options = allmain,
+   CurrentOption = {"Option 1"},
+   MultipleOptions = false,
+   Flag = "PickWorld", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Options)
+        start = Options[1]
+   end,
+})
+
+Auto_Hit = Auto_Farm:CreateToggle({
+   Name = "Auto Grind (World)",
+   CurrentValue = false,
+   Flag = "Grind", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+        if Value then
+            gd_toggle = true
+            Auto_Dmg:Set(false)
+            Auto_Hp:Set(false)
+        else
+            gd_toggle = false
+        end
+   end,
+})
+
+
+function boardEqual(a, b)
+    local wow = {}
+    if type(a) == 'table' and type(b) == 'table' then
+        for _,check in next,a do
+            if not table.find(b,check) then
+                return false
+            end
+        end
+        for _,check in next,b do
+            if not table.find(a,check) then
+                return false
+            end
+        end
+        return true
+    else
+        if a == b then
+            return true
+        end
+        return false
+    end
+end
+
+while wait() do
+    saved = getallmob()
+    local bruh = getmain(saved)
+    if not boardEqual(bruh,allmain) then
+        PickWorld:Refresh(bruh)
+    end
+    allmain = bruh
+    if dmg_toggle then
+        tpplayer(getdamage())
+    elseif hp_toggle then
+        tpplayer(gethp())
+    elseif table.find(allmain,start) and gd_toggle then
+        tpplayer(fightwanted(saved,start))
+    else
+        Auto_Hit:Set(false)
+        done()
+    end
+end
