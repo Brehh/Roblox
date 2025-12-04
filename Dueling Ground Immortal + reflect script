@@ -1,0 +1,50 @@
+print('working')
+local mt = getrawmetatable(game)
+    local oldNamecall = mt.__namecall
+    setreadonly(mt, false)
+
+    mt.__namecall = newcclosure(function(self, ...)
+        -- Capture the method and arguments
+        local method = getnamecallmethod()
+        local args = {...}
+        
+        -- Ensure it's the InvokeServer method and the correct RemoteFunction
+        if method == "FireServer" then
+                if self.Name == "ResolveImpact" then
+                    args[2] = "Parry"
+                end
+        end
+        return oldNamecall(self, unpack(args))
+    end)
+
+    -- Set the metatable back to readonly
+    setreadonly(mt, true)
+
+
+local Event = game:GetService("ReplicatedStorage").Remotes.PlayerCharacter.Request.StartStagger
+local mtHook; mtHook = hookmetamethod(game, "__namecall", function(self, ...)
+	local Args = table.pack(...)
+
+	if self == Event and getnamecallmethod() == "FireServer" then
+		print(`Intercepted (__namecall) {Event.Name}:FireServer()`, ...)
+        Args[1].staggerDuration = nil
+        Args[1].staggerType = 'Parry'
+        for i,v in next, Args[1] do
+            print(i,v)
+        end
+		return mtHook(self, table.unpack(Args, 1, Args.n))
+	end
+
+	return mtHook(self, ...)
+end)
+
+local OldFireServer; OldFireServer = hookfunction(Event.FireServer, function(self, ...)
+	if self == Event then
+		local Result = table.pack(OldFireServer(self, ...))
+
+		print(`Intercepted (__index) {Event.Name}:FireServer()`, self, table.unpack(Result, 1, Result.n))
+		return table.unpack(Result, 1, Result.n)
+	end
+
+	return OldFireServer(self, ...)
+end)
