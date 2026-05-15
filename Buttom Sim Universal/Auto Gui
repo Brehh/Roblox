@@ -454,9 +454,21 @@ local script = G2L["3"];
 					if toggle then
 						local part = getcost()
 						if part ~= currentmul and part then
-							local hum = game.Players.LocalPlayer.Character["Right Leg"]
+							local hum = game.Players.LocalPlayer.Character["Left Leg"]
 							pcall(function()
-								hum.CFrame = part.CFrame
+								local wantedCFrame = part.CFrame
+								local num = tonumber(part.Name) - 1
+								local previousB = part.Parent:FindFirstChild(tostring(num))
+
+								if previousB then
+									local diff = (previousB.CFrame.Position - wantedCFrame.Position)
+									if diff.magnitude < 10 then
+										local upVector = Vector3.new(0, 1, 0)
+										wantedCFrame += diff/1.6
+										wantedCFrame = CFrame.lookAt(wantedCFrame.Position, wantedCFrame.Position + diff:Cross(upVector))
+									end
+								end
+								hum.CFrame = wantedCFrame
 								currentmul = part
 							end)
 						end
