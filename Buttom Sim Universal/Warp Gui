@@ -1,4 +1,20 @@
--- อ้างอิงไปยัง LocalPlayer และ Folder ที่เก็บ waypoint
+local eter = require(game:GetService("ReplicatedStorage").Data.EternityNum)
+local convert = eter.convert
+local me = eter.meeq
+local mul = eter.mul
+local div = eter.div
+local short = eter.short
+local gt = eter.me
+
+local portals = {}
+local waypoints = {}
+local buttons = {}
+
+
+
+
+
+
 local player = game.Players.LocalPlayer
 local waypointsFolder = game:GetService("Workspace"):WaitForChild("TeleportParts")
 local UserInputService = game:GetService("UserInputService")
@@ -59,7 +75,7 @@ layout.Parent = contentFrame
 
 -- ปรับ CanvasSize ของ ScrollingFrame ตามขนาดของเนื้อหา
 layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-    contentFrame.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y)
+    contentFrame.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y+10)
 end)
 
 -- ฟังก์ชันสำหรับย่อ/ขยาย GUI
@@ -109,23 +125,83 @@ topBar.InputChanged:Connect(function(input)
     end
 end)
 
--- สร้างปุ่มสำหรับแต่ละ waypoint ที่เป็น Part
-for _, waypoint in ipairs(waypointsFolder:GetChildren()) do
-    if waypoint:IsA("Part") then
-        local button = Instance.new("TextButton")
-        button.Size = UDim2.new(1, -10, 0, 30)
-        button.Position = UDim2.new(0, 5, 0, 0)
-        button.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
-        button.TextColor3 = Color3.new(1, 1, 1)
-        button.Text = waypoint.Name
-        button.Parent = contentFrame
-
-        button.MouseButton1Click:Connect(function()
-            local character = player.Character
-            if character and character:FindFirstChild("HumanoidRootPart") then
-                -- ปรับตำแหน่งเล็กน้อยเพื่อไม่ให้ติดพื้น
-                character.HumanoidRootPart.CFrame = waypoint.CFrame + Vector3.new(0, 5, 0)
-            end
-        end)
-    end
+function findPortal()
+	for i,v in next, workspace:GetChildren() do
+		if v:FindFirstChild("PortalHit") then
+			local config = v:FindFirstChild("PortalHit").config
+			local cost = config.Cost.Value
+			local area = config.Area.Value
+			if cost ~= "0" then
+				if portals[area] and gt(portals[area].Level,cost) then
+					continue
+				end
+				portals[area] = {Level = cost}
+			elseif area == "Spawn" then
+				if not portals[area] then
+					portals[area] = {Level = 0}
+				end
+			end
+		elseif v.Name == "PortalHit" then
+			local config = v.config
+			local cost = config.Cost.Value
+			local area = config.Area.Value
+			if cost ~= "0" then
+				if portals[area] and gt(portals[area].Level,cost) then
+					continue
+				end
+				portals[area] = {Level = cost}
+			elseif area == "Spawn" then
+				if not portals[area] then
+					portals[area] = {Level = 0}
+				end
+			end
+		end
+	end
 end
+
+function getWayPoint()
+	for _, waypoint in ipairs(waypointsFolder:GetChildren()) do
+		if waypoint:IsA("Part") then
+			if not waypoints[waypoint.Name] then
+				waypoints[waypoint.Name] = waypoint
+			end
+			if portals[waypoint.Name] then
+				if not buttons[waypoint.Name] then
+					createButton(waypoint,portals[waypoint.Name].Level)
+				else
+					buttons[waypoint.Name].Text = waypoint.Name .. " Lvl : " .. short(portals[waypoint.Name].Level)
+					buttons[waypoint.Name].LayoutOrder = portals[waypoint.Name].Level
+				end
+			end
+		end
+	end
+end
+
+function createButton(wayPoint,Level)
+	local button = Instance.new("TextButton")
+	button.Size = UDim2.new(1, -10, 0, 30)
+	button.Position = UDim2.new(0, 5, 0, 0)
+	button.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+	button.TextColor3 = Color3.new(1, 1, 1)
+	button.Text = wayPoint.Name .. " Lvl : " .. short(Level)
+	button.Parent = contentFrame
+	button.LayoutOrder = Level
+
+	button.MouseButton1Click:Connect(function()
+		local character = player.Character
+		if character and character:FindFirstChild("HumanoidRootPart") then
+			-- ปรับตำแหน่งเล็กน้อยเพื่อไม่ให้ติดพื้น
+			character.HumanoidRootPart.CFrame = wayPoint.CFrame + Vector3.new(0, 5, 0)
+		end
+	end)
+	buttons[wayPoint.Name] = button
+end
+
+-- สร้างปุ่มสำหรับแต่ละ waypoint ที่เป็น Part
+findPortal()
+getWayPoint()
+
+workspace.TeleportParts.ChildAdded:Connect(function (v)
+	findPortal()
+	getWayPoint()
+end)
