@@ -11,10 +11,6 @@ local waypoints = {}
 local buttons = {}
 
 
-
-
-
-
 local player = game.Players.LocalPlayer
 local waypointsFolder = game:GetService("Workspace"):WaitForChild("TeleportParts")
 local UserInputService = game:GetService("UserInputService")
@@ -23,6 +19,7 @@ player.Character.Humanoid.WalkSpeed *= 2
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "Warp Gui"
 screenGui.Parent = player:WaitForChild("PlayerGui")
+screenGui.ResetOnSpawn = false
 
 -- สร้าง Main Frame ที่จะเป็นตัว GUI หลัก
 local mainFrame = Instance.new("Frame")
@@ -75,7 +72,7 @@ layout.Parent = contentFrame
 
 -- ปรับ CanvasSize ของ ScrollingFrame ตามขนาดของเนื้อหา
 layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-    contentFrame.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y+10)
+    contentFrame.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y+50)
 end)
 
 -- ฟังก์ชันสำหรับย่อ/ขยาย GUI
@@ -205,3 +202,62 @@ workspace.TeleportParts.ChildAdded:Connect(function (v)
 	findPortal()
 	getWayPoint()
 end)
+
+local character = player.Character
+
+
+local function isInZone(character,part)
+	if not character or not character:FindFirstChild("HumanoidRootPart") then 
+		return false 
+	end
+
+	-- Get the character's size and position
+	local cframe, size = character:GetBoundingBox()
+
+	-- Set up overlap parameters (optional, but good for filtering)
+	local params = OverlapParams.new()
+	params.FilterType = Enum.RaycastFilterType.Include
+	params.FilterDescendantsInstances = {character}
+
+	-- Check if the zone part overlaps with the character
+	local parts = workspace:GetPartsInPart(part, params)
+
+	-- If the table is not empty, the player is inside
+	return #parts > 0
+end
+local curbutton
+
+
+local function coolTouch(obj)
+	if obj.Name == "Rebuild" then
+		if isInZone(character,obj) then
+			curbutton = obj
+		else
+			curbutton = nil
+		end
+	end
+end
+
+character["Left Leg"].Touched:Connect(coolTouch)
+
+
+player.CharacterAdded:Connect(function (char)
+	local hum = char:WaitForChild("Humanoid")
+	hum.WalkSpeed *= 2
+	char:WaitForChild("Left Leg")
+	character = char
+	character["Left Leg"].Touched:Connect(coolTouch)
+end)
+
+while task.wait() do
+	if curbutton and character and character:FindFirstChild("HumanoidRootPart") then
+		for i,v in next, character:GetChildren() do
+			if v:IsA("Part") then
+				task.defer(function()
+					firetouchinterest(v, curbutton, 0)
+					firetouchinterest(v, curbutton, 1)
+				end)
+			end
+		end
+	end
+end
