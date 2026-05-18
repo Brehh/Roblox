@@ -276,7 +276,7 @@ local script = G2L["3"];
 	
 	local autobuy = script.Parent.Main.AutoBuy
 	
-	
+	local buttons = {}
 	autobuy.MouseButton1Click:Connect(function()
 		toggle = not toggle
 		autobuy.BackgroundColor3 = toggle and Color3.new(0,1,0) or Color3.new(1,0,0)
@@ -309,13 +309,13 @@ local script = G2L["3"];
 	
 	
 	for i,v in next, Stats do
-	
+		if not buttons[Stats[i]] then
+			buttons[Stats[i]] = {}
+		end
 		if i >= 3 then
-	
+			
 			local function getcost()
-	
-				local BestTable = {}
-	
+				local wow
 				local wanted = Stats[i-1]
 				wanted = game:GetService("Players").LocalPlayer.Stats[wanted]
 	
@@ -324,26 +324,31 @@ local script = G2L["3"];
 					if not xd then continue end
 					xd = xd:FindFirstChildWhichIsA('Model')
 					for _,part in next,xd:GetChildren() do
-						table.insert(BestTable,part)
+						if not table.find(buttons[Stats[i]], part) then
+							table.insert(buttons[Stats[i]],part)
+							wow = true
+							print("OH")
+						end
 					end
 				end
-	
-				table.sort(BestTable,function(a,b)
-					return gt(b.config.Cost.Value,a.config.Cost.Value)
-				end)
+				if wow then
+					table.sort(buttons[Stats[i]],function(a,b)
+						return gt(b.config.Cost.Value,a.config.Cost.Value)
+					end)
+				end
 	
 				local cool
 	
-				for i,v in next, BestTable do
+				for i,v in next, buttons[Stats[i]] do
 					if me(wanted.Value, v.config.Cost.Value) then
 						cool = v
 					end
 				end
 	
-				local theend = table.find(BestTable,cool)
+				local theend = table.find(buttons[Stats[i]],cool)
 	
 				if theend then
-					local another = BestTable[theend+1]
+					local another = buttons[Stats[i]][theend+1]
 					if another then
 						return {cool,another}
 					else
@@ -418,8 +423,6 @@ local script = G2L["3"];
 		elseif i == 2 then
 			local function getcost()
 	
-				local BestTable = {}
-	
 				local wanted = Stats[i-1]
 				wanted = game:GetService("Players").LocalPlayer.Stats[wanted]
 	
@@ -428,17 +431,23 @@ local script = G2L["3"];
 					if not xd then continue end
 					xd = xd:FindFirstChildWhichIsA('Model')
 					for _,part in next,xd:GetChildren() do
-						table.insert(BestTable,part)
+						if not table.find(buttons[Stats[i]], part) then
+							table.insert(buttons[Stats[i]],part)
+							wow = true
+							print("OH")
+						end
 					end
 				end
-	
-				table.sort(BestTable,function(a,b)
-					return gt(b.config.Cost.Value,a.config.Cost.Value)
-				end)
+
+				if wow then
+					table.sort(buttons[Stats[i]],function(a,b)
+						return gt(b.config.Cost.Value,a.config.Cost.Value)
+					end)
+				end
 	
 				local cool
 	
-				for i,v in next, BestTable do
+				for i,v in next, buttons[Stats[i]] do
 					if me(wanted.Value, mul(v.config.Cost.Value,3)) then
 						cool = v
 					end
