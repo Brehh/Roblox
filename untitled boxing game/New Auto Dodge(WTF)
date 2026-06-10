@@ -49,6 +49,7 @@ if _G.bruh then
 end
 
 local currentpunch
+local currentmypunch
 
 if _G.on then
 _G.bruh = RunService.Heartbeat:Connect(function()
@@ -91,58 +92,89 @@ _G.bruh = RunService.Heartbeat:Connect(function()
 				local currentID = opplive:GetAttribute("PreviousPunching")
 				local currentP = opplive:GetAttribute("CurrentPunch")
 				local isheavy = opplive:GetAttribute("IsHeavy")
-                if currentID and ((not currentpunch) or (currentID > currentpunch)) and (currentP == 1 or isheavy) then
-                    local extraDelay = opplive:GetAttribute("ExtraDelay") or 0.1
-                    local dashTime = mystyle.DashInfo.DefaultInfo.DashTime
-					local isfient = opplive:GetAttribute("IsFeinting") or 0
-					local landtime = opplive:GetAttribute("LandTime")
-					if not landtime then continue end
-					local punching = opplive:GetAttribute("Punching")
-					if not punching then continue end
-					local bruhtime = landtime - currentID >= 0.8
-					local ohnumm = (isheavy or bruhtime) and 0 or 0.055
+				local mypunchID = LocalPlayer.Character:GetAttribute("Punching")
+				local currentmyP = LocalPlayer.Character:GetAttribute("CurrentPunch")
+				local isopdashing = opplive:GetAttribute("DashDirection")
+				task.spawn(function()
+					if currentID and ((not currentpunch) or (currentID > currentpunch)) and (currentP == 1 or isheavy) then
+						local extraDelay = opplive:GetAttribute("ExtraDelay") or 0.1
+						local dashTime = mystyle.DashInfo.DefaultInfo.DashTime
+						local isfient = opplive:GetAttribute("IsFeinting") or 0
+						local landtime = opplive:GetAttribute("LandTime")
+						if not landtime then return end
+						local punching = opplive:GetAttribute("Punching")
+						if not punching then return end
+						local bruhtime = landtime - currentID >= 0.8
+						local ohnumm = (isheavy or bruhtime) and 0 or 0.055
 
-                    if workspace:GetServerTimeNow() >= landtime + ohnumm and punching then
-                        currentpunch = currentID
-                        
-                        local oppSide = opplive:GetAttribute("AttackingHand")
-                        local dodgeKey = "S"
-                        
-                        if oppSide then
-                            if oppSide == "LeftHand" then
-                                dodgeKey = "D"
-                            else
-                                dodgeKey = "A"
-                            end
-                        end
-
-                        local distance = (myRoot.Position - oppRoot.Position).Magnitude
-
-                        if distance <= 8 and stamina >= 15 then
-							if _G.lasttask then
-								task.cancel(_G.lasttask)
-								_G.lasttask = nil
+						if workspace:GetServerTimeNow() >= landtime + ohnumm and punching then
+							currentpunch = currentID
+							
+							local oppSide = opplive:GetAttribute("AttackingHand")
+							local dodgeKey = "S"
+							
+							if oppSide then
+								if oppSide == "LeftHand" then
+									dodgeKey = "D"
+								else
+									dodgeKey = "A"
+								end
 							end
-                            -- แยกเธรดการกดปุ่มออกไป เพื่อไม่ให้ไปหน่วง Loop หลัก
-                            _G.lasttask = task.spawn(function()
-                                releaseKey('W')
-                                releaseKey('S')
-								releaseKey('A')
-								releaseKey('D')
-                                
-                                pressKey('W')
-                                pressKey(dodgeKey)
-                                
-                                pressKey("SPACE")
-                                releaseKey("SPACE")
-                                task.wait(dashTime)
-                                releaseKey('W')
-                                task.wait(0.3)
-                                releaseKey(dodgeKey)
-                            end)
-                        end
-                    end
-                end
+
+							local distance = (myRoot.Position - oppRoot.Position).Magnitude
+
+							if distance <= 8 and stamina >= 15 then
+								if _G.lasttask then
+									task.cancel(_G.lasttask)
+									_G.lasttask = nil
+								end
+								-- แยกเธรดการกดปุ่มออกไป เพื่อไม่ให้ไปหน่วง Loop หลัก
+								_G.lasttask = task.spawn(function()
+									releaseKey('W')
+									releaseKey('S')
+									releaseKey('A')
+									releaseKey('D')
+									
+									pressKey('W')
+									pressKey(dodgeKey)
+									
+									pressKey("SPACE")
+									releaseKey("SPACE")
+									task.wait(dashTime)
+									releaseKey('W')
+									task.wait(0.3)
+									releaseKey(dodgeKey)
+								end)
+							end
+						end
+					end
+				end)
+				if mypunchID and isopdashing and ((not currentmypunch) or (mypunchID > currentmypunch)) and (currentP == 1 or isheavy) then
+					local mylandtime = LocalPlayer.Character:GetAttribute("LandTime")
+					if not mylandtime then return end
+					local oppdash = opplive:GetAttribute("LastDashTime")
+					if not oppdash then return end
+					local oppdashclear = opplive:GetAttribute("DashClearTime")
+					if not oppdashclear then return end
+					local ohnumm = isheavy and 0 or 0.055
+					local isheavy = LocalPlayer.Character:GetAttribute("IsHeavy")
+					print(mypunchID)
+					print(mylandtime+ohnumm-oppdash)
+					if isopdashing and (mylandtime + ohnumm >= oppdash) and (oppdash >= mypunchID) then
+						
+						currentmypunch = mypunchID
+						local distance = (myRoot.Position - oppRoot.Position).Magnitude
+						if distance <= 8 and stamina >= 30 then
+							print("Yeah")
+							if isheavy then
+								print("Small")
+								mouse1click()
+							else
+								mouse2click()
+							end
+						end
+					end 
+				end
         end
     else
         -- หากหลุดจากการล็อคเป้า ให้เคลียร์ข้อมูล
