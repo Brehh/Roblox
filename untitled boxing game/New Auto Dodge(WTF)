@@ -95,10 +95,12 @@ _G.bruh = RunService.Heartbeat:Connect(function()
                     local extraDelay = opplive:GetAttribute("ExtraDelay") or 0.1
                     local dashTime = mystyle.DashInfo.DefaultInfo.DashTime
 					local isfient = opplive:GetAttribute("IsFeinting") or 0
-					local landtime = opplive:GetAttribute("LandTime") or 0
+					local landtime = opplive:GetAttribute("LandTime")
+					if not landtime then continue end
 					local punching = opplive:GetAttribute("Punching")
-					
-					local ohnumm = isheavy and 0 or 0.055
+					if not punching then continue end
+					local bruhtime = landtime - currentID >= 0.8
+					local ohnumm = (isheavy or bruhtime) and 0 or 0.055
 
                     if workspace:GetServerTimeNow() >= landtime + ohnumm and punching then
                         currentpunch = currentID
