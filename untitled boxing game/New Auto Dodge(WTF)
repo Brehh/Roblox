@@ -96,10 +96,11 @@ _G.bruh = RunService.Heartbeat:Connect(function()
                     local dashTime = mystyle.DashInfo.DefaultInfo.DashTime
 					local isfient = opplive:GetAttribute("IsFeinting") or 0
 					local landtime = opplive:GetAttribute("LandTime") or 0
+					local punching = opplive:GetAttribute("Punching")
 					
-					local ohnumm = isheavy and 0 or 0.05
+					local ohnumm = isheavy and 0 or 0.055
 
-                    if workspace:GetServerTimeNow() >= landtime + ohnumm then
+                    if workspace:GetServerTimeNow() >= landtime + ohnumm and punching then
                         currentpunch = currentID
                         
                         local oppSide = opplive:GetAttribute("AttackingHand")
@@ -115,11 +116,17 @@ _G.bruh = RunService.Heartbeat:Connect(function()
 
                         local distance = (myRoot.Position - oppRoot.Position).Magnitude
 
-                        if distance <= 10 and stamina >= 15 then
+                        if distance <= 8 and stamina >= 15 then
+							if _G.lasttask then
+								task.cancel(_G.lasttask)
+								_G.lasttask = nil
+							end
                             -- แยกเธรดการกดปุ่มออกไป เพื่อไม่ให้ไปหน่วง Loop หลัก
-                            task.spawn(function()
+                            _G.lasttask = task.spawn(function()
                                 releaseKey('W')
-                                releaseKey(dodgeKey)
+                                releaseKey('S')
+								releaseKey('A')
+								releaseKey('D')
                                 
                                 pressKey('W')
                                 pressKey(dodgeKey)
