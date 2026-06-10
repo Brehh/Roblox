@@ -40,47 +40,8 @@ end
 
 -- ตัวแปรสำหรับการ Cache
 local cachedOpp = nil
-local cachedCheck = {}
 local mystyle = nil
 local cur = nil
-
--- ฟังก์ชันสร้าง Cache ท่าโจมตี
-local function buildCheckTable(oppstyle)
-    cachedCheck = {}
-    
-    -- Combos
-    for _, v in next, oppstyle.Combos do
-        local j = v[1]
-		local speed = j.AnimSpeed
-        local bruh = j.TrailInfo.TargetPart
-        local uh = (bruh == 'RightHand') and 'Left' or 'Right'
-        local cool = (bruh == 'RightHand') and 'A' or 'D'
-        cachedCheck[j.AnimId] = {0, uh, cool }
-    end
-    
-    -- Heavy Attacks
-    local heavy = oppstyle.HeavyAttacks.DefaultPunchInfo.MoveDelay
-    for i, v in next, oppstyle.HeavyAttacks do
-        if type(i) == 'number' then
-			local ohtime = v.LandedFrame
-            local bruh = v.TrailInfo.TargetPart
-            local uh = (bruh == 'RightHand') and 'Left' or 'Right'
-            local cool = (bruh == 'RightHand') and 'A' or 'D'
-            cachedCheck[v.AnimId] = { 0, uh, cool }
-        end
-    end
-    
-    -- Ultimate
-    local ulti = oppstyle.UltimateInfo.DefaultPunchInfo.Startup
-    for i, v in next, oppstyle.UltimateInfo do
-        if type(i) == 'number' then
-            local bruh = v.TrailInfo.TargetPart
-            local uh = (bruh == 'RightHand') and 'Left' or 'Right'
-            local cool = (bruh == 'RightHand') and 'A' or 'D'
-            cachedCheck[v.AnimId] = { 0, uh, cool }
-        end
-    end
-end
 
 if _G.bruh then
 	_G.bruh:Disconnect()
@@ -122,20 +83,20 @@ _G.bruh = RunService.Heartbeat:Connect(function()
         local myRoot = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild('HumanoidRootPart')
         local oppRoot = opp:FindFirstChild('HumanoidRootPart')
         local opphum = opp:FindFirstChildWhichIsA('Humanoid')
-        local oppanim = opphum and opphum:FindFirstChildWhichIsA('Animator')
         
         local liveFolder = Workspace:FindFirstChild('Live')
         local opplive = liveFolder and liveFolder:FindFirstChild(opp.Name)
 
-        if oppRoot and myRoot and oppanim and opplive then
-				local currentID = opplive:GetAttribute("CurrentPunchId")
+        if oppRoot and myRoot and opplive then
+				local currentID = opplive:GetAttribute("PreviousPunching")
 				local currentP = opplive:GetAttribute("CurrentPunch")
-                if currentID and ((not currentpunch) or (currentID > currentpunch)) and currentP == 1 then
+				local isheavy = opplive:GetAttribute("IsHeavy")
+                if currentID and ((not currentpunch) or (currentID > currentpunch)) and (currentP == 1 or isheavy) then
                     local extraDelay = opplive:GetAttribute("ExtraDelay") or 0.1
                     local dashTime = mystyle.DashInfo.DefaultInfo.DashTime
 					local isfient = opplive:GetAttribute("IsFeinting") or 0
 					local landtime = opplive:GetAttribute("LandTime") or 0
-					local isheavy = opplive:GetAttribute("IsHeavy")
+					
 					local ohnumm = isheavy and 0 or 0.05
 
                     if workspace:GetServerTimeNow() >= landtime + ohnumm then
