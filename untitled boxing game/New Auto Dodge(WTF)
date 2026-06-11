@@ -8,6 +8,18 @@ local ReplicatedStorage = game:GetService('ReplicatedStorage')
 
 local LocalPlayer = Players.LocalPlayer
 
+local function stringToVector3(str: string): Vector3
+    -- Split the string by commas into an array
+    local components = string.split(str, ",") 
+    
+    -- Convert the values to numbers and unpack them into Vector3.new
+    return Vector3.new(
+        tonumber(components[1]), 
+        tonumber(components[2]), 
+        tonumber(components[3])
+    )
+end
+
 -- โหลด Styles
 local style = {}
 for _, v in next, ReplicatedStorage.Modules.Styles:GetDescendants() do
@@ -46,6 +58,7 @@ end
 
 local currentpunch
 local currentmypunch
+local currentoppdash
 
 if _G.on then
     _G.bruh = RunService.Heartbeat:Connect(function()
@@ -97,6 +110,7 @@ if _G.on then
         local isheavy = opplive:GetAttribute("IsHeavy")
         local currentP = opplive:GetAttribute("CurrentPunch")
 		local landtime = opplive:GetAttribute("LandTime")
+		local perfect = myCharacter:GetAttribute("Perfect")
 		
         -- Logic สำหรับหลบ (Dodge)
         if currentID and ((not currentpunch) or (currentID > currentpunch)) and (currentP == 1 or isheavy) then
@@ -108,22 +122,25 @@ if _G.on then
 					_G.lasttask = nil
 				end
 			end
-            if landtime and punching then
+            if (landtime or perfect) and punching then
                 local bruhtime = (landtime - currentID) >= 0.5
-                local ohnumm = (isheavy or bruhtime) and 0 or 0.05
+                local ohnumm = (isheavy or bruhtime) and 0 or 0.052
 				local oppSide = opplive:GetAttribute("AttackingHand")
                 local dodgeKey = (oppSide == "LeftHand") and "D" or "A"
 				local meCanPunch = occupied.CanPunch.Value
 				local meStun = occupied.Stunned.Value
 				currentpunch = currentID
+				local curtime = landtime or perfect
 				local distance = (myRoot.Position - oppRoot.Position).Magnitude
+				local oppdash = opplive:GetAttribute("AttackingHand")
+				
 				if _G.lasttask then
 					task.cancel(_G.lasttask)
 					_G.lasttask = nil
 				end
 				
 				if charData.UltimateEnergy.Value == 100 or ohnumm ~= 0 or not meCanPunch or meStun or distance >= 7 or occupied.Blocking.Value then
-					_G.lasttask = task.delay(landtime + ohnumm - workspace:GetServerTimeNow(),function ()
+					_G.lasttask = task.delay(curtime + ohnumm - workspace:GetServerTimeNow(),function ()
 						local distance = (myRoot.Position - oppRoot.Position).Magnitude
 						
 						if distance <= 8 and stamina >= 30 then
@@ -147,7 +164,10 @@ if _G.on then
 						end
 					end)
 				else
-					mouse1click()
+					local distance = (myRoot.Position - oppRoot.Position).Magnitude
+					if distance <= 7 and stamina >= 30 then
+						mouse1click()
+					end
 				end
             end
         end
@@ -155,12 +175,14 @@ if _G.on then
         -- Logic สำหรับโจมตีสวน (Parry/Attack)
         local mypunchID = myCharacter:GetAttribute("Punching")
         local isdash = workspace.States[opp.Name].CharacterData.Dashing.Value
-
+		local mylandtime = myCharacter:GetAttribute("LandTime")
+		local oppdash = opplive:GetAttribute("DashInvulnerable")
+		local oppdashclear = opplive:GetAttribute("DashClearTime")
+		local oppdashtime = opplive:GetAttribute("DashClearTime")
+		local oppdashpos = opplive:GetAttribute("CachedDashPosition")
+		local oppdashvelo = opplive:GetAttribute("CachedDashVelocity")
+		local totaloppdash = stringToVector3(oppdashpos) + stringToVector3(oppdashvelo)
         if mypunchID and isdash and ((not currentmypunch) or (mypunchID > currentmypunch)) and (currentP == 1 or isheavy) then
-            local mylandtime = myCharacter:GetAttribute("LandTime")
-            local oppdash = opplive:GetAttribute("DashInvulnerable")
-            local oppdashclear = opplive:GetAttribute("DashClearTime")
-            
             if mylandtime and oppdash then
                 local isMyHeavy = myCharacter:GetAttribute("IsHeavy")
                 local ohnumm = isMyHeavy and 0 or 0.05
@@ -182,6 +204,20 @@ if _G.on then
                     end
                 end 
             end
+		elseif isdash and not mylandtime then
+			if currentoppdash ~= oppdash then
+				print("PUNCNH")
+				currentoppdash = oppdash
+				task.delay(oppdashclear-workspace:GetServerTimeNow(),function ()
+					local distance = (myRoot.Position - totaloppdash).Magnitude
+					print(distance)
+					if distance <= 7 and stamina >= 30 then
+						mouse1click()
+						local mypunchID = myCharacter:GetAttribute("Punching")
+						currentmypunch = mypunchID
+					end
+				end)
+			end
         end
     end)
 end
