@@ -109,93 +109,91 @@ if _G.on then
         local landtime = opplive:GetAttribute("LandTime")
         local perfect = myCharacter:GetAttribute("Perfect")
         local tryattack = opplive:GetAttribute("TryAttack")
+		local mylaststun = myCharacter:GetAttribute("LastStunned")
+		local ability = opplive:GetAttribute("AbilityId")
 		
         
         -- แก้ Logic การตรวจสอบ ID ให้ปลอดภัยจากการ Error
-        local isNewAttack = currentID > currentpunch
-        local validPunchType = (currentP == 1 or isheavy)
+		local punching = opplive:GetAttribute("Punching")
+        local isNewAttack = if punching then (punching > currentpunch) else false
         
         -- Logic สำหรับหลบ (Dodge)
-        if (currentID > 0) and isNewAttack and validPunchType then
-            local punching = opplive:GetAttribute("Punching")
+        if isNewAttack and punching then
+            if _G.dodge then
+				task.cancel(_G.dodge)
+				_G.dodge = nil
+				ContextActionService:UnbindAction("BlockMouseClicks")
+			end
+
+			if _G.lasttask then
+				task.cancel(_G.lasttask)
+				_G.lasttask = nil
+				ContextActionService:UnbindAction("BlockMouseClicks")
+			end
             
-            if not (landtime or perfect) then
-                if _G.lasttask then
-                    task.cancel(_G.lasttask)
-                    _G.lasttask = nil
-                    ContextActionService:UnbindAction("BlockMouseClicks")
-                end
-				if _G.dodge then
-					task.cancel(_G.dodge)
-                    _G.dodge = nil
-                    ContextActionService:UnbindAction("BlockMouseClicks")
-				end
-            end
-            
-            if (landtime or perfect) and (punching or tryattack) then
+            if (landtime or perfect or ability) and (punching) then
                 local bruhtime = (landtime and currentID and (landtime - currentID) >= 0.5) or false
-                local ohnumm = (isheavy or bruhtime) and 0 or 0.052
+                local ohnumm = (isheavy or bruhtime) and 0.01 or 0.0175
                 local oppSide = opplive:GetAttribute("AttackingHand")
                 local dodgeKey = (oppSide == "LeftHand") and "D" or "A"
                 
                 local meCanPunch = occupied.CanPunch.Value
-                local meStun = occupied.Stunned.Value
-                local curtime = landtime or perfect
+                
+                local curtime = (landtime or perfect) or (punching + 0.01)
                 local distance = (myRoot.Position - oppRoot.Position).Magnitude
                 
-                if _G.lasttask then
-                    task.cancel(_G.lasttask)
-                    _G.lasttask = nil
-                    ContextActionService:UnbindAction("BlockMouseClicks")
-                end
-
-				if _G.dodge then
-					task.cancel(_G.dodge)
-                    _G.dodge = nil
-                    ContextActionService:UnbindAction("BlockMouseClicks")
-				end
                 
-                if charData.UltimateEnergy.Value == 100 or ohnumm ~= 0 or not meCanPunch or meStun or distance >= 7 or charData.Blocking.Value or ((landtime or perfect) - workspace:GetServerTimeNow()) <= 0.2  then
-                    currentpunch = currentID
-                    
-                    ContextActionService:BindActionAtPriority(
-                        "BlockMouseClicks", sinkMouseInput, false,
-                        Enum.ContextActionPriority.High.Value + 10,
-                        Enum.UserInputType.MouseButton1, Enum.UserInputType.MouseButton2
-                    )
-                    
-                    -- *การอัพเกรด*: ถ้าถึงเวลาแล้ว ให้ทำงานทันที ไม่ต้อง delay ให้เสียเฟรมเรท
-                    local targetTime = curtime + ohnumm
-                    local waitTime = targetTime - workspace:GetServerTimeNow()
-                    
-                    local function executeDodge()
-                        local dist = (myRoot.Position - oppRoot.Position).Magnitude
-                        if dist <= 8 and stamina >= 30 then
-                            local dashTime = mystyle.DashInfo.DefaultInfo.DashTime
-                            _G.dodge = task.spawn(function()
-                                releaseKey('W'); releaseKey('S'); releaseKey('A'); releaseKey('D')
-                                pressKey('W'); pressKey(dodgeKey)
-                                pressKey("SPACE"); releaseKey("SPACE")
-                                task.wait(dashTime)
-                                releaseKey('W')
-                                task.wait(0.3)
-                                releaseKey(dodgeKey)
-                            end)
-                        end
-                        ContextActionService:UnbindAction("BlockMouseClicks")
-                    end
 
-                    if waitTime <= 0 then
-                        task.spawn(executeDodge)
-                    else
-                        _G.lasttask = task.delay(waitTime, executeDodge)
-                    end
-                else
-                    if distance <= 7 and stamina >= 30 then
-                        currentpunch = currentID
-                        mouse1click()
-                    end
-                end
+				
+
+                
+				currentpunch = punching
+				
+				ContextActionService:BindActionAtPriority(
+					"BlockMouseClicks", sinkMouseInput, false,
+					Enum.ContextActionPriority.High.Value + 10,
+					Enum.UserInputType.MouseButton1, Enum.UserInputType.MouseButton2
+				)
+				
+				-- *การอัพเกรด*: ถ้าถึงเวลาแล้ว ให้ทำงานทันที ไม่ต้อง delay ให้เสียเฟรมเรท
+				local targetTime = curtime + ohnumm
+				local waitTime = targetTime - workspace:GetServerTimeNow()
+				
+				local function executeDodge()
+					local dist = (myRoot.Position - oppRoot.Position).Magnitude
+					local punching = opplive:GetAttribute("Punching")
+					local meStun = charData.Stunned.Value
+					print(meStun)
+					local landtime = opplive:GetAttribute("LandTime")
+        			local perfect = myCharacter:GetAttribute("Perfect")
+					local curtime = (landtime or perfect) or (punching + 0.01)
+					local targetTime = curtime + ohnumm
+					if dist <= 8 and stamina >= 30 and punching and workspace:GetServerTimeNow() >= targetTime - 0.05 then
+						local dashTime = mystyle.DashInfo.DefaultInfo.DashTime
+						_G.dodge = task.spawn(function()
+							releaseKey('W'); releaseKey('S'); releaseKey('A'); releaseKey('D')
+							if ability then
+								pressKey('S'); 
+							else
+								pressKey('W'); 
+							end
+							pressKey(dodgeKey)
+							pressKey("SPACE"); releaseKey("SPACE")
+							task.wait(dashTime)
+							releaseKey('W')
+							releaseKey('S'); 
+							task.wait(0.3)
+							releaseKey(dodgeKey)
+						end)
+					end
+					ContextActionService:UnbindAction("BlockMouseClicks")
+				end
+				
+				if waitTime <= 0 then
+					task.spawn(executeDodge)
+				else
+					_G.lasttask = task.delay(waitTime, executeDodge)
+				end
             end
         end
 
@@ -232,7 +230,7 @@ if _G.on then
             if currentoppdash ~= oppdash and oppdashclear then
                 currentoppdash = oppdash
                 
-                local waitTime = oppdashclear - workspace:GetServerTimeNow()
+                local waitTime = oppdashclear - 0.1 - workspace:GetServerTimeNow()
                 
                 local function executeDashAttack()
                     local distance = (myRoot.Position - totaloppdash).Magnitude
