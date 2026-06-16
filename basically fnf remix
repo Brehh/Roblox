@@ -1,47 +1,39 @@
 local wow = game:GetService("ReplicatedStorage").Remotes.DataF:InvokeServer()
 local curkey = wow[1].Inputs
 local RunService = game:GetService('RunService')
-
 local UserInputService = game:GetService("UserInputService")
 local ENUM_ALIASES = {}
 
--- 1. Grab every single Enum category in Roblox (KeyCode, Material, etc.)
+-- 1. Grab every single Enum category in Roblox
 for _, enumItem in ipairs(Enum.KeyCode:GetEnumItems()) do
     local name = string.upper(enumItem.Name)
-    
-    -- 2. ใช้ฟังก์ชันของ Client แปลง KeyCode ให้กลายเป็น "ตัวอักษรพิมพ์" จริงๆ 
-    -- เช่น Enum.KeyCode.A -> "a", Enum.KeyCode.One -> "1"
     local success, character = pcall(function()
         return UserInputService:GetStringForKeyCode(enumItem)
     end)
     
     if success and character and character ~= "" then
-        -- แปลงตัวอักษรที่ได้ (มักจะเป็นพิมพ์เล็ก) ให้เป็นรหัส UTF-8 ของตัวพิมพ์ใหญ่
         local upperChar = string.upper(character)
         ENUM_ALIASES[name] = utf8.codepoint(upperChar)
     end
 end
 
--- Custom fallback function from before
+-- Custom fallback function
 local function getByteValue(input)
-    -- Look up the uppercase version of the string in our automatic map
     local lookupKey = string.upper(input)
     if ENUM_ALIASES[lookupKey] then
         return ENUM_ALIASES[lookupKey]
     end
-    
-    -- Fallback to standard dynamic UTF-8 character conversion
     local success, codePoint = pcall(utf8.codepoint, input)
     return success and codePoint or nil
 end
 
 local function pressKey(key)
-	local truekey = getByteValue(key)
+    local truekey = getByteValue(key)
     if truekey then keypress(truekey) end
 end
 
 local function releaseKey(key)
-	local truekey = getByteValue(key)
+    local truekey = getByteValue(key)
     if truekey then keyrelease(truekey) end
 end
 
@@ -55,16 +47,19 @@ local gui = plr.PlayerGui
 local file = plr.File
 local ready = file.Ready
 local curside = file.CurrentPlayer
-_G.on = true
+
+local side
+local main
+local myside
+_G.on = false
 
 local curready
-local savedKey = {}
-local activeNotes = {} -- Table สำหรับเก็บสถานะ Note แทนการสร้าง task.spawn
+local activeNotes = {}
+local noteConnections = {} -- เก็บ Event เพื่อลบทิ้งตอนจบเพลง
 
 if _G.on then
-    print("WORK (Optimized Version)")
+    print("WORK (Max Performance + Hold Fix)")
     
-    -- Cache ฟังก์ชันคณิตศาสตร์และตัวหนังสือเพื่อความเร็ว
     local math_abs = math.abs
     local tonumber = tonumber
     local string_match = string.match
@@ -73,78 +68,120 @@ if _G.on then
         if not ready.Value then
             if curready then
                 curready = false
-                -- ปล่อยปุ่มทั้งหมดที่ค้างอยู่เมื่อจบเพลง
+                
+                for _, conn in ipairs(noteConnections) do
+                    conn:Disconnect()
+                end
+                noteConnections = {}
+                
                 for _, data in pairs(activeNotes) do
                     if data.pressed then
                         releaseKey(data.key)
                     end
                 end
-                savedKey = {}
                 activeNotes = {}
-				print("Note Ready")
+                print("Note Ready")
             end
             return
+            
         elseif not curready then
             curready = true
-			local wowxd = game:GetService("ReplicatedStorage").Remotes.DataF:InvokeServer()
-			curkey = wowxd[1].Inputs
-			print("Ready Now!")
-        end
-
-        local side = string_match(curside.Value.Name, "%d+")
-        local main = gui.Main.MatchFrame
-        local myside = main["KeySync" .. side]
-
-        -- 1. ค้นหาและลงทะเบียน Note ใหม่
-        for _, v in ipairs(myside:GetChildren()) do
-            if string.find(v.Name, "Arrow") then
-                local keyIndex = tonumber(string_match(v.Name, "%d+"))
-                local targetKey = curkey[keyIndex]
-
-                for _, note in ipairs(v.Notes:GetChildren()) do
-                    if note.ClassName == 'ImageLabel' and not savedKey[note] then
-                        savedKey[note] = true
-                        
-                        -- ค้นหา Hold note แค่ "ครั้งเดียว" ตอนพบ Note แทนที่จะหาทุกเฟรม
-                        local holdNote = note.Parent:FindFirstChild("Hold_"..note.Name)
-                        
-                        -- บันทึกลงในระบบ
-                        activeNotes[note] = {
-                            key = targetKey,
-                            hold = holdNote,
-                            pressed = false
-                        }
+            side = string_match(curside.Value.Name, "%d+")
+            main = gui.Main.MatchFrame
+            myside = main["KeySync" .. side]
+            
+            local wowxd = game:GetService("ReplicatedStorage").Remotes.DataF:InvokeServer()
+            curkey = wowxd[1].Inputs
+            
+            for _, v in ipairs(myside:GetChildren()) do
+                if string.find(v.Name, "Arrow") then
+                    local keyIndex = tonumber(string_match(v.Name, "%d+"))
+                    local targetKey = curkey[keyIndex]
+                    local notesFolder = v:WaitForChild("Notes")
+                    
+                    local function registerNote(note)
+                        -- กรณี ImageLabel (Note หลัก) โหลดเข้าโฟลเดอร์
+                        if note.ClassName == 'ImageLabel' then
+                            if not activeNotes[note] then
+                                -- ลองหา Hold เผื่อมันเกิดมาก่อนหน้าแล้ว
+                                local holdNote = note.Parent:FindFirstChild("Hold_"..note.Name)
+                                activeNotes[note] = {
+                                    key = targetKey,
+                                    hold = holdNote,
+                                    pressed = false
+                                }
+                            end
+                            
+                        -- กรณี Frame (Hold Note) โหลดเข้าโฟลเดอร์
+                        elseif note.ClassName == 'Frame' and string.find(note.Name, "Hold") then
+                            local notename = string_match(note.Name, "%d+")
+                            if notename then
+                                local mynote = note.Parent:FindFirstChild(notename)
+                                if mynote then
+                                    -- ถ้ามี Note หลักอยู่แล้ว อัปเดตข้อมูล Hold ให้มัน
+                                    if activeNotes[mynote] then
+                                        activeNotes[mynote].hold = note
+                                    else
+                                        -- ถ้า Hold เกิดก่อน Note หลัก ให้สร้าง Data รอไว้เลย
+                                        activeNotes[mynote] = {
+                                            key = targetKey,
+                                            hold = note,
+                                            pressed = false
+                                        }
+                                    end
+                                end
+                            end
+                        end
+                    end
+                    
+                    local conn = notesFolder.ChildAdded:Connect(registerNote)
+                    table.insert(noteConnections, conn)
+                    
+                    for _, note in ipairs(notesFolder:GetChildren()) do
+                        registerNote(note)
                     end
                 end
             end
+            print("Ready Now! (Event-Driven Activated)")
         end
 
-        -- 2. ตรวจสอบและกด Note ทั้งหมดในลูปเดียว
         for note, data in pairs(activeNotes) do
-            -- ถ้า Note ถูกเกมทำลายไปแล้ว ให้ปล่อยปุ่มและลบออกจากระบบ
             if (not note.Parent) and ((not data.hold) or (not data.hold.Parent)) then
                 if data.pressed then releaseKey(data.key) end
                 activeNotes[note] = nil
                 continue
             end
 
-            -- จัดการจังหวะกด
+            local y_scale = note.Position.Y.Scale
+
+            -- จังหวะกด
             if not data.pressed then
-                if note.Position.Y.Scale >= -0.05 then
+                if y_scale >= -0.05 and y_scale <= 0.2 then
+                    releaseKey(data.key)
                     pressKey(data.key)
-                    data.pressed = true
+                    activeNotes[note].pressed = true
                     
-                    -- ถ้าไม่ใช่ปุ่ม Hold ให้ปล่อยทันที (จำลองการทำงานเดิม)
+                    -- [!] ดักจับเผื่อกรณี Hold Note หลุด Event
+                    if not data.hold then
+                        activeNotes[note].hold = note.Parent:FindFirstChild("Hold_" .. note.Name)
+                    end
+                    
                     if not data.hold then
                         releaseKey(data.key)
                         activeNotes[note] = nil
                     end
                 end
-            -- จัดการจังหวะปล่อย (สำหรับปุ่ม Hold)
+            -- จังหวะปล่อยปุ่ม (สำหรับ Hold)
             else
                 local hold = data.hold
                 if hold then
-                    if hold.Position.Y.Scale >= math_abs(hold.Size.Y.Scale) then
+                    if hold.Parent then
+                        local hold_y_scale = hold.Position.Y.Scale
+                        if hold_y_scale >= math_abs(hold.Size.Y.Scale) + 0.05 then
+                            releaseKey(data.key)
+                            activeNotes[note] = nil
+                        end
+                    else
                         releaseKey(data.key)
                         activeNotes[note] = nil
                     end
