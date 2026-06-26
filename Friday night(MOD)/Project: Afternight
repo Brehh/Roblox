@@ -1,0 +1,175 @@
+--[[ =====================================================================
+      Project: Afternight  —  AUTOPLAY  (GAME-FIRE)     placeId 13042495892
+      • goodHit(note) ตี note ตรงๆ  →  Sick rating, ไม่ต้อง focus, ทุก keymode
+      • heldState สำหรับ hold (นับ tick), ปล่อยตรง sustainTimes ตัวสุดท้าย
+      • block missNote (โน้ตที่ตีแล้ว) → combo ไม่แตกจาก false-miss
+      • setthreadidentity(2) ให้ goodHit require ได้  • mine / don't-press skip
+      • receptor light (heldState) + onKeyUp รีเซ็ต  • GUI + F4 toggle
+      Re-run ได้ตลอด — หา engine/ฟังก์ชันเองหลัง crash/rejoin.
+===================================================================== ]]
+local RunService = game:GetService("RunService")
+local UIS        = game:GetService("UserInputService")
+local g          = getgenv()
+local getc = getconstants or debug.getconstants
+local getu = getupvalues  or debug.getupvalues
+local hookfn = hookfunction or debug.hookfunction
+local sti = setthreadidentity or g.setthreadidentity
+
+----------------------------------------------------- finders
+local function findEngine()
+  for _,o in ipairs(getgc(true)) do
+    if type(o)=="table" and type(rawget(o,"getClosestNote"))=="function" and type(rawget(o,"Conductor"))=="table"
+       and rawget(o,"Notes")~=nil and type(rawget(o,"Keybinds"))=="table" then return o end
+  end
+end
+local function findEng()  -- table with goodHit/missNote/startSong
+  for _,o in ipairs(getgc(true)) do
+    if type(o)=="table" and type(rawget(o,"goodHit"))=="function" and type(rawget(o,"missNote"))=="function"
+       and type(rawget(o,"startSong"))=="function" then return o end
+  end
+end
+local function findHandlers()  -- onKeyDown, onKeyUp by constants
+  local kd,ku
+  for _,f in ipairs(getgc()) do
+    if type(f)=="function" then
+      local ok,cs=pcall(getc,f)
+      if ok then
+        local gcn,good,nKU,strums=false,false,false,false
+        for _,c in ipairs(cs) do
+          if c=="getClosestNote" then gcn=true elseif c=="goodHit" then good=true
+          elseif c=="onKeyUp" then nKU=true elseif c=="Strums" then strums=true end
+        end
+        if gcn and good and not kd then kd=f end
+        if nKU and strums and not gcn and not ku then ku=f end
+      end
+    end
+  end
+  return kd,ku
+end
+local function findHeld(kd,ku)  -- shared small dir-bool upvalue
+  if not (kd and ku) then return end
+  local set={}; for _,u in ipairs(getu(ku)) do if type(u)=="table" then set[u]=true end end
+  for _,u in ipairs(getu(kd)) do
+    if type(u)=="table" and set[u] then
+      local n=0; local ok=true
+      for k,v in pairs(u) do n=n+1; if not (type(k)=="string" and type(v)=="boolean") then ok=false break end end
+      if ok and n<=12 then return u end
+    end
+  end
+end
+
+local E   = findEngine()
+local eng = findEng()
+local kd, ku = findHandlers()
+local heldState = findHeld(kd, ku)
+g.__AE=E
+if not (E and eng and ku and heldState) then
+  warn("[Afternight] หาไม่ครบ — เข้าเพลง/เมนูแล้วรันใหม่  (E="..tostring(E~=nil).." eng="..tostring(eng~=nil)..")")
+end
+local goodHit = eng and eng.goodHit
+
+----------------------------------------------------- missNote-block (false-miss +330)
+local function noteFrom(...) for i=1,select("#",...) do local a=select(i,...); if type(a)=="table" and (a.strumTime~=nil or a.dir~=nil) then return a end end end
+if eng then
+  if g.__ANmnRestore then pcall(g.__ANmnRestore) end
+  local mn=eng.missNote
+  local o; o=hookfn(mn, function(...) local nt=noteFrom(...); if nt and (nt.hit or nt.wasHit) and not nt.missed then return end; return o(...) end)
+  g.__ANmnRestore=function() hookfn(mn,o) end
+end
+
+----------------------------------------------------- autoplay
+g.__ANON       = (g.__ANON==nil) and true or g.__ANON
+g.__ANsusbuf   = g.__ANsusbuf   or 8     -- ปล่อย hold หลัง tick สุดท้าย (ms)
+g.__ANreceptor = (g.__ANreceptor==nil) and true or g.__ANreceptor
+g.__ANtapreset = g.__ANtapreset or 90    -- รีเซ็ต receptor หลัง tap (ms)
+g.__ANstat = { km=0 }
+
+local function holdEndOf(nt)
+  local st=nt.sustainTimes
+  if type(st)=="table" and #st>0 then return st[#st] end
+  return nt.susEndTime
+end
+local function keymodeNow()
+  local side; for _,nt in pairs(E.Notes) do if type(nt)=="table" and nt.mustPress and nt.side then side=tostring(nt.side); break end end
+  local by={}; if type(E.Strums)=="table" then for _,s in pairs(E.Strums) do if type(s)=="table" then local sd=tostring(s.side); by[sd]=(by[sd] or 0)+1 end end end
+  if side and by[side] then return by[side] end
+  local mx=0; for _,c in pairs(by) do if c>mx then mx=c end end
+  return mx>0 and mx or 4
+end
+
+local susHeld, tapReset = {}, {}
+local function reset(dir) if heldState then heldState[dir]=false end; if ku then pcall(ku, dir) end end
+
+if g.__ANAUTO then pcall(function() g.__ANAUTO:Disconnect() end) end
+g.__ANAUTO = RunService.Heartbeat:Connect(function()
+  if not (type(E)=="table" and type(E.Conductor)=="table" and goodHit) then
+    E=findEngine(); g.__AE=E
+    if not E then return end
+  end
+  if sti then pcall(sti, 2) end
+  if not g.__ANON then
+    for d in pairs(susHeld) do reset(d); susHeld[d]=nil end
+    for d in pairs(tapReset) do reset(d); tapReset[d]=nil end
+    return
+  end
+  local now=E.Conductor.SongPosition
+  if type(now)~="number" then return end
+  g.__ANstat.km = keymodeNow()
+  local buf=g.__ANsusbuf or 8
+  local wantHold={}
+  for _,nt in pairs(E.Notes) do
+    if type(nt)=="table" and nt.mustPress and not nt.missed and not nt.hitCausesMiss and nt.shouldBeHitted~=false
+       and type(nt.strumTime)=="number" and now>=nt.strumTime then
+      local dir=nt.dir
+      if nt.isSustain then
+        if not nt.hit and not nt.wasHit then pcall(goodHit, nt) end
+        if now <= holdEndOf(nt)+buf then wantHold[dir]=true end
+      elseif not nt.hit and not nt.wasHit and now<=nt.strumTime+200 then
+        pcall(goodHit, nt)
+        if g.__ANreceptor and heldState and not susHeld[dir] then heldState[dir]=true; tapReset[dir]=now+(g.__ANtapreset or 90) end
+      end
+    end
+  end
+  -- sustain hold (heldState = นับ tick + ติด receptor), ปล่อยตรง tick สุดท้าย
+  if heldState then
+    for dir in pairs(wantHold) do if not susHeld[dir] then heldState[dir]=true; susHeld[dir]=true; tapReset[dir]=nil end end
+    for dir in pairs(susHeld)  do if not wantHold[dir] then reset(dir); susHeld[dir]=nil end end
+    for dir,t in pairs(tapReset) do if now>=t and not susHeld[dir] then reset(dir); tapReset[dir]=nil end end
+  end
+end)
+
+----------------------------------------------------- GUI
+if g.__ANGUI then pcall(function() g.__ANGUI:Destroy() end) end
+local parent=(gethui and gethui()) or game:FindService("CoreGui") or game.CoreGui
+local gui=Instance.new("ScreenGui"); gui.Name="AfternightAuto"; gui.ResetOnSpawn=false
+gui.ZIndexBehavior=Enum.ZIndexBehavior.Sibling; gui.Parent=parent; g.__ANGUI=gui
+local ACCENT=Color3.fromRGB(124,92,255)
+local function corner(p,r) local c=Instance.new("UICorner"); c.CornerRadius=UDim.new(0,r); c.Parent=p end
+local main=Instance.new("Frame"); main.Size=UDim2.fromOffset(244,176); main.Position=UDim2.new(0,24,0,120)
+main.BackgroundColor3=Color3.fromRGB(20,20,28); main.BorderSizePixel=0; main.Parent=gui; corner(main,14)
+local st=Instance.new("UIStroke"); st.Color=ACCENT; st.Thickness=1.5; st.Parent=main
+local bar=Instance.new("Frame"); bar.Size=UDim2.new(1,0,0,4); bar.BackgroundColor3=ACCENT; bar.BorderSizePixel=0; bar.Parent=main; corner(bar,4)
+local title=Instance.new("TextLabel"); title.Size=UDim2.new(1,-20,0,40); title.Position=UDim2.new(0,14,0,6)
+title.BackgroundTransparency=1; title.Text="⚡ Afternight Auto  ·  game-fire"; title.TextColor3=Color3.fromRGB(240,240,250)
+title.Font=Enum.Font.GothamBold; title.TextSize=15; title.TextXAlignment=Enum.TextXAlignment.Left; title.Parent=main
+do local drag,ds,sp
+  title.InputBegan:Connect(function(i) if i.UserInputType==Enum.UserInputType.MouseButton1 then drag=true; ds=i.Position; sp=main.Position end end)
+  title.InputEnded:Connect(function(i) if i.UserInputType==Enum.UserInputType.MouseButton1 then drag=false end end)
+  UIS.InputChanged:Connect(function(i) if drag and i.UserInputType==Enum.UserInputType.MouseMovement then local d=i.Position-ds; main.Position=UDim2.new(sp.X.Scale,sp.X.Offset+d.X,sp.Y.Scale,sp.Y.Offset+d.Y) end end)
+end
+local btn=Instance.new("TextButton"); btn.Size=UDim2.new(1,-28,0,46); btn.Position=UDim2.new(0,14,0,52)
+btn.Font=Enum.Font.GothamBold; btn.TextSize=16; btn.TextColor3=Color3.fromRGB(255,255,255); btn.BorderSizePixel=0; btn.Text=""; btn.Parent=main; corner(btn,10)
+local status=Instance.new("TextLabel"); status.Size=UDim2.new(1,-28,0,58); status.Position=UDim2.new(0,14,0,108)
+status.BackgroundTransparency=1; status.RichText=true; status.TextColor3=Color3.fromRGB(165,165,190)
+status.Font=Enum.Font.Gotham; status.TextSize=12.5; status.TextXAlignment=Enum.TextXAlignment.Left; status.TextYAlignment=Enum.TextYAlignment.Top; status.Text=""; status.Parent=main
+local function refresh() local on=g.__ANON; btn.Text=on and "● AUTOPLAY  ON" or "○ AUTOPLAY  OFF"; btn.BackgroundColor3=on and Color3.fromRGB(46,190,120) or Color3.fromRGB(58,58,72) end
+btn.MouseButton1Click:Connect(function() g.__ANON=not g.__ANON; refresh() end)
+UIS.InputBegan:Connect(function(i,gp) if not gp and i.KeyCode==Enum.KeyCode.F4 then g.__ANON=not g.__ANON; refresh() end end)
+refresh()
+RunService.RenderStepped:Connect(function()
+  local km=g.__ANstat.km or 0; local ok=(type(E)=="table" and type(E.Conductor)=="table" and goodHit~=nil)
+  status.Text=string.format("mode <font color='#c8b6ff'><b>%s</b></font>   engine <font color='#%s'>%s</font>\ngoodHit ✓  hold ✓  mine-skip ✓\nno-miss ✓   <font color='#777'>F4 = toggle</font>",
+    km>0 and (km.."K") or "—", ok and "5be36a" or "ff5b5b", ok and "ok" or "lost")
+end)
+
+print("[Afternight] GAME-FIRE autoplay loaded — "..(goodHit and "OK" or "FN NOT FOUND").."  (F4 toggle, no focus needed)")
